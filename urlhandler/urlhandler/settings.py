@@ -92,7 +92,7 @@ else:
             'NAME': 'wx4_tsinghuatuan',
             'USER': 'wx4',
             'PASSWORD': 'SL5iccd9ww0pyMKC',
-            'HOST': '166.111.80.24',
+            'HOST': 'db.igeek.asia',
             'PORT': '3306',
         }
     }
