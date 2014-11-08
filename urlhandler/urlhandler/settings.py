@@ -89,10 +89,10 @@ else:
     DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.mysql',
-            'NAME': 'tsinghuatuan',
-            'USER': 'root',
-            'PASSWORD': '',
-            'HOST': '127.0.0.1',
+            'NAME': 'wx4_tsinghuatuan',
+            'USER': 'wx4',
+            'PASSWORD': 'SL5iccd9ww0pyMKC',
+            'HOST': '166.111.80.24',
             'PORT': '3306',
         }
     }
