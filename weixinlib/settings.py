@@ -18,6 +18,7 @@ WEIXIN_EVENT_KEYS = {
     'ticket_no_book_recommand': 'TSINGHUA_NO_BOOK_ACTS',
     'ticket_book_header': 'TSINGHUA_BOOK_',
     'modern_figure': 'V1001_MODERN_FIGURE',
+    'ticket_setting': 'V1001_SETTING'
 }
 
 WEIXIN_CUSTOM_MENU_TEMPLATE = {
@@ -94,7 +95,14 @@ WEIXIN_CUSTOM_MENU_TEMPLATE = {
         },
         {
             "name": "抢票",
-            "sub_button": []
+            "sub_button": [
+                {
+                    "type": "click",
+                    "name": "setting",
+                    "key": WEIXIN_EVENT_KEYS['ticket_setting'],
+                    "sub_button": []
+                }
+            ]
         }
     ]
 }

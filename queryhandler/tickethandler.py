@@ -381,3 +381,13 @@ def response_xnlhwh(msg):
     msg['Content'] = '节目单 新年联欢晚会'
     return response_get_activity_menu(msg)
 
+
+def check_setting(msg):
+    return handler_check_event_click(msg, [WEIXIN_EVENT_KEYS['ticket_setting']]) or handler_check_text(msg, ['设置'])
+
+
+def response_setting(msg):
+    now = datetime.datetime.fromtimestamp(get_msg_create_time(msg))
+    activities_book_not_end = Activity.objects.filter(status=1, book_end__gte=now).order_by('book_start')
+    return get_reply_text_xml(msg, get_bookable_activity_list(activities_book_not_end))
+
