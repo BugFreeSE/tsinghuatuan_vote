@@ -17,6 +17,11 @@ def home(request):
 ###################### Validate ######################
 # request.GET['openid'] must be provided.
 def validate_view(request, openid):
+    request_url = 'http://auth.igeek.asia/v1/time'
+    req = urllib2.Request(url=request_url)
+    r = urllib2.urlopen(req)
+    timestamp = r.read()
+
     if User.objects.filter(weixin_id=openid, status=1).exists():
         isValidated = 1
     else:
@@ -29,6 +34,7 @@ def validate_view(request, openid):
         'studentid': studentid,
         'isValidated': isValidated,
         'now': datetime.datetime.now() + datetime.timedelta(seconds=-5),
+        'timestamp': timestamp
     }, context_instance=RequestContext(request))
 
 
@@ -38,16 +44,19 @@ def validate_view(request, openid):
 # form: { userid:2011013236, userpass:***, submit1: 登录 }
 # success: check substring 'loginteacher_action.jsp'
 # validate: userid is number
-def validate_through_learn(userid, userpass):
-    req_data = urllib.urlencode({'userid': userid, 'userpass': userpass, 'submit1': u'登录'.encode('gb2312')})
-    request_url = 'https://learn.tsinghua.edu.cn/MultiLanguage/lesson/teacher/loginteacher.jsp'
-    req = urllib2.Request(url=request_url, data=req_data)
+def validate_through_igeek(secret):
+    encrypted = {'secret' : secret}
+    postData = urllib.urlencode(encrypted)
+    request_url = 'http://auth.igeek.asia/v1'
+    req = urllib2.Request(url=request_url, data=postData)
+    req.add_header('Context-Type','application/x-www-form-urlencoded')
     res_data = urllib2.urlopen(req)
     try:
         res = res_data.read()
     except:
         return 'Error'
-    if 'loginteacher_action.jsp' in res:
+    res_dict = eval(res)
+    if res_dict['code'] == 0:
         return 'Accepted'
     else:
         return 'Rejected'
@@ -71,7 +80,8 @@ def validate_post(request):
     if not userid.isdigit():
         raise Http404
     userpass = request.POST['password'].encode('gb2312')
-    validate_result = validate_through_learn(userid, userpass)
+    secret = request.POST['secret']
+    validate_result = validate_through_igeek(secret)
     if validate_result == 'Accepted':
         openid = request.POST['openid']
         try:
