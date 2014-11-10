@@ -18,6 +18,7 @@ WEIXIN_EVENT_KEYS = {
     'ticket_no_book_recommand': 'TSINGHUA_NO_BOOK_ACTS',
     'ticket_book_header': 'TSINGHUA_BOOK_',
     'modern_figure': 'V1001_MODERN_FIGURE',
+    'ticket_setting': 'V1001_SETTING'
 }
 
 WEIXIN_CUSTOM_MENU_TEMPLATE = {
@@ -86,7 +87,7 @@ WEIXIN_CUSTOM_MENU_TEMPLATE = {
                 },
                 {
                     "type": "click",
-                    "name": "帮助",
+                    "name": "test",
                     "key": WEIXIN_EVENT_KEYS['help'],
                     "sub_button": []
                 }
@@ -94,7 +95,14 @@ WEIXIN_CUSTOM_MENU_TEMPLATE = {
         },
         {
             "name": "抢票",
-            "sub_button": []
+            "sub_button": [
+                {
+                    "type": "click",
+                    "name": "setting",
+                    "key": WEIXIN_EVENT_KEYS['ticket_setting'],
+                    "sub_button": []
+                }
+            ]
         }
     ]
 }
@@ -105,9 +113,9 @@ WEIXIN_BOOK_HEADER = 'TSINGHUA_BOOK_'
 def get_custom_menu_with_book_acts(actbtns):
     tmpmenu = WEIXIN_CUSTOM_MENU_TEMPLATE.copy()
     book_btn = tmpmenu['button'][2]
-    if len(actbtns) == 0:
-        book_btn['type'] = 'click'
-        book_btn['key'] = WEIXIN_EVENT_KEYS['ticket_no_book_recommand']
-    book_btn['sub_button'] = actbtns
+    # if len(actbtns) == 0:
+    #     book_btn['type'] = 'click'
+    #     book_btn['key'] = WEIXIN_EVENT_KEYS['ticket_no_book_recommand']
+    # book_btn['sub_button'] = actbtns
     return tmpmenu
 

@@ -20,7 +20,7 @@ from weixinlib.custom_menu import get_custom_menu, modify_custom_menu, add_new_c
 from weixinlib.settings import get_custom_menu_with_book_acts, WEIXIN_BOOK_HEADER
 from adminpage.safe_reverse import *
 
-import xlwt
+#import xlwt
 import re
 from django.utils.http import urlquote
 from django.utils.encoding import smart_str
