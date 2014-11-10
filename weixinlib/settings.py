@@ -87,7 +87,7 @@ WEIXIN_CUSTOM_MENU_TEMPLATE = {
                 },
                 {
                     "type": "click",
-                    "name": "帮助",
+                    "name": "test",
                     "key": WEIXIN_EVENT_KEYS['help'],
                     "sub_button": []
                 }
