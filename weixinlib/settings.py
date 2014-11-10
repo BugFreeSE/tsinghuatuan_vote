@@ -113,9 +113,9 @@ WEIXIN_BOOK_HEADER = 'TSINGHUA_BOOK_'
 def get_custom_menu_with_book_acts(actbtns):
     tmpmenu = WEIXIN_CUSTOM_MENU_TEMPLATE.copy()
     book_btn = tmpmenu['button'][2]
-    if len(actbtns) == 0:
-        book_btn['type'] = 'click'
-        book_btn['key'] = WEIXIN_EVENT_KEYS['ticket_no_book_recommand']
-    book_btn['sub_button'] = actbtns
+    # if len(actbtns) == 0:
+    #     book_btn['type'] = 'click'
+    #     book_btn['key'] = WEIXIN_EVENT_KEYS['ticket_no_book_recommand']
+    # book_btn['sub_button'] = actbtns
     return tmpmenu
 
