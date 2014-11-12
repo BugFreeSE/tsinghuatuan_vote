@@ -15,7 +15,7 @@
     <script src="{% static "js/RSA.js" %}?_=5"></script>
     <script>
     function ajaxForm() {
-        submitValidation('{{ openid }}', '{{now}}');
+        submitValidation('{{ openid }}', '{{timestamp}}');
     }
     window.addEventListener('load', function() {showValidation({{ isValidated }});}, false);
     </script>
