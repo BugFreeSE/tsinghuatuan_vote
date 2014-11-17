@@ -113,15 +113,15 @@ USE_TZ = False
 SESSION_EXPIRE_AT_BROWSER_CLOSE = True
 
 # Static files (CSS, JavaScript, Images)
-# https://docs.djangoproject.com/en/1.6/howto/static-files/
+# https://docs.djangoproject.com/en/1.6/howto/static1-files/
 
-STATIC_URL = '/static/'
+STATIC_URL = '/static1/'
 
-#STATIC_ROOT = os.path.join(BASE_DIR, 'static').replace('\\', '/')
+#STATIC_ROOT = os.path.join(BASE_DIR, 'static1').replace('\\', '/')
 
 STATICFILES_DIRS = (
-    os.path.join(BASE_DIR, 'userpage/static').replace('\\', '/'),
-    os.path.join(BASE_DIR, 'adminpage/static').replace('\\', '/'),
+    os.path.join(BASE_DIR, 'userpage/static1').replace('\\', '/'),
+    os.path.join(BASE_DIR, 'adminpage/static1').replace('\\', '/'),
 )
 
 TEMPLATE_DIRS = (
