@@ -88,6 +88,10 @@ function readyStateChanged() {
                     showError('passwordGroup', 'helpPassword', '学号或密码错误！请输入登录info的学号和密码');
                     break;
 
+                case 'Out of date':
+                    showError('usernameGroup', 'helpUsername', '');
+                    showError('passwordGroup', 'helpPassword', 'out of date');
+                    break;
                 case 'Error':
                     showError('submitGroup', 'helpSubmit', '出现了奇怪的错误，我们已经记录下来了，请稍后重试。')
                     break;

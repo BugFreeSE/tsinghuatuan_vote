@@ -54,12 +54,16 @@ def validate_through_igeek(secret):
     try:
         res = res_data.read()
     except:
-        return 'Error'
+        return 'Unknown error'
     res_dict = eval(res)
     if res_dict['code'] == 0:
         return 'Accepted'
-    else:
+    elif res_dict['code'] == 1:
         return 'Rejected'
+    elif res_dict['code'] == -3:
+        return 'Out of date'
+    else:
+        return 'Error'
 
 
 # METHOD 2 is not valid, because student.tsinghua has not linked to Internet
