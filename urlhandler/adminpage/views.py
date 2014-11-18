@@ -168,13 +168,15 @@ def str_to_datetime(strg):
     return datetime.strptime(strg, '%Y-%m-%d %H:%M')
 
 
-def activity_create(activity):
+def activity_create(activity, files):
     preDict = dict()
-    for k in ['name', 'description', 'place', 'pic_url']:
+    for k in ['name', 'description', 'place']:
         preDict[k] = activity[k]
     for k in ['start_time', 'end_time', 'book_start', 'book_end']:
         preDict[k] = str_to_datetime(activity[k])
     preDict['status'] = 1 if ('publish' in activity) else 0
+    preDict['pic'] = files['pic']
+    preDict['pic_url'] = '#'
 #    preDict['remain_tickets'] = preDict['total_tickets']
     newact = Activity.objects.create(**preDict)
     return newact
@@ -277,6 +279,7 @@ def activity_post(request):
     if not request.POST:
         raise Http404
     post = request.POST
+    files = request.FILES
     rtnJSON = dict()
     try:
         if 'id' in post:
@@ -292,7 +295,7 @@ def activity_post(request):
                         return HttpResponse(json.dumps(rtnJSON, cls=DatetimeJsonEncoder),
                                             content_type='application/json')
                                             '''
-            activity = activity_create(post)
+            activity = activity_create(post, files)
             nameList = post.getlist('block_name')
             numberList = post.getlist('block_ticket_number')
             for i in range(0, len(nameList)):

@@ -64,7 +64,7 @@ var dateInterfaceMap = {
     'place': 'value',
     'book_start': 'time',
     'book_end': 'time',
-    'pic_url': 'value',
+//    'pic_url': 'value',
     'total_tickets': 'value',
     'seat_status': 'value'
 }, lockMap = {
@@ -361,7 +361,7 @@ function beforeSubmit(formData, jqForm, options) {
         'start_time': '活动开始时间',
         'end_time': '活动结束时间',
         'total_tickets': '活动总票数',
-        'pic_url': '活动配图',
+//        'pic_url': '活动配图',
         'book_start': '订票开始时间',
         'book_end': '订票结束时间',
         'seat_status': '座位分配设置'

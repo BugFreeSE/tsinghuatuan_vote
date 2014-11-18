@@ -139,3 +139,5 @@ TEMPLATE_LOADERS = (
 #     'django.template.loaders.eggs.Loader',
 )
 
+MEDIA_ROOT = 'media/'
+MEDIA_URL = '/webhost_media/'
