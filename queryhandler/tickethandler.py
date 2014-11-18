@@ -42,14 +42,14 @@ def is_authenticated(openid):
 
 #check help command
 def check_help_or_subscribe(msg):
-    modify_custom_menu(json.dumps(WEIXIN_CUSTOM_MENU_TEMPLATE, ensure_ascii=False).encode('utf-8'))
-    print get_custom_menu()
+#    print get_custom_menu()
     return handler_check_text(msg, ['帮助', 'help']) or handler_check_event_click(msg, [
         WEIXIN_EVENT_KEYS['help']]) or handler_check_events(msg, ['scan', 'subscribe'])
 
 
 #get help information
 def response_help_or_subscribe_response(msg):
+#    modify_custom_menu(json.dumps(WEIXIN_CUSTOM_MENU_TEMPLATE, ensure_ascii=False).encode('utf-8'))
     return get_reply_single_news_xml(msg, get_item_dict(
         title=get_text_help_title(),
         description=get_text_help_description(is_authenticated(get_msg_from(msg))),
