@@ -114,7 +114,7 @@
         <noscript>请开启JavaScript后重试。</noscript>
     </div>
     <div class="container" id="detail-form" style="display: none;">
-        <form class="form-horizontal" role="form" method="post" action="{% url "adminpage.views.activity_post" %}" id="activity-form">
+        <form class="form-horizontal" role="form" method="post" enctype="multipart/form-data" action="{% url "adminpage.views.activity_post" %}" id="activity-form">
             {% csrf_token %}
             <div class="panel panel-default">
                 <div class="panel-heading">活动信息</div>
@@ -158,11 +158,12 @@
                             <input type="text" name="place" class="form-control" id="input-place" placeholder="活动地点，如 大礼堂">
                         </div>
                     </div>
-                        <div class="form-group">
+                    <div class="form-group">
                         <label for="input-pic_url" class="col-sm-2 control-label" min="0">活动配图</label>
                         <div class="col-sm-6">
+                            <input type="file" name="pic" class="form-control" id="input-pic" />
                             <input onchange="getPoster(this.value)" type="url" name="pic_url" class="form-control" id="input-pic_url" min="0" placeholder="请填入图片链接">
-                        </div>
+                    </div>
 
                     </div>
                         <div class="form-group">
