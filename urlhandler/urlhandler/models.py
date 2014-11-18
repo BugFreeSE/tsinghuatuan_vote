@@ -43,6 +43,9 @@ class District(models.Model):
     activity = models.ForeignKey(Activity)
     name = models.CharField(max_length=255)
 
+class Seat(models.Model):
+    row = models.CharField(max_length=3)
+    column = models.CharField(max_length=3)
 
 class Ticket(models.Model):
     stu_id = models.CharField(max_length=255)
@@ -50,7 +53,8 @@ class Ticket(models.Model):
 #    activity = models.ForeignKey(Activity)
     district = models.ForeignKey(District)
     status = models.IntegerField()
-    seat = models.CharField(max_length=255)
+#    seat = models.CharField(max_length=255)
+    seat = models.ForeignKey(Seat, null=True)
     # Something about isUsed
     # 0: ticket order is cancelled
     # 1: ticket order is valid
