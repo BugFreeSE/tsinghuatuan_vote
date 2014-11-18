@@ -35,5 +35,6 @@ def get_access_token():
     rjson = json.loads(res)
     if 'errorcode' in rjson:
         raise res
+    print rjson['access_token']
     return rjson['access_token']
 

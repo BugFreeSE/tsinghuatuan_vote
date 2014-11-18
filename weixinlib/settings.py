@@ -1,10 +1,11 @@
 #-*- coding:utf-8 -*-
+import queryhandler.settings
 
 WEIXIN_TOKEN = 'F8ZFW1Cyzr5z6nNoJ5uZhA8iXEbe1hvX'
 
-WEIXIN_APPID = 'wxb2545ef150be8096'
+WEIXIN_APPID = 'wx11353d338f38395d'
 
-WEIXIN_SECRET = '8416b20564e9430bfe5a7c3fd88016f2'
+WEIXIN_SECRET = 'c66e64bf06a757f3bff368c4c82aa254'
 
 WEIXIN_EVENT_KEYS = {
     'info_activity': 'V1001_TODAT_ACTIVE',
@@ -87,7 +88,7 @@ WEIXIN_CUSTOM_MENU_TEMPLATE = {
                 },
                 {
                     "type": "click",
-                    "name": "test",
+                    "name": "test!!!",
                     "key": WEIXIN_EVENT_KEYS['help'],
                     "sub_button": []
                 }
@@ -97,10 +98,10 @@ WEIXIN_CUSTOM_MENU_TEMPLATE = {
             "name": "抢票",
             "sub_button": [
                 {
-                    "type": "click",
+                    "type": "view",
                     "name": "setting",
                     "key": WEIXIN_EVENT_KEYS['ticket_setting'],
-                    "sub_button": []
+                    "url": queryhandler.settings.SITE_DOMAIN + "/u/setting"
                 }
             ]
         }

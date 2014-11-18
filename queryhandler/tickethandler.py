@@ -13,6 +13,10 @@ from queryhandler.weixin_text_templates import *
 from queryhandler.handler_check_templates import *
 from queryhandler.weixin_msg import *
 from weixinlib.settings import WEIXIN_EVENT_KEYS
+from weixinlib.custom_menu import modify_custom_menu
+from weixinlib.settings import WEIXIN_CUSTOM_MENU_TEMPLATE
+from weixinlib.custom_menu import get_custom_menu
+import json
 
 
 def get_user(openid):
@@ -38,6 +42,8 @@ def is_authenticated(openid):
 
 #check help command
 def check_help_or_subscribe(msg):
+    modify_custom_menu(json.dumps(WEIXIN_CUSTOM_MENU_TEMPLATE, ensure_ascii=False).encode('utf-8'))
+    print get_custom_menu()
     return handler_check_text(msg, ['帮助', 'help']) or handler_check_event_click(msg, [
         WEIXIN_EVENT_KEYS['help']]) or handler_check_events(msg, ['scan', 'subscribe'])
 
@@ -382,12 +388,12 @@ def response_xnlhwh(msg):
     return response_get_activity_menu(msg)
 
 
-def check_setting(msg):
-    return handler_check_event_click(msg, [WEIXIN_EVENT_KEYS['ticket_setting']]) or handler_check_text(msg, ['设置'])
-
-
-def response_setting(msg):
-    now = datetime.datetime.fromtimestamp(get_msg_create_time(msg))
-    activities_book_not_end = Activity.objects.filter(status=1, book_end__gte=now).order_by('book_start')
-    return get_reply_text_xml(msg, get_bookable_activity_list(activities_book_not_end))
+# def check_setting(msg):
+#     return handler_check_event_click(msg, [WEIXIN_EVENT_KEYS['ticket_setting']]) or handler_check_text(msg, ['设置'])
+#
+#
+# def response_setting(msg):
+#     now = datetime.datetime.fromtimestamp(get_msg_create_time(msg))
+#     activities_book_not_end = Activity.objects.filter(status=1, book_end__gte=now).order_by('book_start')
+#     return get_reply_text_xml(msg, get_bookable_activity_list(activities_book_not_end))
 

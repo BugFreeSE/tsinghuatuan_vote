@@ -3,13 +3,6 @@ from django.db import models
 import uuid
 
 
-class User(models.Model):
-    weixin_id = models.CharField(max_length=255)
-    stu_id = models.CharField(max_length=255)
-    status = models.IntegerField()
-    seed = models.FloatField(default=1024)
-
-
 class Activity(models.Model):
     name = models.CharField(max_length=255)
 #    key = models.CharField(max_length=255)
@@ -32,6 +25,16 @@ class Activity(models.Model):
     # Something about seat_status:
     # 0: no seat
     # 1: seat B and seat C
+
+
+class User(models.Model):
+    weixin_id = models.CharField(max_length=255)
+    stu_id = models.CharField(max_length=255)
+    status = models.IntegerField()
+    seed = models.FloatField(default=1024)
+    book_activity = models.ForeignKey(Activity, null=True)
+    need_multi_ticket = models.BooleanField()
+
 
 
 class District(models.Model):
