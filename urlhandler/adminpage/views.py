@@ -14,13 +14,13 @@ from django.views.decorators.csrf import csrf_protect, csrf_exempt
 from django.db.models import F
 import urllib
 import urllib2
-from urlhandler.models import Activity, Ticket
+from urlhandler.models import Activity, Ticket, District
 from urlhandler.models import User as Booker
 from weixinlib.custom_menu import get_custom_menu, modify_custom_menu, add_new_custom_menu, auto_clear_old_menus
 from weixinlib.settings import get_custom_menu_with_book_acts, WEIXIN_BOOK_HEADER
 from adminpage.safe_reverse import *
 
-#import xlwt
+import xlwt
 import re
 from django.utils.http import urlquote
 from django.utils.encoding import smart_str
@@ -165,20 +165,19 @@ def logout(request):
 
 
 def str_to_datetime(strg):
-    return datetime.strptime(strg, '%Y-%m-%d %H:%M:%S')
+    return datetime.strptime(strg, '%Y-%m-%d %H:%M')
 
 
 def activity_create(activity):
     preDict = dict()
-    for k in ['name', 'key', 'description', 'place', 'pic_url', 'seat_status', 'total_tickets']:
+    for k in ['name', 'description', 'place', 'pic_url']:
         preDict[k] = activity[k]
     for k in ['start_time', 'end_time', 'book_start', 'book_end']:
         preDict[k] = str_to_datetime(activity[k])
     preDict['status'] = 1 if ('publish' in activity) else 0
-    preDict['remain_tickets'] = preDict['total_tickets']
+#    preDict['remain_tickets'] = preDict['total_tickets']
     newact = Activity.objects.create(**preDict)
     return newact
-
 
 def activity_modify(activity):
     nowact = Activity.objects.get(id=activity['id'])
@@ -231,8 +230,8 @@ def wrap_activity_dict(activity):
     dt = model_to_dict(activity)
     if (dt['status'] >= 1) and (datetime.now() >= dt['book_start']):
         dt['tickets_ready'] = 1
-        dt['ordered_tickets'] = int(activity.total_tickets) - int(activity.remain_tickets)
-        dt['checked_tickets'] = get_checked_tickets(activity)
+        dt['ordered_tickets'] = 0 # int(activity.total_tickets) - int(activity.remain_tickets)
+        dt['checked_tickets'] = 0 # get_checked_tickets(activity)
     return dt
 
 
@@ -283,6 +282,7 @@ def activity_post(request):
         if 'id' in post:
             activity = activity_modify(post)
         else:
+            '''
             iskey = Activity.objects.filter(key=post['key'])
             if iskey:
                 now = datetime.now()
@@ -291,7 +291,18 @@ def activity_post(request):
                         rtnJSON['error'] = u"当前有活动正在使用该活动代称"
                         return HttpResponse(json.dumps(rtnJSON, cls=DatetimeJsonEncoder),
                                             content_type='application/json')
+                                            '''
             activity = activity_create(post)
+            nameList = post.getlist('block_name')
+            numberList = post.getlist('block_ticket_number')
+            for i in range(0, len(nameList)):
+                preDict = dict()
+                preDict['total_tickets'] = numberList[i]
+                preDict['activity'] = activity
+                preDict['remain_tickets'] = numberList[i]
+                preDict['name'] = nameList[i]
+                District.objects.create(**preDict)
+
             rtnJSON['updateUrl'] = s_reverse_activity_detail(activity.id)
         rtnJSON['activity'] = wrap_activity_dict(activity)
         if 'publish' in post:

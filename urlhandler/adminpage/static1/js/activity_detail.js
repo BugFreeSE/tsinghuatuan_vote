@@ -373,13 +373,7 @@ function beforeSubmit(formData, jqForm, options) {
             lackArray.push(nameMap[formData[i].name]);
         }
     }
-    for (i = 0, len = dateArray.length; i < len; ++i) {
-        if (!$('#input-' + dateArray[i]).prop('disabled')) {
-            if (!wrapDateString($('#input-' + dateArray[i]), formData, dateArray[i])) {
-                lackArray.push(nameMap[dateArray[i]]);
-            }
-        }
-    }
+
     if (lackArray.length > 0) {
         setResult('以下字段是必须的，请补充完整后再提交：\r\n' + lackArray.join('、'));
         $('#continueBtn').click(function() {
@@ -456,6 +450,30 @@ function submitComplete(xhr) {
     showResult();
 }
 
+function addDistrict()
+{
+    var $tbody = $('#district-list').children('tbody');
+    var $tr = $('<tr />');
+    $tr.append($('<th />').html($tbody.children().length + 1))
+        .append($('<th />').append($('<input type="text" name="block_name"/>')))
+        .append($('<th />').append($('<input type="text" name="block_ticket_number"/>')))
+        .append($('<th />').append($('<a href="javascript:void(0)" onclick="deleteDistrict(this)">删除</a>')));
+    $tbody.append($tr);
+}
+
+function deleteDistrict(link)
+{
+    var $tbody = $('#district-list').children('tbody');
+    $(link).parent().parent().remove();
+    if ($tbody.children().length == 0)
+    {
+        addDistrict();
+    }
+    for (var i = 0; i < $tbody.children().length; i++)
+    {
+        $($($tbody.children()[i]).children()[0]).html(i + 1);
+    }
+}
 
 function publishActivity() {
     if(!$('#activity-form')[0].checkValidity || $('#activity-form')[0].checkValidity()){

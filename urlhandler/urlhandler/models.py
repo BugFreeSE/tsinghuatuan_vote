@@ -9,20 +9,21 @@ class User(models.Model):
     status = models.IntegerField()
     seed = models.FloatField(default=1024)
 
+
 class Activity(models.Model):
     name = models.CharField(max_length=255)
-    key = models.CharField(max_length=255)
+#    key = models.CharField(max_length=255)
     description = models.TextField()
     start_time = models.DateTimeField()
     end_time = models.DateTimeField()
     place = models.CharField(max_length=255)
     book_start = models.DateTimeField()
     book_end = models.DateTimeField()
-    seat_status = models.IntegerField(default=0)
-    total_tickets = models.IntegerField()
+#    seat_status = models.IntegerField(default=0)
+#    total_tickets = models.IntegerField()
     status = models.IntegerField()
     pic_url = models.CharField(max_length=255)
-    remain_tickets = models.IntegerField()
+#    remain_tickets = models.IntegerField()
     menu_url = models.CharField(max_length=255, null=True)
     # Something about status:
     # -1: deleted
@@ -32,10 +33,19 @@ class Activity(models.Model):
     # 0: no seat
     # 1: seat B and seat C
 
+
+class District(models.Model):
+    total_tickets = models.IntegerField()
+    remain_tickets = models.IntegerField()
+    activity = models.ForeignKey(Activity)
+    name = models.CharField(max_length=255)
+
+
 class Ticket(models.Model):
     stu_id = models.CharField(max_length=255)
     unique_id = models.CharField(max_length=255)
-    activity = models.ForeignKey(Activity)
+#    activity = models.ForeignKey(Activity)
+    district = models.ForeignKey(District)
     status = models.IntegerField()
     seat = models.CharField(max_length=255)
     # Something about isUsed

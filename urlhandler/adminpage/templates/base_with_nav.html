@@ -10,6 +10,11 @@
         }
     </style>
     <link href="{% static "lib/bs/css/bootstrap.min.css" %}" rel="stylesheet" type="text/css" />
+    <link href="{% static "lib/bs/datetimepicker/css/bootstrap-datetimepicker.min.css" %}" rel="stylesheet" type="text/css" />
+    <script src="{% static "lib/jq/jquery-1.10.2.min.js" %}"></script>
+    <script src="{% static "lib/bs/js/bootstrap.min.js" %}"></script>
+    <script src="{% static "lib/bs/datetimepicker/js/bootstrap-datetimepicker.js" %}"></script>
+    <script src="{% static "lib/bs/datetimepicker/js/locales/bootstrap-datetimepicker.zh-CN.js" %}"></script>
     {% block css %}{% endblock %}
     <title>{% block title %}{% endblock %}</title>
 </head>
@@ -47,8 +52,7 @@
             {% endblock %}
         </div>
     </footer>
-    <script src="{% static "lib/jq/jquery-1.10.2.min.js" %}"></script>
-    <script src="{% static "lib/bs/js/bootstrap.min.js" %}"></script>
+
     {% block js %}{% endblock %}
 </body>
 </html>

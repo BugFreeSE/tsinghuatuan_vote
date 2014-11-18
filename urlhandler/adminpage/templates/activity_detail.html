@@ -8,6 +8,11 @@
 
 {% block css %}
     <link rel="stylesheet" href="{% static "css/activity_detail.css" %}"/>
+    <style>
+        th input {
+            border: 0;
+        }
+    </style>
 {% endblock %}
 
 {% block js %}
@@ -59,6 +64,37 @@
 
     </script>
     <script src="{% static "js/activity_detail.js" %}"></script>
+    <script type="text/javascript">
+        $(function () {
+            $('#datetimepicker1').datetimepicker({
+                language:'zh-CN',
+                pick12HourFormat: false
+            });
+        });
+        $(function () {
+            $('#datetimepicker2').datetimepicker({
+                language:'zh-CN',
+                pick12HourFormat: false
+            });
+        });
+        $(function () {
+            $('#datetimepicker3').datetimepicker({
+                language:'zh-CN',
+                pick12HourFormat: false
+            });
+        });
+        $(function () {
+            $('#datetimepicker4').datetimepicker({
+                language:'zh-CN',
+                pick12HourFormat: false
+            });
+        });
+
+        function getPoster(url){
+            $("#poster").attr("src", url);
+        }
+    </script>
+
 {% endblock %}
 
 {% block activity-list-active %}{% endblock %}
@@ -80,254 +116,164 @@
     <div class="container" id="detail-form" style="display: none;">
         <form class="form-horizontal" role="form" method="post" action="{% url "adminpage.views.activity_post" %}" id="activity-form">
             {% csrf_token %}
-            <div class="form-group">
-                <label for="input-name" class="col-sm-2 control-label" id="label-input-name">活动名称</label>
-                <div class="col-sm-10">
-                    <input type="text" maxlength="26" name="name" class="form-control" id="input-name" placeholder="活动名称，如 马兰花开" autofocus>
-                </div>
-            </div>
+            <div class="panel panel-default">
+                <div class="panel-heading">活动信息</div>
+                <div class="panel-body">
+                    <div class="row">
+                    <div class="col-sm-6" style="left:8.5%;">
+                    <div class="form-group">
+                        <label for="input-name" class="col-sm-2 control-label" id="label-input-name">活动名称</label>
+                        <div class="col-sm-6">
+                            <input type="text" maxlength="26" name="name" class="form-control" id="input-name" placeholder="活动名称，如 马兰花开" autofocus>
+                        </div>
+                    </div>
 
-            <div class="form-group">
+                    <!--<div class="form-group">
                 <label for="input-key" class="col-sm-2 control-label">活动代称</label>
-                <div class="col-sm-10">
+                <div class="col-sm-3">
                     <input type="text" maxlength="12" name="key" class="form-control" id="input-key" placeholder="用户用于订票的活动代称，推荐使用中文(少于7个字)，如 马兰花开">
                 </div>
+            </div>-->
+                    <div class="form-group">
+                        <label for="input-start_time" class="col-sm-2 control-label">活动开始</label>
+                            <div class='col-sm-6 input-group date' id='datetimepicker1'>
+                                <input type='text' class="form-control" name="start_time" id="input-start_time"/>
+                                <span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span>
+                                </span>
+                            </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="input-end_time" class="col-sm-2 control-label">活动结束</label>
+                            <div class='col-sm-6 input-group date' id='datetimepicker2'>
+                                <input type='text' class="form-control" name="end_time" id="input-end_time"/>
+                                <span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span>
+                                </span>
+                            </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="input-place" class="col-sm-2 control-label">活动地点</label>
+                        <div class="col-sm-6">
+                            <input type="text" name="place" class="form-control" id="input-place" placeholder="活动地点，如 大礼堂">
+                        </div>
+                    </div>
+                        <div class="form-group">
+                        <label for="input-pic_url" class="col-sm-2 control-label" min="0">活动配图</label>
+                        <div class="col-sm-6">
+                            <input onchange="getPoster(this.value)" type="url" name="pic_url" class="form-control" id="input-pic_url" min="0" placeholder="请填入图片链接">
+                        </div>
+
+                    </div>
+                        <div class="form-group">
+                        <label for="input-description" class="col-sm-2 control-label">活动简介</label>
+                        <div class="col-sm-9">
+                            <textarea class="form-control" name="description" rows="7" id="input-description" placeholder="描述，如 好看的舞台剧" row="3" style="resize: none;"></textarea>
+                        </div>
+                    </div>
+                    </div>
+                        <div class="col-sm-3 form-group" style="right:-15%;">
+                            <div class="form-group">
+                            <img id="poster" class="img-responsive img-thumbnail" style="width:100%;" alt="xxx" />
+                        </div>
+                                <div class="form-group">
+                            <label style="display: block;text-align: center;">图片预览</label>
+                        </div>
+                        </div>
+
+                    </div>
+
+                </div>
             </div>
 
-            <div class="form-group">
-                <label for="input-place" class="col-sm-2 control-label">活动地点</label>
-                <div class="col-sm-10">
-                    <input type="text" name="place" class="form-control" id="input-place" placeholder="活动地点，如 大礼堂">
+            <div class="panel panel-default">
+                <div class="panel-heading">抢票设置</div>
+                <div class="panel-body">
+                    <div class="form-group">
+                        <label for="input-book_start" class="col-sm-2 control-label">订票开始</label>
+                            <div class='col-sm-3 input-group date' id='datetimepicker3'>
+                                <input type='text' class="form-control" name="book_start" id="input-book_start"/>
+                                <span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span>
+                                </span>
+                            </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="input-book_end" class="col-sm-2 control-label">订票结束</label>
+                            <div class='col-sm-3 input-group date' id='datetimepicker4'>
+                                <input type='text' class="form-control" name="book_end" id="input-book_end"/>
+                                <span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span>
+                                </span>
+                            </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="input-total_tickets" class="col-sm-2 control-label">总票数</label>
+                        <div class="col-sm-3">
+                            <input type="number" name="total_tickets" class="form-control" id="input-total_tickets" min="1" placeholder="本活动通过“紫荆之声”的发票总数">
+                        </div>
+                    </div>
+
+                    <div class="form-group" id="progress-tickets">
+                        <label class="col-sm-2 control-label">订票与入场情况</label>
+                        <div class="col-sm-9">
+                            <div class="progress progress-in-form">
+                                <div class="progress-bar progress-bar-success" id="tickets-checked" style="width: 0%">
+                                </div>
+                                <div class="progress-bar progress-bar-warning" id="tickets-ordered" style="width: 0%">
+                                </div>
+                                <div class="progress-bar progress-bar-danger" id="tickets-remain" style="width: 0%">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label">分区抢票</label>
+                        <div class="col-sm-9">
+                            <table class="table table-bordered" id="district-list">
+                                <thead>
+                                <tr>
+                                    <th>编号</th>
+                                    <th>分区名</th>
+                                    <th>总票数</th>
+                                    <th></th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr>
+                                    <th>1</th>
+                                    <th><input type="text" name="block_name"/></th>
+                                    <th><input type="number"name="block_ticket_number" /></th>
+                                    <th><a href="javascript:void(0)" onclick="deleteDistrict(this)">删除</a></th>
+                                </tr>
+                                </tbody>
+                            </table>
+                            <a href="javascript:addDistrict()">添加分区</a>
+                        </div>
+                    </div>
+
+                    <!--<div class="form-group">
+                        <label class="col-sm-2 control-label">座位分配设置</label>
+                        <div class="col-sm-9">
+                            <select name="seat_status" id="input-seat_status" class="form-control" required>
+                                <option value="0">不分配座位</option>
+                                <option value="1">综体：分配B、C两入口</option>
+                            </select>
+                        </div>
+                    </div>-->
                 </div>
             </div>
 
             <div class="form-group">
-                <label for="input-description" class="col-sm-2 control-label">活动简介</label>
-                <div class="col-sm-10">
-                    <textarea class="form-control" name="description" rows="3" id="input-description" placeholder="描述，如 好看的舞台剧" row="3" style="resize: none;"></textarea>
-                </div>
-            </div>
-
-
-            <div class="form-group">
-                <label for="input-pic_url" class="col-sm-2 control-label" min="0">活动配图</label>
-                <div class="col-sm-10">
-                    <input type="url" name="pic_url" class="form-control" id="input-pic_url" min="0" placeholder="请填入图片链接">
-                </div>
-            </div>
-
-            <div class="form-group">
-                <label for="input-start-year" class="col-sm-2 control-label">活动开始</label>
-                <div class="form-inline col-sm-10" id="input-start_time">
-                    <div class="form-group date-input">
-                        <input class="form-control" maxlength="4" type="number" id="input-start-year" value=""
-                               date-part="year" placeholder="年，>=2013" min="2013" max="2100" step="1">
-                    </div>
-                    <div class="form-group date-label">
-                        <label class="control-label" for="input-start-year">年</label>
-                    </div>
-                    <div class="form-group date-input">
-                        <input class="form-control" maxlength="2" type="number" id="input-start-month" value="" date-part="month"
-                               placeholder="月，1-12" min="1" max="12" step="1">
-                    </div>
-                    <div class="form-group date-label">
-                        <label class="control-label" for="input-start-month">月</label>
-                    </div>
-                    <div class="form-group date-input">
-                        <input class="form-control" maxlength="2" type="number" id="input-start-day" value="" date-part="day"
-                               placeholder="日，1-31" min="1" max="31" step="1">
-                    </div>
-                    <div class="form-group date-label">
-                        <label class="control-label" for="input-start-day">日</label>
-                    </div>
-                    <div class="form-group date-offset">
-                    </div>
-                    <div class="form-group date-input">
-                        <input class="form-control" maxlength="2" type="number" id="input-start-hour" value="" date-part="hour"
-                               placeholder="小时，0-23" min="0" max="23" step="1">
-                    </div>
-                    <div class="form-group date-label">
-                        <label class="control-label" for="input-start-hour">时</label>
-                    </div>
-                    <div class="form-group date-input">
-                        <input class="form-control" maxlength="2" type="number" id="input-start-minute" value="" date-part="minute"
-                               placeholder="分钟，0-59"min="0" max="59" step="1">
-                    </div>
-                    <div class="form-group date-label">
-                        <label class="control-label" for="input-start-minute">分</label>
-                    </div>
-                </div>
-            </div>
-            <div class="form-group">
-                <label for="input-end-year" class="col-sm-2 control-label">活动结束</label>
-                <div class="form-inline col-sm-10" id="input-end_time">
-                    <div class="form-group date-input">
-                        <input class="form-control" maxlength="4" type="number" id="input-end-year" value=""
-                               date-part="year" placeholder="年，>=2013" min="2013" max="2100" step="1">
-                    </div>
-                    <div class="form-group date-label">
-                        <label class="control-label" for="input-end-year">年</label>
-                    </div>
-                    <div class="form-group date-input">
-                        <input class="form-control" maxlength="2" type="number" id="input-end-month" value="" date-part="month"
-                               placeholder="月，1-12" min="1" max="12" step="1">
-                    </div>
-                    <div class="form-group date-label">
-                        <label class="control-label" for="input-end-month">月</label>
-                    </div>
-                    <div class="form-group date-input">
-                        <input class="form-control" maxlength="2" type="number" id="input-end-day" value="" date-part="day"
-                               placeholder="日，1-31" min="1" max="31" step="1">
-                    </div>
-                    <div class="form-group date-label">
-                        <label class="control-label" for="input-end-day">日</label>
-                    </div>
-                    <div class="form-group date-offset">
-                    </div>
-                    <div class="form-group date-input">
-                        <input class="form-control" maxlength="2" type="number" id="input-end-hour" value="" date-part="hour"
-                               placeholder="小时，0-23" min="0" max="23" step="1">
-                    </div>
-                    <div class="form-group date-label">
-                        <label class="control-label" for="input-end-hour">时</label>
-                    </div>
-                    <div class="form-group date-input">
-                        <input class="form-control" maxlength="2" type="number" id="input-end-minute" value="" date-part="minute"
-                               placeholder="分钟，0-59"min="0" max="59" step="1">
-                    </div>
-                    <div class="form-group date-label">
-                        <label class="control-label" for="input-end-minute">分</label>
-                    </div>
-                </div>
-            </div>
-
-            <div class="form-group">
-                <label for="input-total_tickets" class="col-sm-2 control-label">总票数</label>
-                <div class="col-sm-10">
-                    <input type="number" name="total_tickets" class="form-control" id="input-total_tickets" min="1" placeholder="此次活动通过“紫荆之声”的发票总数，如 1000">
-                </div>
-            </div>
-
-            <div class="form-group">
-                <label for="input-book-start-year" class="col-sm-2 control-label">订票开始</label>
-                <div class="form-inline col-sm-10" id="input-book_start">
-                    <div class="form-group date-input">
-                        <input class="form-control" maxlength="4" type="number" id="input-book-start-year" value=""
-                               date-part="year" placeholder="年，>=2013" min="2013" max="2100" step="1">
-                    </div>
-                    <div class="form-group date-label">
-                        <label class="control-label" for="input-book-start-year">年</label>
-                    </div>
-                    <div class="form-group date-input">
-                        <input class="form-control" maxlength="2" type="number" id="input-book-start-month" value="" date-part="month"
-                               placeholder="月，1-12" min="1" max="12" step="1">
-                    </div>
-                    <div class="form-group date-label">
-                        <label class="control-label" for="input-book-start-month">月</label>
-                    </div>
-                    <div class="form-group date-input">
-                        <input class="form-control" maxlength="2" type="number" id="input-book-start-day" value="" date-part="day"
-                               placeholder="日，1-31" min="1" max="31" step="1">
-                    </div>
-                    <div class="form-group date-label">
-                        <label class="control-label" for="input-book-start-day">日</label>
-                    </div>
-                    <div class="form-group date-offset">
-                    </div>
-                    <div class="form-group date-input">
-                        <input class="form-control" maxlength="2" type="number" id="input-book-start-hour" value="" date-part="hour"
-                               placeholder="小时，0-23" min="0" max="23" step="1">
-                    </div>
-                    <div class="form-group date-label">
-                        <label class="control-label" for="input-book-start-hour">时</label>
-                    </div>
-                    <div class="form-group date-input">
-                        <input class="form-control" maxlength="2" type="number" id="input-book-start-minute" value="" date-part="minute"
-                               placeholder="分钟，0-59"min="0" max="59" step="1">
-                    </div>
-                    <div class="form-group date-label">
-                        <label class="control-label" for="input-book-start-minute">分</label>
-                    </div>
-                </div>
-            </div>
-            <div class="form-group">
-                <label for="input-book-end-year" class="col-sm-2 control-label">订票结束</label>
-                <div class="form-inline col-sm-10" id="input-book_end">
-                    <div class="form-group date-input">
-                        <input class="form-control" maxlength="4" type="number" id="input-book-end-year" value=""
-                               date-part="year" placeholder="年，>=2013" min="2013" max="2100" step="1">
-                    </div>
-                    <div class="form-group date-label">
-                        <label class="control-label" for="input-book-end-year">年</label>
-                    </div>
-                    <div class="form-group date-input">
-                        <input class="form-control" maxlength="2" type="number" id="input-book-end-month" value="" date-part="month"
-                               placeholder="月，1-12" min="1" max="12" step="1">
-                    </div>
-                    <div class="form-group date-label">
-                        <label class="control-label" for="input-book-end-month">月</label>
-                    </div>
-                    <div class="form-group date-input">
-                        <input class="form-control" maxlength="2" type="number" id="input-book-end-day" value="" date-part="day"
-                               placeholder="日，1-31" min="1" max="31" step="1">
-                    </div>
-                    <div class="form-group date-label">
-                        <label class="control-label" for="input-book-end-day">日</label>
-                    </div>
-                    <div class="form-group date-offset">
-                    </div>
-                    <div class="form-group date-input">
-                        <input class="form-control" maxlength="2" type="number" id="input-book-end-hour" value="" date-part="hour"
-                               placeholder="小时，0-23" min="0" max="23" step="1">
-                    </div>
-                    <div class="form-group date-label">
-                        <label class="control-label" for="input-book-end-hour">时</label>
-                    </div>
-                    <div class="form-group date-input">
-                        <input class="form-control" maxlength="2" type="number" id="input-book-end-minute" value="" date-part="minute"
-                               placeholder="分钟，0-59"min="0" max="59" step="1">
-                    </div>
-                    <div class="form-group date-label">
-                        <label class="control-label" for="input-book-end-minute">分</label>
-                    </div>
-                </div>
-            </div>
-
-            <div class="form-group" id="progress-tickets">
-                <label class="col-sm-2 control-label">订票与入场情况</label>
-                <div class="col-sm-10">
-                    <div class="progress progress-in-form">
-                      <div class="progress-bar progress-bar-success" id="tickets-checked" style="width: 0%">
-                      </div>
-                      <div class="progress-bar progress-bar-warning" id="tickets-ordered" style="width: 0%">
-                      </div>
-                      <div class="progress-bar progress-bar-danger" id="tickets-remain" style="width: 0%">
-                      </div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="form-group">
-                <label class="col-sm-2 control-label">座位分配设置</label>
-                <div class="col-sm-10">
-                    <select name="seat_status" id="input-seat_status" class="form-control" required>
-                        <option value="0">不分配座位</option>
-                        <option value="1">综体：分配B、C两入口</option>
-                    </select>
-                </div>
-            </div>
-
-                <div class="form-group">
-                <div class="col-sm-offset-2 col-sm-10">
+                <div class="col-sm-offset-9 col-sm-10">
                     <button type="button" onclick="publishActivity();" class="btn btn-primary" id="publishBtn">发布</button>
                     <button type="submit" class="btn btn-default" id="saveBtn">暂存</button>
                     <button type="reset" class="btn btn-warning" id="resetBtn">重置</button>
                 </div>
             </div>
-
         </form>
     </div>
-
     <div class="container" id="detail-processing" style="display: none;">
         <img src="{% static "img/loading.gif" %}">
         正在执行，请稍候……
