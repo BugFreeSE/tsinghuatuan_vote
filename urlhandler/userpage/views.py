@@ -102,11 +102,12 @@ def validate_post(request):
             except:
                 return HttpResponse('Error')
         except:
-            try:
-                newuser = User.objects.create(weixin_id=openid, stu_id=userid, status=1)
-                newuser.save()
-            except:
-                return HttpResponse('Error')
+            newuser = User.objects.create(weixin_id=openid, stu_id=userid, status=1)
+            newuser.save()
+            # try:
+            #
+            # except:
+            #     return HttpResponse('Error')
     return HttpResponse(validate_result)
 
 ###################### Activity Detail ######################

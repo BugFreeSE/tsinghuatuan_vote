@@ -33,8 +33,8 @@ class User(models.Model):
     status = models.IntegerField()
     seed = models.FloatField(default=1024)
     book_activity = models.ForeignKey(Activity, null=True)
-    need_multi_ticket = models.BooleanField()
-    book_distinct = models.CharField(max_length=255)
+    need_multi_ticket = models.NullBooleanField()
+    book_district = models.CharField(max_length=255, null=True)
 
 
 class District(models.Model):
