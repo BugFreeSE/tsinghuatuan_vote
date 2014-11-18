@@ -304,6 +304,7 @@ def activity_post(request):
                 preDict['activity'] = activity
                 preDict['remain_tickets'] = numberList[i]
                 preDict['name'] = nameList[i]
+                preDict['has_seat'] = False
                 District.objects.create(**preDict)
 
             rtnJSON['updateUrl'] = s_reverse_activity_detail(activity.id)

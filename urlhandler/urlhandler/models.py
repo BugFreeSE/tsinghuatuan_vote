@@ -42,10 +42,15 @@ class District(models.Model):
     remain_tickets = models.IntegerField()
     activity = models.ForeignKey(Activity)
     name = models.CharField(max_length=255)
+    has_seat = models.BooleanField() #标记是否有座位
+
 
 class Seat(models.Model):
-    row = models.CharField(max_length=3)
-    column = models.CharField(max_length=3)
+    row = models.IntegerField() #坐标
+    column = models.IntegerField() #坐标
+    seat_number = models.CharField(max_length=20) #座位号
+    is_sold = models.BooleanField(default=False) #标记是否卖出
+
 
 class Ticket(models.Model):
     stu_id = models.CharField(max_length=255)
