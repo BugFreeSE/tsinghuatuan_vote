@@ -15,7 +15,8 @@ class Activity(models.Model):
 #    seat_status = models.IntegerField(default=0)
 #    total_tickets = models.IntegerField()
     status = models.IntegerField()
-    pic_url = models.CharField(max_length=255)
+    pic = models.ImageField('pic',upload_to="uploadImages")
+#    pic_url = models.CharField(max_length=255)
 #    remain_tickets = models.IntegerField()
     menu_url = models.CharField(max_length=255, null=True)
     # Something about status:
