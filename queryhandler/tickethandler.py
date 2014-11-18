@@ -2,7 +2,7 @@
 import random
 import string
 import datetime
-from urlhandler.models import *
+from userpage.models import *
 from queryhandler.settings import QRCODE_URL
 from django.db.models import F
 from django.db import transaction
