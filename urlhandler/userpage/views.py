@@ -246,8 +246,7 @@ def get_district_list(activity_list):
     return district_list
 
 def cancel_ticket(request, ticket_uid):
-    if (not request.POST) or (not 'ticket_uid' in request.POST):
-        raise Http404
+
     tickets = Ticket.objects.filter(unique_id=ticket_uid)
 
     if not tickets.exists():
