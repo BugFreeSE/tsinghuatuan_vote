@@ -29,7 +29,7 @@
                         {% for district in district_list %}
                             {% if district.activity.id == activity.id %}
                                 child = document.createElement('option')
-                                child.setAttribute('value','{{ district.name }}')
+                                child.setAttribute('value','{{ district.id }}')
                                 child.innerHTML = '{{ district.name }}'
                                 obj_district.appendChild(child)
                             {% endif %}
