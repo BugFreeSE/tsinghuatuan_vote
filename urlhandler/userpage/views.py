@@ -206,7 +206,7 @@ def setting_view(request, openid):
             pass
         else:
             user_obj.book_activity = Activity.objects.get(id=form.cleaned_data['book_activity'])
-            user_obj.book_district = form.cleaned_data['book_district']
+            user_obj.book_district = District.objects.get(id=form.cleaned_data['book_district'])
             user_obj.need_multi_ticket = form.cleaned_data['need_multi_ticket']
             user_obj.save()
         raise Http404
