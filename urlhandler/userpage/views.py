@@ -1,13 +1,15 @@
 #-*- coding:utf-8 -*-
 
-from django.http import HttpResponse, Http404
+from django.http import HttpResponse, Http404, HttpResponseRedirect
 from django.template import RequestContext
 from django.shortcuts import render_to_response
-from urlhandler.models import User, Activity, Ticket, District
+from urlhandler.models import User, Activity, Ticket, SettingForm, District
 from urlhandler.settings import STATIC_URL
 import urllib, urllib2
 import datetime
 from django.utils import timezone
+from django.forms import *
+from queryhandler.tickethandler import get_user
 
 
 def home(request):
@@ -180,23 +182,64 @@ def ticket_view(request, uid):
                                       'act_key':act_key})
     return render_to_response('activityticket.html', variables)
 
+
 def help_view(request):
     variables=RequestContext(request,{'name':u'“紫荆之声”'})
     return render_to_response('help.html', variables)
+
+
+def setting_view(request, openid):
+    if request.method == 'GET':
+        activity_list = get_bookable_activity_list()
+        district_list = get_district_list(activity_list)
+        variables = RequestContext(request, {'activity_list': activity_list, 'form': SettingForm(),
+                                             'district_list': district_list})
+        return render_to_response('setting.html', variables)
+    else:
+        form = SettingForm(request.POST)
+        if form.is_valid():
+            pass
+        else:
+            return HttpResponseRedirect(request.path)
+        user_obj = get_user(openid)
+        if user_obj is None:
+            pass
+        else:
+            user_obj.book_activity = Activity.objects.get(id=form.cleaned_data['book_activity'])
+            user_obj.book_district = form.cleaned_data['book_district']
+            user_obj.need_multi_ticket = form.cleaned_data['need_multi_ticket']
+            user_obj.save()
+        raise Http404
 
 
 def activity_menu_view(request, actid):
     activity = Activity.objects.get(id=actid)
     return render_to_response('activitymenu.html', {'activity': activity})
 
+
 def helpact_view(request):
     variables=RequestContext(request,{})
     return render_to_response('help_activity.html', variables)
+
 
 def helpclub_view(request):
     variables=RequestContext(request,{})
     return render_to_response('help_club.html', variables)
 
+
 def helplecture_view(request):
     variables=RequestContext(request,{})
     return render_to_response('help_lecture.html', variables)
+
+
+def get_bookable_activity_list():
+    now = datetime.datetime.now();
+    activity_set = Activity.objects.filter(status=1, book_end__gte=now).order_by('book_start')
+    return activity_set
+
+
+def get_district_list(activity_list):
+    district_list = [];
+    for activity in activity_list:
+        district_list.extend(District.objects.filter(activity=activity.id))
+    return district_list

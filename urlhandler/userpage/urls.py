@@ -11,4 +11,5 @@ urlpatterns = patterns('',
                        url(r'^helpclub/$','userpage.views.helpclub_view'),
                        url(r'^helplecture/$','userpage.views.helplecture_view'),
                        url(r'^activity/(?P<actid>\d+)/menu/$', 'userpage.views.activity_menu_view'),
+                       url(r'^setting/(?P<openid>\S+)/$','userpage.views.setting_view'),
                        )

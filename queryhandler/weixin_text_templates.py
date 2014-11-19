@@ -238,11 +238,9 @@ def get_text_no_activity_menu():
     return '您好，该活动未提供节目单。'
 
 
-# def get_bookable_activity_list(activity_set):
-#     if activity_set.length == 0:
-#         return '没有可供抢票的活动'
-#     else:
-#         list = []
-#         response_str = '回复“设置 活动编号”设置需要抢票的活动'
+def get_text_setting(openid):
+    return get_text_link(s_reverse_setting(openid), '点此设置')
 
 
+def get_text_unbinded_setting(openid):
+    return get_text_unbinded_template('抢票设置', openid)
