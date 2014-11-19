@@ -52,6 +52,7 @@ class Seat(models.Model):
     row = models.IntegerField() #坐标
     column = models.IntegerField() #坐标
     seat_number = models.CharField(max_length=20) #座位号
+    district = models.ForeignKey(District)
     is_sold = models.BooleanField(default=False) #标记是否卖出
 
 
