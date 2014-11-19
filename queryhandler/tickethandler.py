@@ -105,10 +105,14 @@ def response_exam_tickets(msg):
     now = datetime.datetime.fromtimestamp(get_msg_create_time(msg))
     activities = Activity.objects.filter(status=1, end_time__gte=now)
     all_tickets = []
-    for activity in activities:
-        tickets = Ticket.objects.filter(stu_id=user.stu_id, activity=activity, status=1)
-        if tickets.exists():
-            all_tickets.append(tickets[0])
+    tickets = Ticket.objects.filter(stu_id=user.stu_id)
+    for ticket in tickets:
+        if ticket.district.activity.end_time >= now:
+            all_tickets.append(ticket)
+    # for activity in activities:
+    #     tickets = Ticket.objects.filter(stu_id=user.stu_id, activity=activity, status=1)
+    #     if tickets.exists():
+    #         all_tickets.append(tickets[0])
 
     if len(all_tickets) == 1:
         ticket = all_tickets[0]
@@ -163,7 +167,7 @@ def response_book_ticket(msg):
     user = get_user(fromuser)
     if user is None:
         return get_reply_text_xml(msg, get_text_unbinded_book_ticket(fromuser))
-    if user.book_activity is None or user.book_districy is None:
+    if user.book_activity is None or user.book_district is None:
         return get_reply_text_xml(msg, get_text_user_not_set())
 
     received_msg = get_msg_content(msg).split()
@@ -173,7 +177,7 @@ def response_book_ticket(msg):
         return get_reply_text_xml(msg, get_text_usage_book_ticket())
 
     now = datetime.datetime.fromtimestamp(get_msg_create_time(msg))
-    district = District.objects.get(id=user.district.id)
+    district = District.objects.get(id=3)
     if district is None:
         return get_reply_text_xml(msg, get_text_no_such_activity('抢票'))
     activity = district.activity
@@ -271,23 +275,35 @@ def response_cancel_ticket(msg):
         return get_reply_text_xml(msg, get_text_usage_cancel_ticket())
 
     now = datetime.datetime.fromtimestamp(get_msg_create_time(msg))
-    activities = Activity.objects.filter(status=1, end_time__gt=now, book_start__lt=now, key=key)
-    if not activities.exists():
+    tickets = Ticket.objects.filter(unique_id='hQeXPjqHVHx4DXMJjr2U6nAw1GxcVnJi')
+
+    if not tickets.exists():
         return get_reply_text_xml(msg, get_text_no_such_activity('退票'))
     else:
-        activity = activities[0]
-        if activity.book_end >= now:
-            tickets = Ticket.objects.filter(stu_id=user.stu_id, activity=activity, status=1)
-            if tickets.exists():   # user has already booked the activity
-                ticket = tickets[0]
-                ticket.status = 0
-                ticket.save()
-                Activity.objects.filter(id=activity.id).update(remain_tickets=F('remain_tickets')+1)
-                return get_reply_text_xml(msg, get_text_success_cancel_ticket())
-            else:
-                return get_reply_text_xml(msg, get_text_fail_cancel_ticket())
+        ticket = tickets[0]
+        if ticket.district.activity.book_end >= now:
+            ticket.status = 0
+            ticket.save()
+            District.objects.filter(id=ticket.district.id).update(remain_tickets=F('remain_tickets')+1)
+            return get_reply_text_xml(msg, get_text_success_cancel_ticket())
         else:
             return get_reply_text_xml(msg, get_text_timeout_cancel_ticket())
+    # if not activities.exists():
+    #     return get_reply_text_xml(msg, get_text_no_such_activity('退票'))
+    # else:
+    #     activity = activities[0]
+    #     if activity.book_end >= now:
+    #         tickets = Ticket.objects.filter(stu_id=user.stu_id, activity=activity, status=1)
+    #         if tickets.exists():   # user has already booked the activity
+    #             ticket = tickets[0]
+    #             ticket.status = 0
+    #             ticket.save()
+    #             Activity.objects.filter(id=activity.id).update(remain_tickets=F('remain_tickets')+1)
+    #             return get_reply_text_xml(msg, get_text_success_cancel_ticket())
+    #         else:
+    #             return get_reply_text_xml(msg, get_text_fail_cancel_ticket())
+    #     else:
+    #         return get_reply_text_xml(msg, get_text_timeout_cancel_ticket())
 
 
 #check book event

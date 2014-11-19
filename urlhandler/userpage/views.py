@@ -128,9 +128,9 @@ def details_view(request, activityid):
     act_districts = District.objects.filter(activity=activity[0])
     act_totaltickets = 0
     act_ticket_remain = 0
-    # for (i = 0; i < act_districts.length(); i++)
-    #     act_totaltickets = act_totaltickets + act_districts[i].total_tickets
-    #     act_ticket_remain = act_ticket_remian + act_districts[i].remain_tickets
+    for dis in act_districts:
+        act_totaltickets = act_totaltickets + dis.total_tickets
+        act_ticket_remain = act_ticket_remain + dis.remain_tickets
     act_text = activity[0].description
     act_abstract = act_text
     MAX_LEN = 256
@@ -163,10 +163,10 @@ def ticket_view(request, uid):
     ticket = Ticket.objects.filter(unique_id=uid)
     if not ticket.exists():
         raise Http404  #current activity is invalid
-    activity = Activity.objects.filter(id=ticket[0].activity_id)
+    activity = Activity.objects.filter(id=ticket[0].district.activity_id)
     act_id = activity[0].id
     act_name = activity[0].name
-    act_key = activity[0].key
+    # act_key = activity[0].key
     act_begintime = activity[0].start_time
     act_endtime = activity[0].end_time
     act_place = activity[0].place
@@ -174,12 +174,12 @@ def ticket_view(request, uid):
     now = datetime.datetime.now()
     if act_endtime < now:#表示活动已经结束
         ticket_status = 3
-    ticket_seat = ticket[0].seat
+    ticket_seat = "views.py第177行"
     act_photo = "http://qr.ssast.org/fit/"+uid
     variables=RequestContext(request,{'act_id':act_id, 'act_name':act_name,'act_place':act_place, 'act_begintime':act_begintime,
                                       'act_endtime':act_endtime,'act_photo':act_photo, 'ticket_status':ticket_status,
                                       'ticket_seat':ticket_seat,
-                                      'act_key':act_key})
+                                      'act_key':2333})
     return render_to_response('activityticket.html', variables)
 
 
