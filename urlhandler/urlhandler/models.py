@@ -1,5 +1,6 @@
 #-*- coding: UTF-8 -*-
 from django.db import models
+from django import forms
 import uuid
 
 
@@ -34,7 +35,7 @@ class User(models.Model):
     status = models.IntegerField()
     seed = models.FloatField(default=1024)
     book_activity = models.ForeignKey(Activity, null=True)
-    need_multi_ticket = models.NullBooleanField()
+    need_multi_ticket = models.BooleanField(default=False)
     book_district = models.CharField(max_length=255, null=True)
 
 
@@ -65,6 +66,13 @@ class Ticket(models.Model):
     # 0: ticket order is cancelled
     # 1: ticket order is valid
     # 2: ticket is used
+
+
+class SettingForm(forms.Form):
+    book_activity = forms.CharField(label='抢票活动', widget=forms.Select())
+    need_multi_ticket = forms.BooleanField(label='连续两张票', required=False)
+    book_district = forms.CharField(label='抢票区域', widget=forms.Select())
+
 
 '''
 class UserSession(models.Model):

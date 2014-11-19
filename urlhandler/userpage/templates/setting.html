@@ -1,0 +1,64 @@
+{% extends "mobile_base.html" %}
+
+{% load staticfiles %}
+
+{% block title %}
+抢票设置 - 清华紫荆之声
+{% endblock %}
+
+{% block css %}
+{% endblock %}
+
+{% block js %}
+    <script type="text/javascript">
+            window.onload = function() {
+                element = document.getElementById('id_book_activity')
+                {% for activity in activity_list %}
+                    child = document.createElement('option')
+                    child.setAttribute('value','{{ activity.id }}')
+                    child.innerHTML = '{{ activity.name }}'
+                    element.appendChild(child)
+                {% endfor %}
+                element.onchange = function() {
+                    obj_district = document.getElementById('id_book_district')
+                    while (obj_district.firstElementChild != undefined) {
+                        obj_district.removeChild(obj_district.firstElementChild)
+                    }
+                    {% for activity in activity_list %}
+                    if (this.value == '{{ activity.id }}') {
+                        {% for district in district_list %}
+                            {% if district.activity.id == activity.id %}
+                                child = document.createElement('option')
+                                child.setAttribute('value','{{ district.name }}')
+                                child.innerHTML = '{{ district.name }}'
+                                obj_district.appendChild(child)
+                            {% endif %}
+                        {% endfor %}
+                    }
+                    {% endfor %}
+                }
+                element.onchange()
+            }
+    </script>
+{% endblock %}
+
+{% block theme %}
+    抢票设置
+{% endblock %}
+
+{% block content %}
+    <table id="setting_form">
+        <form method="post">
+            {% csrf_token %}
+            {% for filed in form %}
+                {{ filed.label }}:{{ filed }}
+                {{ filed.errors }}
+                <br>
+            {% endfor %}
+            <p>
+                <input type="submit" value="提交">
+            </p>
+        </form>
+    </table>
+
+{% endblock %}

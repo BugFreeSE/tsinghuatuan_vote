@@ -163,6 +163,8 @@ def response_book_ticket(msg):
     user = get_user(fromuser)
     if user is None:
         return get_reply_text_xml(msg, get_text_unbinded_book_ticket(fromuser))
+    if user.book_activity is None or user.book_districy is None:
+        return get_reply_text_xml(msg, get_text_user_not_set())
 
     received_msg = get_msg_content(msg).split()
     if len(received_msg) > 1:
@@ -171,13 +173,13 @@ def response_book_ticket(msg):
         return get_reply_text_xml(msg, get_text_usage_book_ticket())
 
     now = datetime.datetime.fromtimestamp(get_msg_create_time(msg))
-    district = District.objects.get(id=1)
-    # activities = Activity.objects.filter(status=1, book_end__gte=now, book_start__lte=now, key=key)
-    if not True:
-        future_activities = Activity.objects.filter(status=1, book_start__gt=now, key=key)
-        if future_activities.exists():
-            return get_reply_text_xml(msg, get_text_book_ticket_future_with_hint(future_activities[0], now))
+    district = District.objects.get(id=user.district.id)
+    if district is None:
         return get_reply_text_xml(msg, get_text_no_such_activity('抢票'))
+    activity = district.activity
+    # activities = Activity.objects.filter(status=1, book_end__gte=now, book_start__lte=now, key=key)
+    if activity.book_end <= now:
+        return get_reply_text_xml(msg, get_text_book_ticket_future_with_hint(activity, now))
     else:
         tickets = Ticket.objects.filter(stu_id=user.stu_id, district=district, status__gt=0)
         if tickets.exists():
@@ -198,8 +200,8 @@ def book_ticket(user, district, now):
         # else:
         #     district = districts[0]
 
-        # if district.remain_tickets <= 0:
-        #     return None
+        if district.remain_tickets <= 0:
+            return None
 
         random_string = ''.join([random.choice(string.ascii_letters + string.digits) for n in xrange(32)])
         while Ticket.objects.filter(unique_id=random_string).exists():
@@ -402,12 +404,15 @@ def response_xnlhwh(msg):
     return response_get_activity_menu(msg)
 
 
-# def check_setting(msg):
-#     return handler_check_event_click(msg, [WEIXIN_EVENT_KEYS['ticket_setting']]) or handler_check_text(msg, ['设置'])
-#
-#
-# def response_setting(msg):
-#     now = datetime.datetime.fromtimestamp(get_msg_create_time(msg))
-#     activities_book_not_end = Activity.objects.filter(status=1, book_end__gte=now).order_by('book_start')
-#     return get_reply_text_xml(msg, get_bookable_activity_list(activities_book_not_end))
+def check_setting(msg):
+    return handler_check_event_click(msg, [WEIXIN_EVENT_KEYS['ticket_setting']]) or handler_check_text(msg, ['设置'])
+
+
+def response_setting(msg):
+    fromuser = get_msg_from(msg)
+    user = get_user(fromuser)
+    if user is None:
+        return get_reply_text_xml(msg, get_text_unbinded_setting(fromuser))
+    return get_reply_text_xml(msg, get_text_setting(fromuser))
+
 

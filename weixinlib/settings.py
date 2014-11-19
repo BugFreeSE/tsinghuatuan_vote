@@ -88,7 +88,7 @@ WEIXIN_CUSTOM_MENU_TEMPLATE = {
                 },
                 {
                     "type": "click",
-                    "name": "test!!!",
+                    "name": "帮助",
                     "key": WEIXIN_EVENT_KEYS['help'],
                     "sub_button": []
                 }
@@ -98,10 +98,10 @@ WEIXIN_CUSTOM_MENU_TEMPLATE = {
             "name": "抢票",
             "sub_button": [
                 {
-                    "type": "view",
-                    "name": "setting",
+                    "type": "click",
+                    "name": "设置",
                     "key": WEIXIN_EVENT_KEYS['ticket_setting'],
-                    "url": queryhandler.settings.SITE_DOMAIN + "/u/setting"
+                    "sub_button": []
                 }
             ]
         }
