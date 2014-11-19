@@ -10,6 +10,7 @@ import datetime
 from django.utils import timezone
 from django.forms import *
 from queryhandler.tickethandler import get_user
+from django.db.models import F
 
 
 def home(request):
@@ -176,10 +177,10 @@ def ticket_view(request, uid):
         ticket_status = 3
     ticket_seat = "views.py第177行"
     act_photo = "http://qr.ssast.org/fit/"+uid
-    variables=RequestContext(request,{'act_id':act_id, 'act_name':act_name,'act_place':act_place, 'act_begintime':act_begintime,
-                                      'act_endtime':act_endtime,'act_photo':act_photo, 'ticket_status':ticket_status,
-                                      'ticket_seat':ticket_seat,
-                                      'act_key':2333})
+    variables=RequestContext(request, {'act_id': act_id, 'act_name': act_name,'act_place': act_place, 'act_begintime': act_begintime,
+                                       'act_endtime': act_endtime,'act_photo': act_photo, 'ticket_status': ticket_status,
+                                       'ticket_seat': ticket_seat,
+                                       'ticket_uid': uid})
     return render_to_response('activityticket.html', variables)
 
 
@@ -243,3 +244,20 @@ def get_district_list(activity_list):
     for activity in activity_list:
         district_list.extend(District.objects.filter(activity=activity.id))
     return district_list
+
+def cancel_ticket(request, ticket_uid):
+    if (not request.POST) or (not 'ticket_uid' in request.POST):
+        raise Http404
+    tickets = Ticket.objects.filter(unique_id=ticket_uid)
+
+    if not tickets.exists():
+        return render_to_response("cancelticket.html", {"reply": "ticket does not exist"})
+    else:
+        ticket = tickets[0]
+        if ticket.district.activity.book_end >= datetime.datetime.now():
+            ticket.status = 0
+            ticket.save()
+            District.objects.filter(id=ticket.district.id).update(remain_tickets=F('remain_tickets')+1)
+            return render_to_response("cancelticket.html", {"reply": "cancel succeed"})
+        else:
+            return render_to_response("cancelticket.html", {"reply": "book ticket ends"})
