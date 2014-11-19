@@ -190,11 +190,22 @@
                                 </span>
                             </div>
                     </div>
-
+                    <!--
                     <div class="form-group">
                         <label for="input-place" class="col-sm-2 control-label">活动地点</label>
                         <div class="col-sm-6">
                             <input type="text" name="place" class="form-control" id="input-place" placeholder="活动地点，如 大礼堂">
+                        </div>
+                    </div>
+                    -->
+                    <div class="form-group">
+                        <label for="input-place" class="col-sm-2 control-label">活动地点</label>
+                        <div class="col-sm-6">
+                            <select name="place" class="form-control" id="input-place" onchange="changePlace()">
+                                <option value="大礼堂">大礼堂</option>
+                                <option value="综体">综体</option>
+                                <option value="新清华学堂">新清华学堂</option>
+                            </select>
                         </div>
                     </div>
                     <div class="form-group">
@@ -230,7 +241,7 @@
 
             <div class="panel panel-default">
                 <div class="panel-heading">抢票设置</div>
-                <div class="panel-body">
+                <div class="panel-body" id="tickets_setting">
                     <div class="form-group">
                         <label for="input-book_start" class="col-sm-2 control-label">订票开始</label>
                             <div class='col-sm-3 input-group date' id='datetimepicker3'>
@@ -249,7 +260,7 @@
                             </div>
                     </div>
 
-                    <div class="form-group">
+                    <div class="form-group" id="total_tickets">
                         <label for="input-total_tickets" class="col-sm-2 control-label">总票数</label>
                         <div class="col-sm-3">
                             <input type="number" name="total_tickets" class="form-control" id="input-total_tickets" min="1" placeholder="本活动通过“紫荆之声”的发票总数">
@@ -270,7 +281,7 @@
                         </div>
                     </div>
 
-                    <div class="form-group">
+                    <div class="form-group" id="district_allocation">
                         <label class="col-sm-2 control-label">分区抢票</label>
                         <div class="col-sm-9">
                             <table class="table table-bordered" id="district-list">

@@ -176,7 +176,7 @@ def activity_create(activity, files):
         preDict[k] = str_to_datetime(activity[k])
     preDict['status'] = 1 if ('publish' in activity) else 0
     preDict['pic'] = files['pic']
-    preDict['pic_url'] = '#'
+#    preDict['pic_url'] = '#'
 #    preDict['remain_tickets'] = preDict['total_tickets']
     newact = Activity.objects.create(**preDict)
     return newact
@@ -296,16 +296,24 @@ def activity_post(request):
                                             content_type='application/json')
                                             '''
             activity = activity_create(post, files)
-            nameList = post.getlist('block_name')
-            numberList = post.getlist('block_ticket_number')
-            for i in range(0, len(nameList)):
+            if activity.place == "大礼堂":
                 preDict = dict()
-                preDict['total_tickets'] = numberList[i]
+                preDict['name'] = ""
                 preDict['activity'] = activity
-                preDict['remain_tickets'] = numberList[i]
-                preDict['name'] = nameList[i]
+                preDict['total_tickets'] = post['total_tickets']
+                preDict['remain_tickets'] = preDict['total_tickets']
                 preDict['has_seat'] = False
-                District.objects.create(**preDict)
+            else:
+                nameList = post.getlist('block_name')
+                numberList = post.getlist('block_ticket_number')
+                for i in range(0, len(nameList)):
+                    preDict = dict()
+                    preDict['total_tickets'] = numberList[i]
+                    preDict['activity'] = activity
+                    preDict['remain_tickets'] = numberList[i]
+                    preDict['name'] = nameList[i]
+                    preDict['has_seat'] = False
+                    District.objects.create(**preDict)
 
             rtnJSON['updateUrl'] = s_reverse_activity_detail(activity.id)
         rtnJSON['activity'] = wrap_activity_dict(activity)

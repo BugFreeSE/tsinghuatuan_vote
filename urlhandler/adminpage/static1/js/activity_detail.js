@@ -475,6 +475,25 @@ function deleteDistrict(link)
     }
 }
 
+var singleDistrict = $('#total_tickets');
+var multiDistricts = $('#district_allocation');
+multiDistricts.remove();
+
+function changePlace()
+{
+    var place = $('#input-place option:selected');
+    singleDistrict.remove();
+    multiDistricts.remove();
+    if (place.val() == "大礼堂")
+    {
+        singleDistrict.appendTo($('#tickets_setting'));
+    }
+    else
+    {
+        multiDistricts.appendTo($('#tickets_setting'));
+    }
+}
+
 function publishActivity() {
     if(!$('#activity-form')[0].checkValidity || $('#activity-form')[0].checkValidity()){
         if(!checktime())
