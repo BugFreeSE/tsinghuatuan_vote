@@ -21,10 +21,11 @@
         var activity = {
             'name': '{{ activity.name }}'{% if activity.id %},
             'id': {{ activity.id }},
-            'key': '{{ activity.key|escapejs }}',
+//            'key': '{{ activity.key|escapejs }}',
             'description': '{{ activity.description|escapejs }}',
-            'pic_url': '{{ activity.pic_url }}',
-            'seat_status': {{ activity.seat_status }},
+//            'pic_url': '{{ activity.pic_url }}',
+//            'seat_status': {{ activity.seat_status }},
+            'pic': '{{activity.pic }}',
             'start_time': {
                 'year': {{ activity.start_time.year }},
                 'month': {{ activity.start_time.month }},
@@ -54,12 +55,13 @@
                 'hour': {{ activity.book_end.hour }},
                 'minute': {{ activity.book_end.minute }}
             },
-            'total_tickets': {{ activity.total_tickets }},
+//            'total_tickets': {{ activity.total_tickets }},
             'status': {{ activity.status }}{% else %},
             'status': 0{% endif %}{% if activity.tickets_ready %},
-            'checked_tickets': {{ activity.checked_tickets }},
-            'ordered_tickets': {{ activity.ordered_tickets }}{% endif %}
+//            'checked_tickets': {{ activity.checked_tickets }},
+//            'ordered_tickets': {{ activity.ordered_tickets }}{% endif %}
         }
+
 
 
     </script>

@@ -45,19 +45,11 @@ var dateInterfaceMap = {
         dom.text(value);
     },
     'time': function(dom, value) {
-        if (value instanceof Object) {
-            var parts = dom.children(), i, len, part;
-            for (i = 0, len = parts.length; i < len; ++i) {
-                part = $(parts[i]).children();
-                if (part.attr('date-part')) {
-                    part.val(value[part.attr('date-part')]);
-                }
-            }
-        }
+        dom.val(value.year.toString() + '-' + value.month + '-' + value.day + ' ' + value.hour + ':' + value.minute);
     }
 }, keyMap = {
     'name': 'value',
-    'key': 'value',
+//    'key': 'value',
     'description': 'value',
     'start_time': 'time',
     'end_time': 'time',
@@ -66,7 +58,7 @@ var dateInterfaceMap = {
     'book_end': 'time',
 //    'pic_url': 'value',
     'total_tickets': 'value',
-    'seat_status': 'value'
+//    'seat_status': 'value'
 }, lockMap = {
     'value': function(dom, lock) {
         dom.prop('disabled', lock);
@@ -104,15 +96,13 @@ function updateActivity(nact) {
 }
 
 function initializeForm(activity) {
-    var key;
-    for (key in keyMap) {
-        actionMap[keyMap[key]]($('#input-' + key), activity[key]);
-    }
+
     if (!activity.id) {
         $('#input-name').val('');
         //新增活动，自动生成年份
-        var curyear = new Date().getFullYear();
-        var curmonth = new Date().getMonth() + 1;
+        //var curyear = new Date().getFullYear();
+        //var curmonth = new Date().getMonth() + 1;
+        /*
         $('#input-start-year').val(curyear);
         $('#input-end-year').val(curyear);
         $('#input-book-start-year').val(curyear);
@@ -125,7 +115,14 @@ function initializeForm(activity) {
         $('#input-end-minute').val(0);
         $('#input-book-start-minute').val(0);
         $('#input-book-end-minute').val(0);
-        $('#input-seat_status').val(0);
+        $('#input-seat_status').val(0);*/
+    }
+    else
+    {
+        var key;
+        for (key in keyMap) {
+            actionMap[keyMap[key]]($('#input-' + key), activity[key]);
+        }
     }
     if (typeof activity.checked_tickets !== 'undefined') {
         initialProgress(activity.checked_tickets, activity.ordered_tickets, activity.total_tickets);
@@ -420,6 +417,7 @@ function submitResponse(data) {
     if (!data.error) {
         updateActivity(data.activity);
         initializeForm(activity);
+        console.log(1);
         appendResult('成功');
     } else {
         appendResult('错误：' + data.error);
@@ -488,9 +486,15 @@ function changePlace()
     {
         singleDistrict.appendTo($('#tickets_setting'));
     }
-    else
+    else if (place.val() == "综体")
     {
         multiDistricts.appendTo($('#tickets_setting'));
+    }
+    else
+    {
+        var allocation = new Image();
+        allocation.src = '/webhost_media/seatAllocation/xinqing.jpg';
+        $('#tickets_setting').append($(allocation));
     }
 }
 

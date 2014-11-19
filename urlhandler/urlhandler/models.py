@@ -28,6 +28,12 @@ class Activity(models.Model):
     # 0: no seat
     # 1: seat B and seat C
 
+class District(models.Model):
+    total_tickets = models.IntegerField()
+    remain_tickets = models.IntegerField()
+    activity = models.ForeignKey(Activity)
+    name = models.CharField(max_length=255)
+    has_seat = models.BooleanField() #标记是否有座位
 
 class User(models.Model):
     weixin_id = models.CharField(max_length=255)
@@ -38,13 +44,6 @@ class User(models.Model):
     need_multi_ticket = models.BooleanField(default=False)
     book_district = models.ForeignKey(District, null=True)
 
-
-class District(models.Model):
-    total_tickets = models.IntegerField()
-    remain_tickets = models.IntegerField()
-    activity = models.ForeignKey(Activity)
-    name = models.CharField(max_length=255)
-    has_seat = models.BooleanField() #标记是否有座位
 
 
 class Seat(models.Model):
