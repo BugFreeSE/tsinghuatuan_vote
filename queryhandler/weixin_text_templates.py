@@ -166,8 +166,8 @@ def get_text_book_ticket_future_with_hint(activity, now):
 def get_text_existed_book_ticket(ticket):
     return '您已抢到该活动的票，不能重复抢票。\n' + get_text_link(s_reverse_ticket_detail(ticket.unique_id), '查看电子票')
 
-def get_text_user_not_set():
-    return 'info not complete。\n' + get_text_link(s_reverse_ticket_detail(ticket.unique_id), 'click to set')
+def get_text_user_not_set(openid):
+    return 'Setting info not complete。\n' + get_text_link(s_reverse_setting(openid), 'click to set')
 
 
 def get_text_unbinded_cancel_ticket(openid):
