@@ -215,7 +215,8 @@ def book_ticket(user, district, now):
         if tickets.exists():
             return None
         else:
-            # District.objects.filter(id=district.id).update(remain_tickets=F('remain_tickets')-1)
+            #???
+            district.update(remain_tickets=F('remain_tickets')-1)
             ticket = Ticket.objects.create(
                 stu_id=user.stu_id,
                 district=district,
@@ -430,5 +431,4 @@ def response_setting(msg):
     if user is None:
         return get_reply_text_xml(msg, get_text_unbinded_setting(fromuser))
     return get_reply_text_xml(msg, get_text_setting(fromuser))
-
 

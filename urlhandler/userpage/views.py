@@ -20,11 +20,6 @@ def home(request):
 ###################### Validate ######################
 # request.GET['openid'] must be provided.
 def validate_view(request, openid):
-    request_url = 'http://auth.igeek.asia/v1/time'
-    req = urllib2.Request(url=request_url)
-    r = urllib2.urlopen(req)
-    timestamp = r.read()
-
     if User.objects.filter(weixin_id=openid, status=1).exists():
         isValidated = 1
     else:
@@ -37,7 +32,6 @@ def validate_view(request, openid):
         'studentid': studentid,
         'isValidated': isValidated,
         'now': datetime.datetime.now() + datetime.timedelta(seconds=-5),
-        'timestamp': timestamp
     }, context_instance=RequestContext(request))
 
 
@@ -81,12 +75,11 @@ def validate_through_student(userid, userpass):
 
 def validate_post(request):
     if (not request.POST) or (not 'openid' in request.POST) or \
-            (not 'username' in request.POST) or (not 'password' in request.POST):
+            (not 'username' in request.POST):
         raise Http404
     userid = request.POST['username']
     if not userid.isdigit():
         raise Http404
-    userpass = request.POST['password'].encode('gb2312')
     secret = request.POST['secret']
     validate_result = validate_through_igeek(secret)
     if validate_result == 'Accepted':
@@ -112,6 +105,13 @@ def validate_post(request):
             # except:
             #     return HttpResponse('Error')
     return HttpResponse(validate_result)
+
+def get_timestamp(request):
+    request_url = 'http://auth.igeek.asia/v1/time'
+    req = urllib2.Request(url=request_url)
+    r = urllib2.urlopen(req)
+    timestamp = r.read()
+    return HttpResponse(timestamp)
 
 ###################### Activity Detail ######################
 

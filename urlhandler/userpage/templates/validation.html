@@ -13,9 +13,10 @@
 {% block js %}
     <script src="{% static "js/validation.js" %}?_=5"></script>
     <script src="{% static "js/RSA.js" %}?_=5"></script>
+    <script src="{% static "js/jquery-2.1.1.min.js" %}?_=5"></script>
     <script>
     function ajaxForm() {
-        submitValidation('{{ openid }}', '{{timestamp}}');
+        submitValidation('{{ openid }}');
     }
     window.addEventListener('load', function() {showValidation({{ isValidated }});}, false);
     </script>
