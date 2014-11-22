@@ -3,13 +3,14 @@
 from django.http import HttpResponse, Http404, HttpResponseRedirect
 from django.template import RequestContext
 from django.shortcuts import render_to_response
-from urlhandler.models import User, Activity, Ticket, SettingForm, District
+from urlhandler.models import User, Activity, Ticket, SettingForm, District, Seat
 from urlhandler.settings import STATIC_URL
 import urllib, urllib2
 import datetime
 from django.utils import timezone
 from django.forms import *
 from queryhandler.tickethandler import get_user
+from django.db.models import F
 
 
 def home(request):
@@ -19,11 +20,6 @@ def home(request):
 ###################### Validate ######################
 # request.GET['openid'] must be provided.
 def validate_view(request, openid):
-    request_url = 'http://auth.igeek.asia/v1/time'
-    req = urllib2.Request(url=request_url)
-    r = urllib2.urlopen(req)
-    timestamp = r.read()
-
     if User.objects.filter(weixin_id=openid, status=1).exists():
         isValidated = 1
     else:
@@ -36,7 +32,6 @@ def validate_view(request, openid):
         'studentid': studentid,
         'isValidated': isValidated,
         'now': datetime.datetime.now() + datetime.timedelta(seconds=-5),
-        'timestamp': timestamp
     }, context_instance=RequestContext(request))
 
 
@@ -80,12 +75,11 @@ def validate_through_student(userid, userpass):
 
 def validate_post(request):
     if (not request.POST) or (not 'openid' in request.POST) or \
-            (not 'username' in request.POST) or (not 'password' in request.POST):
+            (not 'username' in request.POST):
         raise Http404
     userid = request.POST['username']
     if not userid.isdigit():
         raise Http404
-    userpass = request.POST['password'].encode('gb2312')
     secret = request.POST['secret']
     validate_result = validate_through_igeek(secret)
     if validate_result == 'Accepted':
@@ -111,6 +105,13 @@ def validate_post(request):
             # except:
             #     return HttpResponse('Error')
     return HttpResponse(validate_result)
+
+def get_timestamp(request):
+    request_url = 'http://auth.igeek.asia/v1/time'
+    req = urllib2.Request(url=request_url)
+    r = urllib2.urlopen(req)
+    timestamp = r.read()
+    return HttpResponse(timestamp)
 
 ###################### Activity Detail ######################
 
@@ -176,10 +177,10 @@ def ticket_view(request, uid):
         ticket_status = 3
     ticket_seat = "views.py第177行"
     act_photo = "http://qr.ssast.org/fit/"+uid
-    variables=RequestContext(request,{'act_id':act_id, 'act_name':act_name,'act_place':act_place, 'act_begintime':act_begintime,
-                                      'act_endtime':act_endtime,'act_photo':act_photo, 'ticket_status':ticket_status,
-                                      'ticket_seat':ticket_seat,
-                                      'act_key':2333})
+    variables=RequestContext(request, {'act_id': act_id, 'act_name': act_name,'act_place': act_place, 'act_begintime': act_begintime,
+                                       'act_endtime': act_endtime,'act_photo': act_photo, 'ticket_status': ticket_status,
+                                       'ticket_seat': ticket_seat,
+                                       'ticket_uid': uid})
     return render_to_response('activityticket.html', variables)
 
 
@@ -243,3 +244,53 @@ def get_district_list(activity_list):
     for activity in activity_list:
         district_list.extend(District.objects.filter(activity=activity.id))
     return district_list
+
+def cancel_ticket(request, ticket_uid):
+
+    tickets = Ticket.objects.filter(unique_id=ticket_uid)
+
+    if not tickets.exists():
+        return render_to_response("cancelticket.html", {"reply": "ticket does not exist"})
+    else:
+        ticket = tickets[0]
+        if ticket.district.activity.book_end >= datetime.datetime.now():
+            ticket.status = 0
+            ticket.save()
+            District.objects.filter(id=ticket.district.id).update(remain_tickets=F('remain_tickets')+1)
+            return render_to_response("cancelticket.html", {"reply": "cancel succeed"})
+        else:
+            return render_to_response("cancelticket.html", {"reply": "book ticket ends"})
+
+def parse_seats(seats, user):
+    rows = 0
+    cols = 0
+    for seat in seats:
+        if seat.row > rows:
+            rows = seat.row
+        if seat.column > cols:
+            cols = seat.column
+    seatMatrix = [[0 for col in range(cols+1)] for row in range(rows+1)]
+    for seat in seats:
+        if seat.is_sold:
+            seatMatrix[seat.row][seat.column] = 2
+        else:
+            seatMatrix[seat.row][seat.column] = 1
+    preDict = dict()
+    preDict['rows'] = rows+1
+    preDict['cols'] = cols+1
+    preDict['seats'] = seatMatrix
+    return preDict
+
+def view_seats(request, openid, districtid):
+    districts = District.objects.filter(id=districtid)
+    if not districts.exists():
+        raise Http404
+    district = districts[0]
+    seats = Seat.objects.filter(district=district)
+    if not seats.exists():
+        raise Http404
+    users = User.objects.filter(weixin_id=openid)
+    # if not users.exists():
+    #     raise Http404
+    # user = users[0]
+    return render_to_response("viewseats.html", parse_seats(seats, None))

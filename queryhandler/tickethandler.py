@@ -159,7 +159,8 @@ def fetch_ticket(msg, user, activity, now):
 
 
 def check_book_ticket(msg):
-    return handler_check_text_header(msg, ['抢票'])
+    return handler_check_text_header(msg, ['抢票']) or handler_check_event_click(msg, [
+        WEIXIN_EVENT_KEYS['ticket_book']])
 
 
 def response_book_ticket(msg):
@@ -168,7 +169,12 @@ def response_book_ticket(msg):
     if user is None:
         return get_reply_text_xml(msg, get_text_unbinded_book_ticket(fromuser))
     if user.book_activity is None or user.book_district is None:
-        return get_reply_text_xml(msg, get_text_user_not_set())
+        return get_reply_text_xml(msg, get_text_user_not_set(fromuser))
+
+    #user_setting validate
+    # now = datetime.datetime.now()
+    # if user.book_activity.book_start > now or user.book_activity.book_end < now:
+
 
     received_msg = get_msg_content(msg).split()
     if len(received_msg) > 1:
@@ -215,7 +221,8 @@ def book_ticket(user, district, now):
         if tickets.exists():
             return None
         else:
-            # District.objects.filter(id=district.id).update(remain_tickets=F('remain_tickets')-1)
+            #???
+            district.update(remain_tickets=F('remain_tickets')-1)
             ticket = Ticket.objects.create(
                 stu_id=user.stu_id,
                 district=district,
@@ -430,5 +437,4 @@ def response_setting(msg):
     if user is None:
         return get_reply_text_xml(msg, get_text_unbinded_setting(fromuser))
     return get_reply_text_xml(msg, get_text_setting(fromuser))
-
 

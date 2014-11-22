@@ -106,8 +106,11 @@ function readyStateChanged() {
     }
 }
 
-function submitValidation(openid, timestamp) {
-    if (checkUsername() & checkPassword()) {
+function submitValidation(openid) {
+    var timestamp = null;
+    $.ajax({ url: "/u/validate/time/", context: document.body, success: function(data){
+        timestamp = data;
+        if (checkUsername() & checkPassword()) {
         disableAll(true);
         showLoading(true);
         var form = document.getElementById('validationForm'),
@@ -126,7 +129,7 @@ function submitValidation(openid, timestamp) {
         xmlhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
         xmlhttp.onreadystatechange = readyStateChanged;
         xmlhttp.send(params);
-    }
+      }}});
     return false;
 }
 

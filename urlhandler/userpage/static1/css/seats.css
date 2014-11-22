@@ -1,0 +1,19 @@
+.hasSold{
+    background-color: red;
+}
+
+.notSold{
+    background-color: green;
+}
+
+.notSold:hover{
+    background-color: darkgreen;
+}
+
+.selected{
+    background-color: #808080;
+}
+.seat{
+    width: 20px;
+    height: 20px;
+}
