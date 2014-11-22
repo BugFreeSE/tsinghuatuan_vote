@@ -230,6 +230,7 @@ def get_checked_tickets(activity):
 
 def wrap_activity_dict(activity):
     dt = model_to_dict(activity)
+    dt['pic'] = activity.pic.url
     if (dt['status'] >= 1) and (datetime.now() >= dt['book_start']):
         dt['tickets_ready'] = 1
         dt['ordered_tickets'] = 0 # int(activity.total_tickets) - int(activity.remain_tickets)
@@ -260,6 +261,7 @@ def activity_detail(request, actid):
         raise Http404
     return render_to_response('activity_detail.html', {
         'activity': wrap_activity_dict(activity),
+
         'unpublished': unpublished
     }, context_instance=RequestContext(request))
 
@@ -334,10 +336,8 @@ def activity_post(request):
                 preDict['remain_tickets'] = preDict['total_tickets']
                 preDict['has_seat'] = False
                 district = District.objects.create(**preDict)
+                create_seats(district)
 
-                    district = District.objects.create(**preDict)
-                if activity.place == "新清华学堂":
-                    create_seats(district)
             rtnJSON['updateUrl'] = s_reverse_activity_detail(activity.id)
         rtnJSON['activity'] = wrap_activity_dict(activity)
         '''

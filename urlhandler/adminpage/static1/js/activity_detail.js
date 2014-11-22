@@ -352,7 +352,6 @@ function wrapDateString(dom, formData, name) {
 function beforeSubmit(formData, jqForm, options) {
     var i, len, nameMap = {
         'name': '活动名称',
-        'key': '活动代码',
         'place': '活动地点',
         'description': '活动简介',
         'start_time': '活动开始时间',
@@ -361,7 +360,6 @@ function beforeSubmit(formData, jqForm, options) {
 //        'pic_url': '活动配图',
         'book_start': '订票开始时间',
         'book_end': '订票结束时间',
-        'seat_status': '座位分配设置'
     }, lackArray = [], dateArray = [
         'start_time', 'end_time', 'book_start', 'book_end'
     ];
