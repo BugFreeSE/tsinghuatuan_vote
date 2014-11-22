@@ -14,7 +14,7 @@ from django.views.decorators.csrf import csrf_protect, csrf_exempt
 from django.db.models import F
 import urllib
 import urllib2
-from urlhandler.models import Activity, Ticket, District
+from urlhandler.models import Activity, Ticket, District, Seat
 from urlhandler.models import User as Booker
 from weixinlib.custom_menu import get_custom_menu, modify_custom_menu, add_new_custom_menu, auto_clear_old_menus
 from weixinlib.settings import get_custom_menu_with_book_acts, WEIXIN_BOOK_HEADER
@@ -24,7 +24,7 @@ import xlwt
 import re
 from django.utils.http import urlquote
 from django.utils.encoding import smart_str
-
+import sys
 
 
 @csrf_protect
@@ -271,6 +271,18 @@ class DatetimeJsonEncoder(json.JSONEncoder):
         else:
             return json.JSONEncoder.default(self, obj)
 
+def create_seats(district):
+    f_obj = open(sys.path[0] + "/urlhandler/adminpage/static1/seats")
+    rows = int(f_obj.readline())
+    columns = int(f_obj.readline())
+    for i in range(0, rows):
+        for j in range(0, columns):
+            preDict = dict()
+            preDict['row'] = i
+            preDict['column'] = j
+            preDict['seat_number'] = str(i) + "," + str(j)
+            preDict['district'] = district
+            Seat.objects.create(**preDict)
 
 def activity_post(request):
     if not request.user.is_authenticated():
@@ -313,8 +325,9 @@ def activity_post(request):
                     preDict['remain_tickets'] = numberList[i]
                     preDict['name'] = nameList[i]
                     preDict['has_seat'] = False
-                    District.objects.create(**preDict)
-
+                    district = District.objects.create(**preDict)
+                if activity.place == "新清华学堂":
+                    create_seats(district)
             rtnJSON['updateUrl'] = s_reverse_activity_detail(activity.id)
         rtnJSON['activity'] = wrap_activity_dict(activity)
         if 'publish' in post:
