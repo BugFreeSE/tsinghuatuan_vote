@@ -63,7 +63,6 @@
         }
 
 
-
     </script>
     <script src="{% static "js/activity_detail.js" %}"></script>
     <script type="text/javascript">
@@ -95,6 +94,12 @@
         function getPoster(url){
             $("#poster").attr("src", url);
         }
+
+        $(function () {
+            if(activity.pic) {
+                $("#poster").attr("src", activity.pic);
+            }
+        });
     </script>
 
     <script>
@@ -229,7 +234,7 @@
                     </div>
                         <div class="col-sm-3 form-group" style="right:-15%;">
                             <div class="form-group">
-                            <img id="poster" class="img-responsive img-thumbnail" style="width:100%;" alt="" src="/webhost_media/uploadImages/39724_seat_19.jpg"/>
+                            <img id="poster" class="img-responsive img-thumbnail" style="width:100%;" alt="" src="{% static "img/default.png" %}"/>
                         </div>
                                 <div class="form-group">
                             <label style="display: block;text-align: center;">图片预览</label>
