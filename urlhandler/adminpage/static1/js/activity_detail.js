@@ -473,13 +473,17 @@ function deleteDistrict(link)
 
 var singleDistrict = $('#total_tickets');
 var multiDistricts = $('#district_allocation');
+var xinqingAllocation = $('#xinqing_allocation');
 multiDistricts.remove();
+xinqingAllocation.remove();
 
 function changePlace()
 {
     var place = $('#input-place option:selected');
     singleDistrict.remove();
     multiDistricts.remove();
+    xinqingAllocation.remove();
+//    if (allocation) allocation.remove();
     if (place.val() == "大礼堂")
     {
         singleDistrict.appendTo($('#tickets_setting'));
@@ -490,9 +494,11 @@ function changePlace()
     }
     else
     {
-        var allocation = new Image();
-        allocation.src = '/webhost_media/seatAllocation/xinqing.jpg';
-        $('#tickets_setting').append($(allocation));
+        xinqingAllocation.appendTo($('#tickets_setting'));
+        if ($('#allocation_pic').attr('src') == "#")
+        {
+            $('#allocation_pic').attr('src', '/webhost_media/seatAllocation/xinqing.jpg');
+        }
     }
 }
 
