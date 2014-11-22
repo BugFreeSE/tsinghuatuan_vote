@@ -315,7 +315,7 @@ def activity_post(request):
                 preDict['total_tickets'] = post['total_tickets']
                 preDict['remain_tickets'] = preDict['total_tickets']
                 preDict['has_seat'] = False
-            elif activity.place = "综体":
+            elif activity.place == "综体":
                 nameList = post.getlist('block_name')
                 numberList = post.getlist('block_ticket_number')
                 for i in range(0, len(nameList)):
@@ -325,7 +325,6 @@ def activity_post(request):
                     preDict['remain_tickets'] = numberList[i]
                     preDict['name'] = nameList[i]
                     preDict['has_seat'] = False
-<<<<<<< HEAD
                     District.objects.create(**preDict)
             else:
                 preDict = dict()
@@ -336,11 +335,9 @@ def activity_post(request):
                 preDict['has_seat'] = False
                 district = District.objects.create(**preDict)
 
-=======
                     district = District.objects.create(**preDict)
                 if activity.place == "新清华学堂":
                     create_seats(district)
->>>>>>> origin/master
             rtnJSON['updateUrl'] = s_reverse_activity_detail(activity.id)
         rtnJSON['activity'] = wrap_activity_dict(activity)
         '''
