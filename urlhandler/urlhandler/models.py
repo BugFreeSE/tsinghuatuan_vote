@@ -45,6 +45,7 @@ class User(models.Model):
     book_activity = models.ForeignKey(Activity, null=True)
     need_multi_ticket = models.BooleanField(default=False)
     book_district = models.ForeignKey(District, null=True)
+    abandon_seats = models.CharField(max_length=255, null=True)
 
 
 

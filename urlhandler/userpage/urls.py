@@ -14,5 +14,5 @@ urlpatterns = patterns('',
                        url(r'^activity/(?P<actid>\d+)/menu/$', 'userpage.views.activity_menu_view'),
                        url(r'^setting/(?P<openid>\S+)/$','userpage.views.setting_view'),
                        url(r'^cancelticket/(?P<ticket_uid>\S+)/$','userpage.views.cancel_ticket'),
-
+                       url(r'^viewseats/(?P<openid>\S+)/(?P<districtid>\d+)/$','userpage.views.view_seats'),
                        )

@@ -3,7 +3,7 @@
 from django.http import HttpResponse, Http404, HttpResponseRedirect
 from django.template import RequestContext
 from django.shortcuts import render_to_response
-from urlhandler.models import User, Activity, Ticket, SettingForm, District
+from urlhandler.models import User, Activity, Ticket, SettingForm, District, Seat
 from urlhandler.settings import STATIC_URL
 import urllib, urllib2
 import datetime
@@ -260,3 +260,37 @@ def cancel_ticket(request, ticket_uid):
             return render_to_response("cancelticket.html", {"reply": "cancel succeed"})
         else:
             return render_to_response("cancelticket.html", {"reply": "book ticket ends"})
+
+def parse_seats(seats, user):
+    rows = 0
+    cols = 0
+    for seat in seats:
+        if seat.row > rows:
+            rows = seat.row
+        if seat.column > cols:
+            cols = seat.column
+    seatMatrix = [[0 for col in range(cols+1)] for row in range(rows+1)]
+    for seat in seats:
+        if seat.is_sold:
+            seatMatrix[seat.row][seat.column] = 2
+        else:
+            seatMatrix[seat.row][seat.column] = 1
+    preDict = dict()
+    preDict['rows'] = rows+1
+    preDict['cols'] = cols+1
+    preDict['seats'] = seatMatrix
+    return preDict
+
+def view_seats(request, openid, districtid):
+    districts = District.objects.filter(id=districtid)
+    if not districts.exists():
+        raise Http404
+    district = districts[0]
+    seats = Seat.objects.filter(district=district)
+    if not seats.exists():
+        raise Http404
+    users = User.objects.filter(weixin_id=openid)
+    # if not users.exists():
+    #     raise Http404
+    # user = users[0]
+    return render_to_response("viewseats.html", parse_seats(seats, None))

@@ -1,0 +1,44 @@
+{% load staticfiles %}
+{% block content %}
+<table id = "showSeats">
+</table>
+{% endblock %}
+{% block css %}
+<link href="{% static "css/seats.css" %}?_=3" rel="stylesheet" type="text/css" />
+{% endblock %}
+
+{% block js %}
+    <script src="{% static "js/jquery-2.1.1.min.js" %}"></script>
+    <script>
+    var seats = {{ seats }}
+    for (var i = 0; i < {{ rows }}; i++)
+    {
+        var $temp = $("<tr>").attr('id', 'row'+i);
+        for (var j = 0; j < {{ cols }}; j++)
+        {
+            var css = null;
+            if (seats[i][j] == 0) continue; //表示这里没有座位
+            else if (seats[i][j] == 1) css = "notSold" ;
+            else if (seats[i][j] == 2) css = "hasSold";
+            $temp.append($("<td>").attr('id', i + ' ' + j).attr('class', css));
+        }
+        $("#showSeats").append($temp);
+    }
+    $("td").addClass('seat');
+    var selected = [];
+    $("td").click(function(){
+        if ($(this).hasClass('notSold')){
+            $(this).removeClass('notSold');
+            $(this).addClass('selected');
+            selected.push($(this).attr('id'))
+        }
+        else if ($(this).hasClass('selected')){
+            $(this).removeClass('selected');
+            $(this).addClass('notSold');
+            var n = selected.indexOf($(this).attr('id'));
+            selected.splice(n,1);
+        }
+    })
+    </script>
+{% endblock %}
+
