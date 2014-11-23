@@ -3,11 +3,12 @@
 }
 
 .notSold{
-    background-color: green;
+    background-color: lightseagreen;
 }
 
 .notSold:hover{
-    background-color: darkgreen;
+    /*background-color: green;*/
+    opacity:0.5;
 }
 
 .selected{

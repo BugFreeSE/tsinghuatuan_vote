@@ -7,10 +7,79 @@
 {% endblock %}
 
 {% block css %}
+        <link href="{% static "css/seats.css" %}?_=3" rel="stylesheet" type="text/css" />
 {% endblock %}
 
 {% block js %}
+    <script src="{% static "js/jquery-2.1.1.min.js" %}"></script>
+    <script src="{% static "js/activity_list.js" %}"></script>
+    <script>
+    function draw_seats(seat_matrix){
+        $("#seat_plan").children().remove();
+        var totalRow = seat_matrix.length;
+        var totalColumn = seat_matrix[0].length;
+        for (var i = 0; i < totalRow; i++)
+        {
+            var $temp = $("<tr>").attr('id', 'row'+i);
+            for (var j = 0; j < totalColumn; j++)
+            {
+                $temp.append($("<td>").attr('id', 's' + i + '_' + j).attr('class', 'notSold'));
+            }
+            $("#seat_plan").append($temp);
+        }
+        $("td").addClass('seat');
+        //var selected = [];
+        $("td").click(function(){
+            if ($(this).hasClass('notSold')){
+                $(this).removeClass('notSold');
+                $(this).addClass('selected');
+                //selected.push($(this).attr('id'))
+            }
+            else if ($(this).hasClass('selected')){
+                $(this).removeClass('selected');
+                $(this).addClass('notSold');
+                var n = selected.indexOf($(this).attr('id'));
+                //selected.splice(n,1);
+            }
+        })
+    }
+
+
+    function reverseChoices(){
+        selected = [];
+        for (var i = 0; i < totalRow; i++){
+            for (var j = 0; j < totalColumn; j++){
+                var temp = $("#"+ 's' + i + '_' + j);
+                if(temp.hasClass("selected")) {
+                    temp.removeClass("selected");
+                    temp.addClass("notSold");
+                }else if(temp.hasClass("notSold")){
+                    temp.removeClass("notSold");
+                    temp.addClass("selected");
+                    selected.push(i+" "+j);
+                }
+            }
+        }
+    }
+
+    function getSelected(){
+        var selected = [];
+        for (var i = 0; i < totalRow; i++){
+            for (var j = 0; j < totalColumn; j++){
+                var temp = $("#"+ 's' + i + '_' + j);
+                if(temp.hasClass("selected")) {
+                    selected.push(i+" "+j);
+                }
+            }
+        }
+        return selected;
+    }
+
+    </script>
     <script type="text/javascript">
+        /*function getSeats(district_id){
+            console.log(district_id);
+        }*/
             window.onload = function() {
                 element = document.getElementById('id_book_activity')
                 {% for activity in activity_list %}
@@ -25,19 +94,88 @@
                         obj_district.removeChild(obj_district.firstElementChild)
                     }
                     {% for activity in activity_list %}
+
                     if (this.value == '{{ activity.id }}') {
+                        if('{{activity.place}}' == "新清华学堂"){
+                            console.log("id:"+"{{activity.id}}");
+                            var column = 0;
+                            var row = 0;
+                            var n = 1;
+                            {% for seat in seat_list%}
+                                n++;
+                                if('{{seat.district.activity.id}}' == '{{activity.id}}') {
+                                    if({{seat.row}} > row)  row = {{seat.row}};
+                                    if({{seat.column}} > column)  column = {{seat.column}};
+                                    //seats[{{seat.row}}][{{seat.column}}] = {{seat.is_sold}};
+                                }
+                            {% endfor %}
+                            console.log(n+"seats in database.");
+                            if(row != 0) {
+                                row++;
+                                column++;
+                                //console.log(row+"排"+column+"列");
+                                var seat_matrix = new Array(row);
+                                for(var i = 0; i < row; i++){
+                                    seat_matrix[i] = new Array(column);
+                                }
+                                //console.log(seat_matrix);
+                                {% for seat in seat_list%}
+                                if('{{seat.district.activity.id}}' == '{{activity.id}}') {
+                                    if('{{seat.is_sold}}'== 'False')
+                                        seat_matrix[{{seat.row}}][{{seat.column}}] = 1;
+                                    else
+                                        seat_matrix[{{seat.row}}][{{seat.column}}] = 2;
+                                }
+                                {% endfor %}
+                                draw_seats(seat_matrix);
+                            }
+
+                            //console.log(seat_matrix);
+
+                        }
+
                         {% for district in district_list %}
                             {% if district.activity.id == activity.id %}
                                 child = document.createElement('option')
                                 child.setAttribute('value','{{ district.id }}')
                                 child.innerHTML = '{{ district.name }}'
                                 obj_district.appendChild(child)
+
                             {% endif %}
                         {% endfor %}
+
+                        document.getElementById("activity_place").innerHTML = '{{activity.place}}';
+                        document.getElementById("activity_time").innerHTML = getSmartTimeRange(
+                                new Date('{{ activity.start_time|date:"r" }}'),
+                                new Date('{{ activity.end_time|date:"r" }}'));
+                        ele = document.getElementById("抢票区域");
+                        if('{{activity.place}}' == "综体"){
+                            ele.setAttribute("style","display: block");
+                        }else{
+                            ele.setAttribute("style","display: none");
+                        }
+                        ele = document.getElementById("seat_plan");
+                        ele2 = document.getElementById("选择座位");
+                        if('{{activity.place}}' == "新清华学堂"){
+                            ele.setAttribute("style","display: block;margin: auto;");
+                            ele2.setAttribute("style","display: block;");
+
+                        }
+                        else{
+                            ele.setAttribute("style","display: none");
+                            ele2.setAttribute("style","display: none");
+                        }
+
                     }
                     {% endfor %}
                 }
                 element.onchange()
+                ele = document.getElementById("抢票区域");
+                ele.setAttribute("style","display: none");
+                ele = document.getElementById("选择座位");
+                ele.setAttribute("style","display: none");
+                ele = document.getElementById("seat_plan");
+                ele.setAttribute("style","display: none");
             }
     </script>
 {% endblock %}
@@ -47,18 +185,33 @@
 {% endblock %}
 
 {% block content %}
+  <div style="text-align: center">
     <table id="setting_form">
         <form method="post">
             {% csrf_token %}
             {% for filed in form %}
-                {{ filed.label }}:{{ filed }}
+            <div id="{{filed.label}}">
+                {{ filed.label }} : {{ filed }}
                 {{ filed.errors }}
                 <br>
+            </div>
             {% endfor %}
+
+            <div id="选择座位">选择座位范围：
+                <button type="button" onclick="reverseChoices()">反选</button>
+                图例：<span class="seat selected">未选定</span>  <span class="seat notSold">选定</span>
+                <div>舞台</div>
+            </div>
+                <table id="seat_plan">
+                </table>
+            【活动信息简介】
+            <div>活动地点：<span id="activity_place"></span></div>
+            <div>活动时间：<span id="activity_time"></span></div>
             <p>
                 <input type="submit" value="提交">
             </p>
         </form>
     </table>
+  </div>
 
 {% endblock %}
