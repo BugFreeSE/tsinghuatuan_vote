@@ -183,9 +183,10 @@ def response_book_ticket(msg):
         return get_reply_text_xml(msg, get_text_usage_book_ticket())
 
     now = datetime.datetime.fromtimestamp(get_msg_create_time(msg))
-    district = District.objects.get(id=3)
-    if district is None:
+    districts = District.objects.filter(id=user.book_district.id)
+    if not districts.exists():
         return get_reply_text_xml(msg, get_text_no_such_activity('抢票'))
+    district = districts[0]
     activity = district.activity
     # activities = Activity.objects.filter(status=1, book_end__gte=now, book_start__lte=now, key=key)
     if activity.book_end <= now:
@@ -194,7 +195,11 @@ def response_book_ticket(msg):
         tickets = Ticket.objects.filter(stu_id=user.stu_id, district=district, status__gt=0)
         if tickets.exists():
             return get_reply_text_xml(msg, get_text_existed_book_ticket(tickets[0]))
-        ticket = book_ticket(user, district, now)
+        #change to has_seat!!!
+        if district.activity.place == "新清华学堂":
+            ticket = book_ticket_with_seats(user, district, now)
+        else:
+            ticket = book_ticket(user, district, now)
         if ticket is None:
             return get_reply_text_xml(msg, get_text_fail_book_ticket(activities[0], now))
         else:
@@ -438,3 +443,36 @@ def response_setting(msg):
         return get_reply_text_xml(msg, get_text_unbinded_setting(fromuser))
     return get_reply_text_xml(msg, get_text_setting(fromuser))
 
+def arrange_seats(seats, user):
+    return [seats[0]]
+
+def book_ticket_with_seats(user, district, now):
+    with transaction.atomic():
+        if district.remain_tickets <= 0:
+            return None
+
+        seats = Seat.objects.select_for_update().filter(district=district, is_sold=False)
+        if (not seats.exists()):
+            return None
+        tickets = Ticket.objects.select_for_update().filter(stu_id=user.stu_id, district=district)
+        if tickets.exists():
+            return None
+
+        arranged_seats = arrange_seats(seats, user)
+        tickets = []
+        for seat in arranged_seats:
+            random_string = ''.join([random.choice(string.ascii_letters + string.digits) for n in xrange(32)])
+            while Ticket.objects.filter(unique_id=random_string).exists():
+                random_string = ''.join([random.choice(string.ascii_letters + string.digits) for n in xrange(32)])
+
+            District.objects.filter(id=district.id).update(remain_tickets=F('remain_tickets')-1)
+            ticket = Ticket.objects.create(
+                stu_id=user.stu_id,
+                district=district,
+                unique_id=random_string,
+                status=1,
+                seat=seat
+            )
+            Seat.objects.filter(id=seat.id).update(is_sold=True)
+            tickets.append(ticket)
+        return tickets[0]
