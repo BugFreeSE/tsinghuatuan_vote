@@ -128,7 +128,10 @@
                                 }
                                 {% endfor %}
                                 draw_seats(seat_matrix);
+                            }else{//row==0
+                                $("#seat_plan").children().remove();
                             }
+
 
                             //console.log(seat_matrix);
 
