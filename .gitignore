@@ -1,3 +1,4 @@
 *.pyc
 *.orig
 .idea
+queryhandler/settings.py
