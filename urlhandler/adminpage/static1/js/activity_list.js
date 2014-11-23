@@ -118,7 +118,7 @@ var tdMap = {
         }
     },
     'export': function(act) {
-        return true;
+        return false;
     },
     'detail': function(act) {
         return true;

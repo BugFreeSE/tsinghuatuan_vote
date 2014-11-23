@@ -21,10 +21,11 @@
         var activity = {
             'name': '{{ activity.name }}'{% if activity.id %},
             'id': {{ activity.id }},
-            'key': '{{ activity.key|escapejs }}',
+//            'key': '{{ activity.key|escapejs }}',
             'description': '{{ activity.description|escapejs }}',
-            'pic_url': '{{ activity.pic_url }}',
-            'seat_status': {{ activity.seat_status }},
+//            'pic_url': '{{ activity.pic_url }}',
+//            'seat_status': {{ activity.seat_status }},
+            'pic': '{{activity.pic }}',
             'start_time': {
                 'year': {{ activity.start_time.year }},
                 'month': {{ activity.start_time.month }},
@@ -54,11 +55,11 @@
                 'hour': {{ activity.book_end.hour }},
                 'minute': {{ activity.book_end.minute }}
             },
-            'total_tickets': {{ activity.total_tickets }},
+//            'total_tickets': {{ activity.total_tickets }},
             'status': {{ activity.status }}{% else %},
             'status': 0{% endif %}{% if activity.tickets_ready %},
-            'checked_tickets': {{ activity.checked_tickets }},
-            'ordered_tickets': {{ activity.ordered_tickets }}{% endif %}
+//            'checked_tickets': {{ activity.checked_tickets }},
+//            'ordered_tickets': {{ activity.ordered_tickets }}{% endif %}
         }
 
 
@@ -93,6 +94,12 @@
         function getPoster(url){
             $("#poster").attr("src", url);
         }
+
+        $(function () {
+            if(activity.pic) {
+                $("#poster").attr("src", activity.pic);
+            }
+        });
     </script>
 
     <script>
@@ -227,7 +234,7 @@
                     </div>
                         <div class="col-sm-3 form-group" style="right:-15%;">
                             <div class="form-group">
-                            <img id="poster" class="img-responsive img-thumbnail" style="width:100%;" alt="xxx" />
+                            <img id="poster" class="img-responsive img-thumbnail" style="width:100%;" alt="" src="{% static "img/default.png" %}"/>
                         </div>
                                 <div class="form-group">
                             <label style="display: block;text-align: center;">图片预览</label>
@@ -303,6 +310,13 @@
                                 </tbody>
                             </table>
                             <a href="javascript:addDistrict()">添加分区</a>
+                        </div>
+                    </div>
+
+                    <div class="form-group" id="xinqing_allocation">
+                        <label class="col-sm-2 control-label">座位分布</label>
+                        <div class="col-sm-9">
+                            <img src="#" id="allocation_pic" width="75%"/>
                         </div>
                     </div>
 

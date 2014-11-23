@@ -230,6 +230,7 @@ def get_checked_tickets(activity):
 
 def wrap_activity_dict(activity):
     dt = model_to_dict(activity)
+    dt['pic'] = activity.pic.url
     if (dt['status'] >= 1) and (datetime.now() >= dt['book_start']):
         dt['tickets_ready'] = 1
         dt['ordered_tickets'] = 0 # int(activity.total_tickets) - int(activity.remain_tickets)
@@ -260,6 +261,7 @@ def activity_detail(request, actid):
         raise Http404
     return render_to_response('activity_detail.html', {
         'activity': wrap_activity_dict(activity),
+
         'unpublished': unpublished
     }, context_instance=RequestContext(request))
 
@@ -315,7 +317,7 @@ def activity_post(request):
                 preDict['total_tickets'] = post['total_tickets']
                 preDict['remain_tickets'] = preDict['total_tickets']
                 preDict['has_seat'] = False
-            else:
+            elif activity.place == "综体":
                 nameList = post.getlist('block_name')
                 numberList = post.getlist('block_ticket_number')
                 for i in range(0, len(nameList)):
@@ -325,15 +327,25 @@ def activity_post(request):
                     preDict['remain_tickets'] = numberList[i]
                     preDict['name'] = nameList[i]
                     preDict['has_seat'] = False
-                    district = District.objects.create(**preDict)
-                if activity.place == "新清华学堂":
-                    create_seats(district)
+                    District.objects.create(**preDict)
+            else:
+                preDict = dict()
+                preDict['name'] = ""
+                preDict['activity'] = activity
+                preDict['total_tickets'] = post['total_tickets']
+                preDict['remain_tickets'] = preDict['total_tickets']
+                preDict['has_seat'] = False
+                district = District.objects.create(**preDict)
+                create_seats(district)
+
             rtnJSON['updateUrl'] = s_reverse_activity_detail(activity.id)
         rtnJSON['activity'] = wrap_activity_dict(activity)
+        '''
         if 'publish' in post:
             updateErr = json.loads(add_new_custom_menu(name=activity.key, key=WEIXIN_BOOK_HEADER + str(activity.id))).get('errcode', 'err')
             if updateErr != 0:
                 rtnJSON['error'] = u'活动创建成功，但更新微信菜单失败，请手动更新:(  \r\n错误代码：%s' % updateErr
+        '''
     except Exception as e:
         rtnJSON['error'] = str(e)
     return HttpResponse(json.dumps(rtnJSON, cls=DatetimeJsonEncoder), content_type='application/json')
