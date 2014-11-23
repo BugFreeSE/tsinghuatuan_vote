@@ -16,8 +16,8 @@
     <script>
     function draw_seats(seat_matrix){
         $("#seat_plan").children().remove();
-        var totalRow = seat_matrix.length;
-        var totalColumn = seat_matrix[0].length;
+        totalRow = seat_matrix.length;
+        totalColumn = seat_matrix[0].length;
         for (var i = 0; i < totalRow; i++)
         {
             var $temp = $("<tr>").attr('id', 'row'+i);
@@ -157,7 +157,7 @@
                         ele = document.getElementById("seat_plan");
                         ele2 = document.getElementById("选择座位");
                         if('{{activity.place}}' == "新清华学堂"){
-                            ele.setAttribute("style","display: block;margin: auto;");
+                            ele.setAttribute("style","display: table;margin: auto;");
                             ele2.setAttribute("style","display: block;");
 
                         }
@@ -202,7 +202,7 @@
                 图例：<span class="seat selected">未选定</span>  <span class="seat notSold">选定</span>
                 <div>舞台</div>
             </div>
-                <table id="seat_plan">
+                <table id="seat_plan" style="margin:auto;">
                 </table>
             【活动信息简介】
             <div>活动地点：<span id="activity_place"></span></div>
