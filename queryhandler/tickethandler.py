@@ -444,7 +444,25 @@ def response_setting(msg):
     return get_reply_text_xml(msg, get_text_setting(fromuser))
 
 def arrange_seats(seats, user):
-    return [seats[0]]
+    abandon_seats = set(user.abandon_seats.split(';'))
+    if user.need_multi_ticket:
+        for seat1 in seats:
+            if seat1 in abandon_seats:
+                continue
+            for seat2 in seats:
+                if seat1.row != seat2.row:
+                    continue
+                if abs(seat1.column - seat2.column) != 1:
+                    continue
+                if seat2 in abandon_seats:
+                    continue
+                chosen_seats = [seat1, seat2]
+    else:
+        for seat in seats:
+            if seat not in abandon_seats:
+                chosen_seats = [seat]
+                break
+    return chosen_seats
 
 def book_ticket_with_seats(user, district, now):
     with transaction.atomic():
@@ -458,9 +476,11 @@ def book_ticket_with_seats(user, district, now):
         if tickets.exists():
             return None
 
-        arranged_seats = arrange_seats(seats, user)
+        myseats = arrange_seats(seats, user)
+        if myseats == None or myseats == []:
+            return  None
         tickets = []
-        for seat in arranged_seats:
+        for seat in myseats:
             random_string = ''.join([random.choice(string.ascii_letters + string.digits) for n in xrange(32)])
             while Ticket.objects.filter(unique_id=random_string).exists():
                 random_string = ''.join([random.choice(string.ascii_letters + string.digits) for n in xrange(32)])
