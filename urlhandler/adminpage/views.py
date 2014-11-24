@@ -19,7 +19,6 @@ from urlhandler.models import User as Booker
 from weixinlib.custom_menu import get_custom_menu, modify_custom_menu, add_new_custom_menu, auto_clear_old_menus
 from weixinlib.settings import get_custom_menu_with_book_acts, WEIXIN_BOOK_HEADER
 from adminpage.safe_reverse import *
-import urlhandler.models
 import xlwt
 import re
 from django.utils.http import urlquote
@@ -237,18 +236,9 @@ def wrap_activity_dict(activity):
         dt['checked_tickets'] = 0 # get_checked_tickets(activity)
     return dt
 
-def getstr(i):
-    temp = str(i)
-    while len(temp) < 4:
-        temp = '0' + temp
-    return temp
 def activity_add(request):
     if not request.user.is_authenticated():
         return HttpResponseRedirect(s_reverse_admin_home())
-
-    for i in range(1, 2000):
-        newuser = urlhandler.models.User.objects.create(weixin_id='test'+getstr(i), stu_id=i, status=1)
-        newuser.save()
 
     return render_to_response('activity_detail.html', {
         'activity': {
