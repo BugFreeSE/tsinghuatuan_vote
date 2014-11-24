@@ -154,7 +154,7 @@ def get_text_success_book_ticket():
 
 def get_text_book_ticket_future(activity, now):
     bkstart = activity.book_start
-    return '您好，该活动还没开始抢票哟~' + get_text_link(s_reverse_activity_detail(activity.id), '详情') \
+    return '您好，您设置的活动还没开始抢票哟~' + get_text_link(s_reverse_activity_detail(activity.id), '详情') \
            + '\n抢票开始时间：' + get_text_time_standard(bkstart) \
            + '\n（还剩' + time_chs_format(bkstart - now) + '）'
 
@@ -162,6 +162,12 @@ def get_text_book_ticket_future(activity, now):
 def get_text_book_ticket_future_with_hint(activity, now):
     return get_text_book_ticket_future(activity, now) + '\n提示：通过微信菜单抢票更方便噢！'
 
+def get_text_book_ticket_past(activity, now):
+    return '您好，您设置的活动抢票已经结束了哟~' + get_text_link(s_reverse_activity_detail(activity.id), '详情') \
+           + '\n抢票结束时间：' + get_text_time_standard(activity.book_end)
+
+def get_text_book_ticket_past_with_hint(activity, now):
+    return get_text_book_ticket_past(activity, now) + '\n提示：通过微信菜单抢票更方便噢！'
 
 def get_text_existed_book_ticket(ticket):
     return '您已抢到该活动的票，不能重复抢票。\n' + get_text_link(s_reverse_ticket_detail(ticket.unique_id), '查看电子票')

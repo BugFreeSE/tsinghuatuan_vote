@@ -332,9 +332,9 @@ def activity_post(request):
                 preDict = dict()
                 preDict['name'] = ""
                 preDict['activity'] = activity
-                preDict['total_tickets'] = post['total_tickets']
+                preDict['total_tickets'] = 25
                 preDict['remain_tickets'] = preDict['total_tickets']
-                preDict['has_seat'] = False
+                preDict['has_seat'] = True
                 district = District.objects.create(**preDict)
                 create_seats(district)
 
