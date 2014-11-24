@@ -219,7 +219,7 @@ def book_ticket(user, district, now):
         tickets = Ticket.objects.select_for_update().filter(stu_id=user.stu_id, district=district, status=1)
         if tickets.exists():
             return None
-        district.update(remain_tickets=F('remain_tickets')-1)
+        District.objects.filter(id=district.id).update(remain_tickets=F('remain_tickets')-1)
         ticket = Ticket.objects.create(
             stu_id=user.stu_id,
             district=district,
@@ -299,7 +299,7 @@ def response_cancel_ticket(msg):
 
 #check book event
 def check_book_event(msg):
-    handler_check_text_header(msg, ['抢票'])
+    return handler_check_text_header(msg, ['抢票'])
 
 #for test!!!
 def response_book_event(msg):
@@ -310,25 +310,26 @@ def response_book_event(msg):
 
     now = datetime.datetime.fromtimestamp(get_msg_create_time(msg))
 
-    activities = Activity.objects.filter(id=activity_id, status=1, end_time__gt=now)
+    activities = Activity.objects.filter(id=53, status=1)
     if activities.exists():
         activity = activities[0]
     else:
         return get_reply_text_xml(msg, get_text_no_such_activity())
 
-    if activity.book_start > now:
-        return get_reply_text_xml(msg, get_text_book_ticket_future(activity, now))
-
-    tickets = Ticket.objects.filter(stu_id=user.stu_id, activity=activity, status__gt=0)
+    # if activity.book_start > now:
+    #     return get_reply_text_xml(msg, get_text_book_ticket_future(activity, now))
+    districts = District.objects.select_for_update().filter(activity=activity)
+    district = districts[0]
+    tickets = Ticket.objects.filter(stu_id=user.stu_id, district=district, status__gt=0)
     if tickets.exists():
         return get_reply_single_ticket(msg, tickets[0], now, get_text_existed_book_event())
-    if activity.book_end < now:
-        return get_reply_text_xml(msg, get_text_timeout_book_event())
-    ticket = book_ticket(user, activity.key, now)
+
+
+    ticket = book_ticket(user, district, now)
     if ticket is None:
         return get_reply_text_xml(msg, get_text_fail_book_ticket(activities[0], now))
     else:
-        return get_reply_single_ticket(msg, ticket, now, get_text_success_book_ticket())
+        return get_reply_single_ticket(msg, ticket[0], now, get_text_success_book_ticket())
 
 
 #check unsubscribe event
