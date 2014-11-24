@@ -139,7 +139,7 @@ def details_view(request, activityid):
     if len(act_text) > MAX_LEN:
         act_text_status = 1
         act_abstract = act_text[0:MAX_LEN]+u'...'
-    act_photo = activity[0].pic_url
+    act_photo = activity[0].pic
     cur_time = timezone.now() # use the setting UTC
     act_seconds = 0
     if act_bookstart <= cur_time <= act_bookend:

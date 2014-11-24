@@ -169,8 +169,7 @@ def fetch_ticket(msg, user, activity, now):
 
 
 def check_book_ticket(msg):
-    return handler_check_text_header(msg, ['抢票']) or handler_check_event_click(msg, [
-        WEIXIN_EVENT_KEYS['ticket_book']])
+    return handler_check_event_click(msg, [WEIXIN_EVENT_KEYS['ticket_book']])
 
 
 def response_book_ticket(msg):
@@ -216,20 +215,19 @@ def book_ticket(user, district, now):
         while Ticket.objects.filter(unique_id=random_string).exists():
             random_string = ''.join([random.choice(string.ascii_letters + string.digits) for n in xrange(32)])
 
-        tickets = Ticket.objects.select_for_update().filter(stu_id=user.stu_id, district=district)
+        #? better return?
+        tickets = Ticket.objects.select_for_update().filter(stu_id=user.stu_id, district=district, status=1)
         if tickets.exists():
             return None
-        else:
-            #???
-            district.update(remain_tickets=F('remain_tickets')-1)
-            ticket = Ticket.objects.create(
-                stu_id=user.stu_id,
-                district=district,
-                unique_id=random_string,
-                status=1,
-                seat=None
-            )
-            return [ticket]
+        district.update(remain_tickets=F('remain_tickets')-1)
+        ticket = Ticket.objects.create(
+            stu_id=user.stu_id,
+            district=district,
+            unique_id=random_string,
+            status=1,
+            seat=None
+        )
+        return [ticket]
         # if not tickets.exists():
         #     Activity.objects.filter(id=activity.id).update(remain_tickets=F('remain_tickets')-1)
         #     ticket = Ticket.objects.create(
@@ -301,14 +299,9 @@ def response_cancel_ticket(msg):
 
 #check book event
 def check_book_event(msg):
-    if msg['MsgType'] == 'event' and msg['Event']=='CLICK':
-        cmd_list = msg['EventKey'].split('_')
-        if len(cmd_list) == 3:
-            if cmd_list[0] == 'TSINGHUA' and cmd_list[1] == 'BOOK' and cmd_list[2].isdigit():
-                return True
-    return False
+    handler_check_text_header(msg, ['抢票'])
 
-
+#for test!!!
 def response_book_event(msg):
     fromuser = get_msg_from(msg)
     user = get_user(fromuser)
@@ -317,8 +310,6 @@ def response_book_event(msg):
 
     now = datetime.datetime.fromtimestamp(get_msg_create_time(msg))
 
-    cmd_list = get_msg_event_key(msg).split('_')
-    activity_id = int(cmd_list[2])
     activities = Activity.objects.filter(id=activity_id, status=1, end_time__gt=now)
     if activities.exists():
         activity = activities[0]
@@ -424,23 +415,45 @@ def response_setting(msg):
         return get_reply_text_xml(msg, get_text_unbinded_setting(fromuser))
     return get_reply_text_xml(msg, get_text_setting(fromuser))
 
+max_cols = 0
+def seat_cmp(a, b):
+    global max_cols
+    if a.row != b.row:
+        return cmp(a.row, b.row)
+    cola = int(abs(a.column - max_cols / 2))
+    colb = int(abs(b.column - max_cols / 2))
+    return cmp(cola, colb)
+
+def get_seat_str(seat):
+    return str(seat.row) + ',' + str(seat.column)
+
 def arrange_seats(seats, user):
+    seat_list = []
+    global max_cols
+    max_cols = 0
+    for seat in seats:
+        seat_list.append(seat)
+        if seat.column > max_cols:
+            max_cols = seat.column
+
+    seat_list.sort(cmp=seat_cmp)
+
     abandon_seats = set(user.abandon_seats.split(';'))
     if user.need_multi_ticket:
-        for seat1 in seats:
-            if seat1 in abandon_seats:
+        for seat1 in seat_list:
+            if get_seat_str(seat1) in abandon_seats:
                 continue
-            for seat2 in seats:
+            for seat2 in seat_list:
                 if seat1.row != seat2.row:
                     continue
                 if abs(seat1.column - seat2.column) != 1:
                     continue
-                if seat2 in abandon_seats:
+                if get_seat_str(seat2) in abandon_seats:
                     continue
                 chosen_seats = [seat1, seat2]
     else:
-        for seat in seats:
-            if seat not in abandon_seats:
+        for seat in seat_list:
+            if get_seat_str(seat) not in abandon_seats:
                 chosen_seats = [seat]
                 break
     return chosen_seats
@@ -453,6 +466,8 @@ def book_ticket_with_seats(user, district, now):
         seats = Seat.objects.select_for_update().filter(district=district, is_sold=False)
         if (not seats.exists()):
             return None
+
+        #better return???
         tickets = Ticket.objects.select_for_update().filter(stu_id=user.stu_id, district=district)
         if tickets.exists():
             return None
