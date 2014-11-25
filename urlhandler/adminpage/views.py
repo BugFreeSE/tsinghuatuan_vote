@@ -19,6 +19,7 @@ from urlhandler.models import User as Booker
 from weixinlib.custom_menu import get_custom_menu, modify_custom_menu, add_new_custom_menu, auto_clear_old_menus
 from weixinlib.settings import get_custom_menu_with_book_acts, WEIXIN_BOOK_HEADER
 from adminpage.safe_reverse import *
+
 import xlwt
 import re
 from django.utils.http import urlquote
@@ -236,6 +237,12 @@ def wrap_activity_dict(activity):
         dt['checked_tickets'] = 0 # get_checked_tickets(activity)
     return dt
 
+
+def wrap_district_dict(district):
+    dt = model_to_dict(district)
+    return dt
+
+
 def activity_add(request):
     if not request.user.is_authenticated():
         return HttpResponseRedirect(s_reverse_admin_home())
@@ -253,13 +260,16 @@ def activity_detail(request, actid):
 
     try:
         activity = Activity.objects.get(id=actid)
-
+        districtmodels = District.objects.filter(activity=activity)
+        districts = []
+        for district in districtmodels:
+            districts += [wrap_district_dict(district)]
         unpublished = (activity.status == 0)
     except:
         raise Http404
     return render_to_response('activity_detail.html', {
         'activity': wrap_activity_dict(activity),
-
+        'districts': districts,
         'unpublished': unpublished
     }, context_instance=RequestContext(request))
 
@@ -330,9 +340,9 @@ def activity_post(request):
                 preDict = dict()
                 preDict['name'] = ""
                 preDict['activity'] = activity
-                preDict['total_tickets'] = 25
+                preDict['total_tickets'] = 100 #待修改
                 preDict['remain_tickets'] = preDict['total_tickets']
-                preDict['has_seat'] = True
+                preDict['has_seat'] = False
                 district = District.objects.create(**preDict)
                 create_seats(district)
 

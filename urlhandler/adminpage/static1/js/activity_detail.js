@@ -31,6 +31,12 @@ function disableDatetimePicker(dom) {
     dom.children('.input-group-addon').css('cursor', 'no-drop').children().css('cursor', 'no-drop');
 }
 */
+
+
+var singleDistrict = $('#total_tickets');
+var multiDistricts = $('#district_allocation');
+var xinqingAllocation = $('#xinqing_allocation');
+
 var dateInterfaceMap = {
     'year': 'getFullYear',
     'month': 'getMonth',
@@ -45,7 +51,14 @@ var dateInterfaceMap = {
         dom.text(value);
     },
     'time': function(dom, value) {
-        dom.val(value.year.toString() + '-' + value.month + '-' + value.day + ' ' + value.hour + ':' + value.minute);
+        var str = '';
+        var year = value.year.toString();
+        var month = (value.month < 10 ? '0' : '') + value.month;
+        var day = (value.day < 10 ? '0' : '') + value.day;
+        var hour = (value.hour < 10 ? '0' : '') + value.hour;
+        var minute = (value.minute < 10 ? '0' : '') + value.minute;
+        str = year + '-' + month + '-' + day + ' ' + hour + ':' + minute;
+        dom.val(str);
     }
 }, keyMap = {
     'name': 'value',
@@ -99,6 +112,7 @@ function initializeForm(activity) {
 
     if (!activity.id) {
         $('#input-name').val('');
+        $('#remain_tickets').remove();
         //新增活动，自动生成年份
         //var curyear = new Date().getFullYear();
         //var curmonth = new Date().getMonth() + 1;
@@ -122,6 +136,33 @@ function initializeForm(activity) {
         var key;
         for (key in keyMap) {
             actionMap[keyMap[key]]($('#input-' + key), activity[key]);
+        }
+
+        if (activity.place == '大礼堂')
+        {
+            multiDistricts.remove();
+            xinqingAllocation.remove();
+            $('#input-total_tickets').val(activity.districts[0].total_tickets);
+            $('#input-remain_tickets').val(activity.districts[0].remain_tickets);
+        }
+        else
+        {
+            singleDistrict.remove();
+            multiDistricts.appendTo('#tickets_setting');
+            $('#remain_tickets').remove();
+            var list = $('#district-list');
+            var list_body = list.children('tbody');
+            list.children('thead').children().children()[3].innerHTML = '票余量';
+            list.children('tbody').children().remove();
+            for (var i = 0; i < activity.districts.length; i++)
+            {
+                list_body.append($('<tr />').append($('<th />').text(i + 1))
+                                            .append($('<th />').text(activity.districts[i].name))
+                                            .append($('<th />').text(activity.districts[i].total_tickets))
+                                            .append($('<th />').text(activity.districts[i].remain_tickets))
+                                )
+            }
+            list.parent().children('a').remove();
         }
     }
     if (typeof activity.checked_tickets !== 'undefined') {
@@ -471,9 +512,6 @@ function deleteDistrict(link)
     }
 }
 
-var singleDistrict = $('#total_tickets');
-var multiDistricts = $('#district_allocation');
-var xinqingAllocation = $('#xinqing_allocation');
 multiDistricts.remove();
 xinqingAllocation.remove();
 

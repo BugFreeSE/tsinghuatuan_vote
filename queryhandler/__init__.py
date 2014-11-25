@@ -58,6 +58,8 @@ def handle_weixin_request(environ):
 # convert string 'a=1&b=2&c=3' to dict {'a':1,'b':2,'c':3}
 def urldecode(query):
     d = {}
+    if query == '':
+        return d
     a = query.split('&')
     for s in a:
         if s.find('='):

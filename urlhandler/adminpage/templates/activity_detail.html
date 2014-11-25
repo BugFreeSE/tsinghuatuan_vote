@@ -55,6 +55,15 @@
                 'hour': {{ activity.book_end.hour }},
                 'minute': {{ activity.book_end.minute }}
             },
+            'districts': [
+            {% for district in districts %}
+            {
+                'total_tickets': {{ district.total_tickets }},
+                'remain_tickets': {{ district.remain_tickets }},
+                'name': '{{ district.name }}'
+            }{% if forloop.last %}{% else %},{% endif %}
+            {% endfor %}
+            ],
 //            'total_tickets': {{ activity.total_tickets }},
             'status': {{ activity.status }}{% else %},
             'status': 0{% endif %}{% if activity.tickets_ready %},
@@ -62,10 +71,10 @@
 //            'ordered_tickets': {{ activity.ordered_tickets }}{% endif %}
         }
 
-
     </script>
     <script src="{% static "js/activity_detail.js" %}"></script>
     <script type="text/javascript">
+    {% if not activity.id %}
         $(function () {
             $('#datetimepicker1').datetimepicker({
                 language:'zh-CN',
@@ -90,6 +99,7 @@
                 pick12HourFormat: false
             });
         });
+    {% endif %}
 
         function getPoster(url){
             $("#poster").attr("src", url);
@@ -274,6 +284,12 @@
                         </div>
                     </div>
 
+                    <div class="form-group" id="remain_tickets">
+                        <label for="input-total_tickets" class="col-sm-2 control-label">票余量</label>
+                        <div class="col-sm-3">
+                            <input type="number" name="total_tickets" class="form-control" id="input-remain_tickets" min="1" placeholder="本活动通过“紫荆之声”的发票总数">
+                        </div>
+                    </div>
                     <div class="form-group" id="progress-tickets">
                         <label class="col-sm-2 control-label">订票与入场情况</label>
                         <div class="col-sm-9">
