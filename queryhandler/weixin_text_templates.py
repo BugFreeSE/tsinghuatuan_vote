@@ -1,6 +1,6 @@
 #-*- coding:utf-8 -*-
 from userpage.safe_reverse import *
-from queryhandler.settings import QRCODE_URL
+from queryhandler.settings import QRCODE_URL, SITE_DOMAIN
 
 
 def time_chs_format(time):
@@ -30,7 +30,8 @@ def get_text_time_standard(dt):
 
 
 def get_text_ticket_pic(ticket):
-    return QRCODE_URL + str(ticket.unique_id)
+    # return QRCODE_URL + str(ticket.unique_id) 二维码
+    return SITE_DOMAIN + "/webhost_media/uploadImages/qrcode1.jpg" #fixed pic url
 
 
 def get_text_link(href, title):
@@ -217,8 +218,8 @@ def get_text_timeout_book_event():
 
 
 def get_text_existed_book_event():
-    return ''
-    #return '您已有票，自动切换为取票。\n'
+    #return ''
+    return '您已有票。\n'
 
 
 def get_text_usage_get_activity_menu():
