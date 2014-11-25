@@ -325,6 +325,7 @@ def activity_post(request):
                 preDict['total_tickets'] = post['total_tickets']
                 preDict['remain_tickets'] = preDict['total_tickets']
                 preDict['has_seat'] = False
+                District.objects.create(**preDict)
             elif activity.place == "综体":
                 nameList = post.getlist('block_name')
                 numberList = post.getlist('block_ticket_number')

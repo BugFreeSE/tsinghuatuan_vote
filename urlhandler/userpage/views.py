@@ -11,7 +11,7 @@ from django.utils import timezone
 from django.forms import *
 from queryhandler.tickethandler import get_user
 from django.db.models import F
-
+import json
 
 def home(request):
     return render_to_response('mobile_base.html')
@@ -195,10 +195,10 @@ def setting_view(request, openid):
         district_list = get_district_list(activity_list)
         seat_list = get_bookable_seat_list(district_list)
         variables = RequestContext(request, {'activity_list': activity_list, 'form': SettingForm(),
-                                             'district_list': district_list, 'seat_list':seat_list})
+                                             'district_list': district_list, 'seat_list':seat_list, 'openid': openid})
         return render_to_response('setting.html', variables)
     else:
-        form = SettingForm(request.POST)
+        '''form = SettingForm(request.POST)
         if form.is_valid():
             pass
         else:
@@ -211,9 +211,30 @@ def setting_view(request, openid):
             user_obj.book_district = District.objects.get(id=form.cleaned_data['book_district'])
             user_obj.need_multi_ticket = form.cleaned_data['need_multi_ticket']
             #user_obj.abandon_seats =
-            user_obj.save()
+            user_obj.save()'''
         raise Http404
 
+
+def setting_view_post(request):
+    if request.method == 'GET':
+        raise Http404
+    else:
+        form = SettingForm(request.POST)
+        if form.is_valid():
+            pass
+        else:
+            return HttpResponseRedirect(request.path)
+        user_obj = get_user(request.POST.openid)
+        if user_obj is None:
+            pass
+        else:
+            user_obj.book_activity = Activity.objects.get(id=form.cleaned_data['book_activity'])
+            user_obj.book_district = District.objects.get(id=form.cleaned_data['book_district'])
+            user_obj.need_multi_ticket = form.cleaned_data['need_multi_ticket']
+            #user_obj.abandon_seats =
+            user_obj.save()
+            return HttpResponse(json.dumps('success'), content_type='application/json')
+        raise Http404
 
 def activity_menu_view(request, actid):
     activity = Activity.objects.get(id=actid)
