@@ -350,8 +350,27 @@ def activity_post(request):
                 preDict['total_tickets'] = 100 #待修改
                 preDict['remain_tickets'] = preDict['total_tickets']
                 preDict['has_seat'] = False
+                #create_seats(district)
+                f_obj = open(sys.path[0] + "/urlhandler/adminpage/static1/seats")
+                rows = f_obj.readline()
+                columns = f_obj.readline()
+                selectedrows = []
+                for i in range(0, int(rows) - 1):
+                    if request.POST.get('row' + str(i + 1)):
+                        selectedrows.append(i + 1)
+                preDict['total_tickets'] = len(selectedrows) * int(columns)
+                preDict['remain_tickets'] = preDict['total_tickets']
                 district = District.objects.create(**preDict)
-                create_seats(district)
+                for i in selectedrows:
+                    for j in range(1, int(columns)):
+                        preDict = dict()
+                        preDict['row'] = i
+                        preDict['column'] = j
+                        preDict['seat_number'] = str(i) + "," + str(j)
+                        preDict['district'] = district
+                        Seat.objects.create(**preDict)
+
+
 
             rtnJSON['updateUrl'] = s_reverse_activity_detail(activity.id)
         rtnJSON['activity'] = wrap_activity_dict(activity)
