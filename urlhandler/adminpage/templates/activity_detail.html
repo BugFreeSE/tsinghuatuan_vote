@@ -74,6 +74,7 @@
     </script>
     <script src="{% static "js/activity_detail.js" %}"></script>
     <script type="text/javascript">
+    {% if not activity.id %}
         $(function () {
             $('#datetimepicker1').datetimepicker({
                 language:'zh-CN',
@@ -98,6 +99,7 @@
                 pick12HourFormat: false
             });
         });
+    {% endif %}
 
         function getPoster(url){
             $("#poster").attr("src", url);
