@@ -175,7 +175,7 @@ def ticket_view(request, uid):
     now = datetime.datetime.now()
     if act_endtime < now:#表示活动已经结束
         ticket_status = 3
-    ticket_seat = "views.py第177行"
+    ticket_seat = ticket.seat
     act_photo = "http://qr.ssast.org/fit/"+uid
     variables=RequestContext(request, {'act_id': act_id, 'act_name': act_name,'act_place': act_place, 'act_begintime': act_begintime,
                                        'act_endtime': act_endtime,'act_photo': act_photo, 'ticket_status': ticket_status,
@@ -258,16 +258,16 @@ def cancel_ticket(request, ticket_uid):
     tickets = Ticket.objects.filter(unique_id=ticket_uid)
 
     if not tickets.exists():
-        return render_to_response("cancelticket.html", {"reply": "ticket does not exist"})
+        return render_to_response("cancelticket.html", {"reply": "error"})
     else:
         ticket = tickets[0]
         if ticket.district.activity.book_end >= datetime.datetime.now():
             ticket.status = 0
             ticket.save()
             District.objects.filter(id=ticket.district.id).update(remain_tickets=F('remain_tickets')+1)
-            return render_to_response("cancelticket.html", {"reply": "cancel succeed"})
+            return render_to_response("cancelticket.html", {"reply": "success"})
         else:
-            return render_to_response("cancelticket.html", {"reply": "book ticket ends"})
+            return render_to_response("cancelticket.html", {"reply": "out of date"})
 
 def parse_seats(seats, user):
     rows = 0
