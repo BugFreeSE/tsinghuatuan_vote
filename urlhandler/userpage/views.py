@@ -139,7 +139,7 @@ def details_view(request, activityid):
     if len(act_text) > MAX_LEN:
         act_text_status = 1
         act_abstract = act_text[0:MAX_LEN]+u'...'
-    act_photo = activity[0].pic_url
+    act_photo = activity[0].pic
     cur_time = timezone.now() # use the setting UTC
     act_seconds = 0
     if act_bookstart <= cur_time <= act_bookend:
@@ -193,8 +193,9 @@ def setting_view(request, openid):
     if request.method == 'GET':
         activity_list = get_bookable_activity_list()
         district_list = get_district_list(activity_list)
+        seat_list = get_bookable_seat_list(district_list)
         variables = RequestContext(request, {'activity_list': activity_list, 'form': SettingForm(),
-                                             'district_list': district_list})
+                                             'district_list': district_list, 'seat_list':seat_list})
         return render_to_response('setting.html', variables)
     else:
         form = SettingForm(request.POST)
@@ -209,6 +210,7 @@ def setting_view(request, openid):
             user_obj.book_activity = Activity.objects.get(id=form.cleaned_data['book_activity'])
             user_obj.book_district = District.objects.get(id=form.cleaned_data['book_district'])
             user_obj.need_multi_ticket = form.cleaned_data['need_multi_ticket']
+            #user_obj.abandon_seats =
             user_obj.save()
         raise Http404
 
@@ -245,6 +247,12 @@ def get_district_list(activity_list):
         district_list.extend(District.objects.filter(activity=activity.id))
     return district_list
 
+def get_bookable_seat_list(district_list):
+    bookable_seat_list = [];
+    for district in district_list:
+        bookable_seat_list.extend(Seat.objects.filter(district=district.id))
+    return bookable_seat_list
+
 def cancel_ticket(request, ticket_uid):
 
     tickets = Ticket.objects.filter(unique_id=ticket_uid)
@@ -270,6 +278,9 @@ def parse_seats(seats, user):
         if seat.column > cols:
             cols = seat.column
     seatMatrix = [[0 for col in range(cols+1)] for row in range(rows+1)]
+    # 0 表示没有座位
+    # 1 表示待出售
+    # 2 表示已出售
     for seat in seats:
         if seat.is_sold:
             seatMatrix[seat.row][seat.column] = 2
