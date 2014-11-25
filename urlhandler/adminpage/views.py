@@ -238,6 +238,11 @@ def wrap_activity_dict(activity):
     return dt
 
 
+def wrap_district_dict(district):
+    dt = model_to_dict(district)
+    return dt
+
+
 def activity_add(request):
     if not request.user.is_authenticated():
         return HttpResponseRedirect(s_reverse_admin_home())
@@ -255,13 +260,16 @@ def activity_detail(request, actid):
 
     try:
         activity = Activity.objects.get(id=actid)
-
+        districtmodels = District.objects.filter(activity=activity)
+        districts = []
+        for district in districtmodels:
+            districts += [wrap_district_dict(district)]
         unpublished = (activity.status == 0)
     except:
         raise Http404
     return render_to_response('activity_detail.html', {
         'activity': wrap_activity_dict(activity),
-
+        'districts': districts,
         'unpublished': unpublished
     }, context_instance=RequestContext(request))
 
@@ -332,7 +340,7 @@ def activity_post(request):
                 preDict = dict()
                 preDict['name'] = ""
                 preDict['activity'] = activity
-                preDict['total_tickets'] = post['total_tickets']
+                preDict['total_tickets'] = 100 #待修改
                 preDict['remain_tickets'] = preDict['total_tickets']
                 preDict['has_seat'] = False
                 district = District.objects.create(**preDict)
