@@ -290,7 +290,7 @@ def cancel_ticket(request, ticket_uid):
         else:
             return render_to_response("cancelticket.html", {"reply": "book ticket ends"})
 
-def parse_seats(seats, user):
+def parse_seats(seats, ticket):
     rows = 0
     cols = 0
     for seat in seats:
@@ -299,30 +299,38 @@ def parse_seats(seats, user):
         if seat.column > cols:
             cols = seat.column
     seatMatrix = [[0 for col in range(cols+1)] for row in range(rows+1)]
+    myrow = ticket.seat.row
+    mycol = ticket.seat.column
     # 0 表示没有座位
     # 1 表示待出售
     # 2 表示已出售
-    for seat in seats:
-        if seat.is_sold:
-            seatMatrix[seat.row][seat.column] = 2
-        else:
-            seatMatrix[seat.row][seat.column] = 1
+    if ticket is None:
+        for seat in seats:
+            if seat.is_sold:
+                seatMatrix[seat.row][seat.column] = 2
+            else:
+                seatMatrix[seat.row][seat.column] = 1
+    else:
+        for seat in seats:
+            if myrow == seat.row and mycol == seat.column:
+                seatMatrix[seat.row][seat.column] = 3
+            else:
+                seatMatrix[seat.row][seat.column] = 4
+
     preDict = dict()
     preDict['rows'] = rows+1
     preDict['cols'] = cols+1
-    preDict['seats'] = seatMatrix
+    preDict['seat_matrix'] = seatMatrix
     return preDict
 
-def view_seats(request, openid, districtid):
-    districts = District.objects.filter(id=districtid)
-    if not districts.exists():
+def view_seats(request, ticket_uid):
+    tickets = Ticket.objects.filter(unique_id=ticket_uid)
+    if not tickets.exists():
         raise Http404
-    district = districts[0]
+    ticket = tickets[0]
+    district = ticket.district
     seats = Seat.objects.filter(district=district)
     if not seats.exists():
         raise Http404
-    users = User.objects.filter(weixin_id=openid)
-    # if not users.exists():
-    #     raise Http404
-    # user = users[0]
-    return render_to_response("viewseats.html", parse_seats(seats, None))
+
+    return render_to_response("userviewseats.html", parse_seats(seats, ticket))

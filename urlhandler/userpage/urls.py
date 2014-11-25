@@ -15,5 +15,5 @@ urlpatterns = patterns('',
                        url(r'^setting/try/$','userpage.views.setting_view_post'),
                        url(r'^setting/(?P<openid>\S+)/$','userpage.views.setting_view'),
                        url(r'^cancelticket/(?P<ticket_uid>\S+)/$','userpage.views.cancel_ticket'),
-                       url(r'^viewseats/(?P<openid>\S+)/(?P<districtid>\d+)/$','userpage.views.view_seats'),
+                       url(r'^viewseats/(?P<ticket_uid>\S+)/$','userpage.views.view_seats'),
                        )

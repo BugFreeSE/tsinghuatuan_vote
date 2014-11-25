@@ -63,7 +63,19 @@
     <div class="ticket-wrapper">
         <a href="/u/cancelticket/{{ticket_uid}}/" class="button">退票</a>
         {% if ticket_seat%}
-            <a href="/u/cancelticket/{{ticket_uid}}/" class="button">查看座位</a>
+            <a href="/u/cancelticket/{{ticket_uid}}/" class="button" id="viewseat">查看座位</a>
+<script src="{% static "js/jquery-2.1.1.min.js" %}?_=5"></script>
+<script>
+         $('#viewseat').click(function(){
+             if ($(this).text() == "查看座位"){
+                 $(this).text("查看二维码")
+
+             }
+
+             if ($(this).text() == "查看二维码")
+                $(this).text("查看座位")
+         })
+        </script>
         {% endif %}
     </div>
     {% endif %}
