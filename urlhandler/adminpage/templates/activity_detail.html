@@ -18,6 +18,9 @@
 {% block js %}
     <script src="{% static "lib/jq/form/jquery.form.min.js" %}"></script>
     <script>
+        var rows = {{ activity.xinqing_rows }};
+        var cols = {{ activity.xinqing_columns }};
+
         var activity = {
             'name': '{{ activity.name }}'{% if activity.id %},
             'id': {{ activity.id }},

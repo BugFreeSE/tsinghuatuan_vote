@@ -536,6 +536,12 @@ function changePlace()
     else
     {
         xinqingAllocation.appendTo($('#tickets_setting'));
+        var table = $("<table>");
+        var tr = $("<tr>");
+        for(var i = 0 ; i < cols; i++){
+
+        }
+
         if ($('#allocation_pic').attr('src') == "#")
         {
             $('#allocation_pic').attr('src', '/webhost_media/seatAllocation/xinqing.png');
@@ -586,6 +592,7 @@ $('#activity-form').submit(function() {
 
 $('.form-control').on('focus', function() {var me = $(this); setTimeout(function(){me.select();}, 100)});
 
+selected_row = [false,false,false,false];
 function check(n){
     var l = $("#row"+n).children().length;
     if ($("#check_row"+n)[0].checked == true) {
@@ -594,11 +601,13 @@ function check(n){
             $($("#row"+n).children()[i]).removeClass("unselected");
             $($("#row"+n).children()[i]).addClass("selected");
         }
+        selected_row[n-1] = true;
     }
     else {
         for(var i = 0; i < l; i++){
             $($("#row"+n).children()[i]).removeClass("selected");
             $($("#row"+n).children()[i]).addClass("unselected");
         }
+        selected_row[n-1] = false;
     }
 }

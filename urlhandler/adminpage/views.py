@@ -247,9 +247,15 @@ def activity_add(request):
     if not request.user.is_authenticated():
         return HttpResponseRedirect(s_reverse_admin_home())
 
+    f_obj = open(sys.path[0] + "/urlhandler/adminpage/static1/seats")
+    rows = f_obj.readline()
+    columns = f_obj.readline()
+
     return render_to_response('activity_detail.html', {
         'activity': {
             'name': u'新建活动',
+            'xinqing_rows': int(rows),
+            'xinqing_columns': int(columns),
         }
     }, context_instance=RequestContext(request))
 
