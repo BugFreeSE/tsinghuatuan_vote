@@ -536,10 +536,40 @@ function changePlace()
     else
     {
         xinqingAllocation.appendTo($('#tickets_setting'));
-        var table = $("<table>");
-        var tr = $("<tr>");
-        for(var i = 0 ; i < cols; i++){
+        var table = $("#seat_plan");
+        for(var i = 1; i <= rows; i++){
+            var tr = $("<tr>");
+            var td1 = $("<td>");
+            var div = $("<div>");
 
+            div.attr({ class:"checkbox", style: "margin-right:30px" });
+
+            var label = $("<label>");
+
+            var input = $("<input>");
+            input.attr({id:"check_row"+i, name:"row"+i, onchange:"check("+i+")",
+            type:"checkbox", value:"x"});
+            input.appendTo(label);
+
+            var span = $("<span>");
+            span[0].innerHTML = "第"+i+"排";
+            span.appendTo(label);
+
+            label.appendTo(div);
+            div.appendTo(td1);
+            td1.appendTo(tr);
+
+            var td2 = $("<td>");
+            td2.attr("id","row"+i);
+
+            for(var j = 1; j <= cols; j++){
+                var s = $("<span>");
+                s.attr("class","seat unselected");
+                s.appendTo(td2);
+            }
+            td2.appendTo(tr);
+
+            table.append(tr);
         }
 
         if ($('#allocation_pic').attr('src') == "#")
