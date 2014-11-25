@@ -384,22 +384,25 @@ function wrapDateString(dom, formData, name) {
 }
 
 function beforeSubmit(formData, jqForm, options) {
+    x = formData;
     var i, len, nameMap = {
         'name': '活动名称',
         'place': '活动地点',
         'description': '活动简介',
         'start_time': '活动开始时间',
         'end_time': '活动结束时间',
-        'total_tickets': '活动总票数',
+//        'total_tickets': '活动总票数',
 //        'pic_url': '活动配图',
         'book_start': '订票开始时间',
         'book_end': '订票结束时间',
-    }, lackArray = [], dateArray = [
-        'start_time', 'end_time', 'book_start', 'book_end'
+    };
+    lackArray = []; dateArray = [
+
     ];
     for (i = 0, len = formData.length; i < len; ++i) {
         if (!formData[i].value) {
             lackArray.push(nameMap[formData[i].name]);
+            console.log(formData[i]);
         }
     }
 
@@ -528,7 +531,7 @@ function changePlace()
         xinqingAllocation.appendTo($('#tickets_setting'));
         if ($('#allocation_pic').attr('src') == "#")
         {
-            $('#allocation_pic').attr('src', '/webhost_media/seatAllocation/xinqing.jpg');
+            $('#allocation_pic').attr('src', '/webhost_media/seatAllocation/xinqing.png');
         }
     }
 }
@@ -575,3 +578,20 @@ $('#activity-form').submit(function() {
 });
 
 $('.form-control').on('focus', function() {var me = $(this); setTimeout(function(){me.select();}, 100)});
+
+function check(n){
+    var l = $("#row"+n).children().length;
+    if ($("#check_row"+n)[0].checked == true) {
+    //将座位选中
+        for(var i = 0; i < l; i++){
+            $($("#row"+n).children()[i]).removeClass("unselected");
+            $($("#row"+n).children()[i]).addClass("selected");
+        }
+    }
+    else {
+        for(var i = 0; i < l; i++){
+            $($("#row"+n).children()[i]).removeClass("selected");
+            $($("#row"+n).children()[i]).addClass("unselected");
+        }
+    }
+}

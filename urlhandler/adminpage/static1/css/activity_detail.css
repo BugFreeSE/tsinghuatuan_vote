@@ -25,3 +25,18 @@
     padding-top: 0;
     padding-left: 5px;
 }
+
+.seat{
+    width:30px;
+    height:30px;
+    background-size:31px;
+    display:inline-block;
+}
+
+.unselected{
+    background-image: url(../img/unselected_seat.jpg);
+}
+
+.selected{
+    background-image: url(../img/selected_seat.jpg);
+}
