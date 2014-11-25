@@ -51,7 +51,14 @@ var dateInterfaceMap = {
         dom.text(value);
     },
     'time': function(dom, value) {
-        dom.val(value.year.toString() + '-' + value.month + '-' + value.day + ' ' + value.hour + ':' + value.minute);
+        var str = '';
+        var year = value.year.toString();
+        var month = (value.month < 10 ? '0' : '') + value.month;
+        var day = (value.day < 10 ? '0' : '') + value.day;
+        var hour = (value.hour < 10 ? '0' : '') + value.hour;
+        var minute = (value.minute < 10 ? '0' : '') + value.minute;
+        str = year + '-' + month + '-' + day + ' ' + hour + ':' + minute;
+        dom.val(str);
     }
 }, keyMap = {
     'name': 'value',

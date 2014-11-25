@@ -8,6 +8,7 @@
 
 {% block css %}
 <link href="{% static "css/ticket.css" %}?_=3" rel="stylesheet" type="text/css" />
+<link href="{% static "css/button.css" %}?_=3" rel="stylesheet" type="text/css" />
 {% endblock %}
 
 {% block js %}
@@ -60,8 +61,12 @@
         <span class="status-size ticket-valid">活动开始前45分钟凭本电子票入场</span>
     </div>
     <div class="ticket-wrapper">
-        <a href="/u/cancelticket/{{ticket_uid}}/">退票</a>
+        <a href="/u/cancelticket/{{ticket_uid}}/" class="button">退票</a>
+        {% if ticket_seat%}
+            <a href="/u/cancelticket/{{ticket_uid}}/" class="button">查看座位</a>
+        {% endif %}
     </div>
     {% endif %}
-
+    <div class="ticket-wrapper" style="margin:10px;">
+    </div>
 {% endblock %}
