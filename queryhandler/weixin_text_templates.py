@@ -31,7 +31,7 @@ def get_text_time_standard(dt):
 
 def get_text_ticket_pic(ticket):
     # return QRCODE_URL + str(ticket.unique_id) 二维码
-    return SITE_DOMAIN + "/webhost_media/uploadImages/qrcode.png" #fixed pic url
+    return SITE_DOMAIN + "/webhost_media/uploadImages/qrcode(1).png" #fixed pic url
 
 
 def get_text_link(href, title):
