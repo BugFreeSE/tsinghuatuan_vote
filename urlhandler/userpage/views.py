@@ -290,9 +290,9 @@ def cancel_ticket(request, ticket_uid):
             ticket.status = 0
             ticket.save()
             District.objects.filter(id=ticket.district.id).update(remain_tickets=F('remain_tickets')+1)
-            return render_to_response("cancelticket.html", {"reply": "cancel succeed"})
+            return render_to_response("cancelticket.html", {"reply": "success"})
         else:
-            return render_to_response("cancelticket.html", {"reply": "book ticket ends"})
+            return render_to_response("cancelticket.html", {"reply": "out of date"})
 
 def parse_seats(seats, ticket):
     rows = 0
