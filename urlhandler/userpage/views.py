@@ -300,6 +300,8 @@ def cancel_ticket(request, ticket_uid):
         return render_to_response("cancelticket.html", {"reply": "ticket does not exist"})
     else:
         ticket = tickets[0]
+        if ticket.status == 0:
+            return render_to_response("cancelticket.html", {"reply": "ticket does not exist"})
         if ticket.district.activity.book_end >= datetime.datetime.now():
             ticket.status = 0
             ticket.save()
