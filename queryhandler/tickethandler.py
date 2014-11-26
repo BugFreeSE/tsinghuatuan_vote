@@ -197,7 +197,7 @@ def response_book_ticket(msg):
         else:
             mytickets = book_ticket(user, district, now)
         if mytickets is None:
-            return get_reply_text_xml(msg, get_text_fail_book_ticket(activities[0], now))
+            return get_reply_text_xml(msg, get_text_fail_book_ticket(activity, now))
         else:
             return get_reply_multi_tickets(msg, mytickets, now, get_text_success_book_ticket())
 
