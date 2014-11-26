@@ -7,6 +7,7 @@
 {% endblock %}
 
 {% block css %}
+        <link href="{% static "css/setting.css" %}?_=3" rel="stylesheet" type="text/css" />
         <link href="{% static "css/seats.css" %}?_=3" rel="stylesheet" type="text/css" />
 {% endblock %}
 
@@ -212,7 +213,9 @@
             <div id="选择座位">选择座位范围：
                 <button type="button" onclick="reverseChoices()">反选</button>
                 图例：<span class="seat unselected">未选</span>  <span class="seat selected">选定</span>
+                <div>票价：40元</div>
                 <div>舞台</div>
+
             </div>
                 <table id="seat_plan" style="margin:auto;">
                 </table>

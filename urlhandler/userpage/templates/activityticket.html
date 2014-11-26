@@ -63,9 +63,10 @@
         <span class="status-size ticket-valid">活动开始前45分钟凭本电子票入场</span>
     </div>
     <div class="ticket-wrapper">
-        <a href="/u/cancelticket/{{ticket_uid}}/" class="btn">退票</a>
+            <a href="/u/cancelticket/{{ticket_uid}}/" class="btn btn-warning">退票</a>
+
         {% if ticket_seat%}
-            <a class="btn" id="viewseat">查看座位</a>
+            <a class="btn btn-success" id="viewseat">查看座位</a>
 <script src="{% static "js/seat.js" %}?_=5"></script>
 <script>
     var seat_matrix = {{ seat_matrix }}
