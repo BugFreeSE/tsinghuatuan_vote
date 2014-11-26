@@ -42,14 +42,19 @@
         活动地点：<b>{{ act_place }}</b>
     </div>
     {% if ticket_status > 0 %}
-        {% if ticket_seat == 'B' %}
+        {% if ticket_seat %}
             <div class="ticket-wrapper">
-                说明：<span class="status-size ticket-used">您的座位在B区 请从二楼北侧进入</span>
+                说明：<span class="status-size ticket-used">您的座位在{{ ticket_seat.seat_number }}</span>
             </div>
-        {% elif ticket_seat == 'C' %}
             <div class="ticket-wrapper">
-                说明：<span class="status-size ticket-used">您的座位在C区 请从二楼南侧进入</span>
+                请在演出开始之前到凭二维码到新清华学堂购买纸质票。
             </div>
+
+        {% elif ticket.district.name != '' %}
+            <div class="ticket-wrapper">
+                说明：<span class="status-size ticket-used">您的座位在{{ ticket.district.name }}区 请从二楼南侧进入</span>
+            </div>
+
         {% endif %}
     {% endif %}
     <div class="ticket-wrapper">
@@ -65,7 +70,7 @@
     <div class="ticket-wrapper">
             <a href="/u/cancelticket/{{ticket_uid}}/" class="btn btn-warning">退票</a>
 
-        {% if ticket_seat%}
+        {% if ticket_seat %}
             <a class="btn btn-success" id="viewseat">查看座位</a>
 <script src="{% static "js/seat.js" %}?_=5"></script>
 <script>
