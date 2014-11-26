@@ -351,7 +351,7 @@ def activity_post(request):
                     District.objects.create(**preDict)
             else:
                 preDict = dict()
-                preDict['name'] = ""
+                preDict['name'] = "学生特惠区"
                 preDict['activity'] = activity
                 preDict['total_tickets'] = 100 #待修改
                 preDict['remain_tickets'] = preDict['total_tickets']
@@ -361,14 +361,14 @@ def activity_post(request):
                 rows = f_obj.readline()
                 columns = f_obj.readline()
                 selectedrows = []
-                for i in range(0, int(rows) - 1):
+                for i in range(0, int(rows)):
                     if request.POST.get('row' + str(i + 1)):
                         selectedrows.append(i + 1)
                 preDict['total_tickets'] = len(selectedrows) * int(columns)
                 preDict['remain_tickets'] = preDict['total_tickets']
                 district = District.objects.create(**preDict)
                 for i in selectedrows:
-                    for j in range(1, int(columns)):
+                    for j in range(1, int(columns) + 1):
                         preDict = dict()
                         preDict['row'] = i-1
                         preDict['column'] = j-1
