@@ -463,7 +463,7 @@ def book_ticket_with_seats(user, district, now):
             return None
 
         #better return???
-        tickets = Ticket.objects.select_for_update().filter(stu_id=user.stu_id, district=district)
+        tickets = Ticket.objects.select_for_update().filter(stu_id=user.stu_id, district=district, status=1)
         if tickets.exists():
             return None
 
