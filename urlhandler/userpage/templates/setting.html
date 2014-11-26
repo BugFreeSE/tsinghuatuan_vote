@@ -54,6 +54,8 @@
         var l = Math.min(30,(w-50) / totalColumn);
         $('.seat').css('width', l).css('height', l);
         $('.seat img').css('width', l).css('height', l);
+        $('#span_unselected').append($('<img>').attr('src', unselected_path));
+        $('#span_selected').append($('<img>').attr('src', selected_path));
     }
 
 
@@ -221,7 +223,7 @@
 
             <div id="选择座位">选择座位范围：
                 <button type="button" onclick="reverseChoices()">反选</button>
-                图例：<span class="seat unselected">未选</span>  <span class="seat selected">选定</span>
+                图例：<span class="seat unselected" id="span_unselected">未选</span>  <span class="seat selected" id="span_selected">选定</span>
                 <div>票价：40元</div>
                 <div>舞台</div>
 

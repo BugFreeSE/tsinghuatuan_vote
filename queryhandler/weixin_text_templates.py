@@ -174,7 +174,7 @@ def get_text_existed_book_ticket(ticket):
     return '您已抢到该活动的票，不能重复抢票。\n' + get_text_link(s_reverse_ticket_detail(ticket.unique_id), '查看电子票')
 
 def get_text_user_not_set(openid):
-    return 'Setting info not complete。\n' + get_text_link(s_reverse_setting(openid), 'click to set')
+    return '您还没有设置想要抢票的演出哦～\n' + get_text_link(s_reverse_setting(openid), '点此设置')
 
 
 def get_text_unbinded_cancel_ticket(openid):

@@ -364,8 +364,8 @@ def activity_post(request):
                 for i in selectedrows:
                     for j in range(1, int(columns)):
                         preDict = dict()
-                        preDict['row'] = i
-                        preDict['column'] = j
+                        preDict['row'] = i-1
+                        preDict['column'] = j-1
                         preDict['seat_number'] = str(i) + "," + str(j)
                         preDict['district'] = district
                         Seat.objects.create(**preDict)
