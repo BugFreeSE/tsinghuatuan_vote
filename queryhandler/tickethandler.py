@@ -116,7 +116,7 @@ def response_exam_tickets(msg):
     now = datetime.datetime.fromtimestamp(get_msg_create_time(msg))
     activities = Activity.objects.filter(status=1, end_time__gte=now)
     all_tickets = []
-    tickets = Ticket.objects.filter(stu_id=user.stu_id)
+    tickets = Ticket.objects.filter(stu_id=user.stu_id, status=1)
     for ticket in tickets:
         if ticket.district.activity.end_time >= now:
             all_tickets.append(ticket)
@@ -208,10 +208,6 @@ def book_ticket(user, district, now):
         if district.remain_tickets <= 0:
             return None
 
-        random_string = ''.join([random.choice(string.ascii_letters + string.digits) for n in xrange(32)])
-        while Ticket.objects.filter(unique_id=random_string).exists():
-            random_string = ''.join([random.choice(string.ascii_letters + string.digits) for n in xrange(32)])
-
         #? better return?
         tickets = Ticket.objects.select_for_update().filter(stu_id=user.stu_id, district=district, status=1)
         if tickets.exists():
@@ -224,6 +220,9 @@ def book_ticket(user, district, now):
             n = 1
         mytickets = []
         for i in range(0, n):
+            random_string = ''.join([random.choice(string.ascii_letters + string.digits) for n in xrange(32)])
+            while Ticket.objects.filter(unique_id=random_string).exists():
+                random_string = ''.join([random.choice(string.ascii_letters + string.digits) for n in xrange(32)])
             District.objects.filter(id=district.id).update(remain_tickets=F('remain_tickets') - 1)
             ticket = Ticket.objects.create(
                 stu_id=user.stu_id,

@@ -12,6 +12,7 @@ from django.forms import *
 from queryhandler.tickethandler import get_user
 from django.db.models import F
 import json
+from queryhandler.settings import SITE_DOMAIN
 
 
 def home(request):
@@ -187,7 +188,7 @@ def ticket_view(request, uid):
     if ticket_seat:
         seats = Seat.objects.filter(district=ticket[0].district)
         seat_matrix = parse_seats(seats, ticket[0])['seat_matrix']
-    act_photo = "http://qr.ssast.org/fit/" + uid
+    act_photo = SITE_DOMAIN + "/webhost_media/uploadImages/qrcode.png"
     variables = RequestContext(request, {'act_id': act_id, 'act_name': act_name, 'act_place': act_place,
                                          'act_begintime': act_begintime,
                                          'act_endtime': act_endtime, 'act_photo': act_photo,
