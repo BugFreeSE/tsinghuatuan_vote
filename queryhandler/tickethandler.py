@@ -219,15 +219,25 @@ def book_ticket(user, district, now):
         tickets = Ticket.objects.select_for_update().filter(stu_id=user.stu_id, district=district, status=1)
         if tickets.exists():
             return None
-        District.objects.filter(id=district.id).update(remain_tickets=F('remain_tickets')-1)
-        ticket = Ticket.objects.create(
-            stu_id=user.stu_id,
-            district=district,
-            unique_id=random_string,
-            status=1,
-            seat=None
-        )
-        return [ticket]
+        if user.need_multi_ticket:
+            if district.remain_tickets <= 1:
+                return None
+            n = 2
+        else:
+            n = 1
+        mytickets = []
+        for i in range(0, n):
+            District.objects.filter(id=district.id).update(remain_tickets=F('remain_tickets')-1)
+            ticket = Ticket.objects.create(
+                stu_id=user.stu_id,
+                district=district,
+                unique_id=random_string,
+                status=1,
+                seat=None
+            )
+            mytickets.append(ticket)
+
+        return mytickets
         # if not tickets.exists():
         #     Activity.objects.filter(id=activity.id).update(remain_tickets=F('remain_tickets')-1)
         #     ticket = Ticket.objects.create(
