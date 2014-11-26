@@ -457,8 +457,8 @@ function beforePublish(formData, jqForm, options) {
 
 function submitResponse(data) {
     if (!data.error) {
-        updateActivity(data.activity);
-        initializeForm(activity);
+//        updateActivity(data.activity);
+//        initializeForm(activity);
         console.log(1);
         appendResult('成功');
     } else {
