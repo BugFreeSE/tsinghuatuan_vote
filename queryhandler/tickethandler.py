@@ -83,14 +83,14 @@ def response_bookable_activities(msg):
         return get_reply_single_news_xml(msg, get_item_dict(
             title=get_text_activity_title_with_status(activity, now),
             description=get_text_activity_description(activity, 100),
-            pic_url=activity.pic_url,
+            pic_url=activity.pic,
             url=s_reverse_activity_detail(activity.id)
         ))
     items = []
     for activity in activities:
         items.append(get_item_dict(
             title=get_text_activity_title_with_status(activity, now),
-            pic_url=activity.pic_url,
+            pic_url=activity.pic,
             url=s_reverse_activity_detail(activity.id)
         ))
         if len(items) >= 10:
@@ -391,7 +391,7 @@ def response_get_activity_menu(msg):
     return get_reply_single_news_xml(msg, get_item_dict(
         title=get_text_title_activity_menu(activity),
         description=get_text_desc_activity_menu(activity),
-        pic_url=activity.pic_url,
+        pic_url=activity.pic,
         url=s_reverse_activity_menu(activity.id)
     ))
 
