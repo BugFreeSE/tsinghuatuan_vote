@@ -54,8 +54,8 @@
         var l = Math.min(30,(w-50) / totalColumn);
         $('.seat').css('width', l).css('height', l);
         $('.seat img').css('width', l).css('height', l);
-        $('#span_unselected').append($('<img>').attr('src', '/static1/img/unselected_seat_titled.png'));
-        $('#span_selected').append($('<img>').attr('src', '/static1/img/selected_seat_titled.png'));
+        $('#span_unselected').append($('<img>').attr('src', '/static1/img/unselected_seat_titled.png').css('width', l).css('height', l).css('position','relative').css('bottom', '-8px'));
+        $('#span_selected').append($('<img>').attr('src', '/static1/img/selected_seat_titled.png').css('width', l).css('height', l).css('position','relative').css('bottom', '-8px'));
     }
 
 
@@ -223,7 +223,7 @@
 
             <div id="选择座位">选择座位范围：
                 <button type="button" onclick="reverseChoices()">反选</button>
-                图例：<span class="seat unselected" id="span_unselected">未选</span>  <span class="seat selected" id="span_selected">选定</span>
+                图例：<span class="seat unselected" id="span_unselected"></span>  <span class="seat selected" id="span_selected"></span>
                 <div>票价：40元</div>
                 <div>舞台</div>
 
