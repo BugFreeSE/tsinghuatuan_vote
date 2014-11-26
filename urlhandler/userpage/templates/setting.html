@@ -12,6 +12,8 @@
 
 {% block js %}
     <script src="{% static "js/jquery-2.1.1.min.js" %}"></script>
+    <script src="{% static "lib/jq/form/jquery.form.js" %}"></script>
+    <script src="{% static "js/setting.js" %}"></script>
     <script src="{% static "js/activity_list.js" %}"></script>
     <script>
     function draw_seats(seat_matrix){
@@ -188,9 +190,9 @@
 {% endblock %}
 
 {% block content %}
-  <div style="text-align: center">
+  <div style="text-align: center" id="setting">
     <table id="setting_form">
-        <form method="post">
+        <form method="post" id="setting_context">
             {% csrf_token %}
             {% for filed in form %}
             <div id="{{filed.label}}">
@@ -211,10 +213,17 @@
             <div>活动地点：<span id="activity_place"></span></div>
             <div>活动时间：<span id="activity_time"></span></div>
             <p>
-                <input type="submit" value="提交">
+                <input type="text" style="display: none" id="input-openid" name="openid" value="{{ openid }}"/>
+                <!--<input type="submit" value="提交">-->
+                <button onclick="submitSetting();" id="submitBtn" type="button">设置</button>
             </p>
         </form>
     </table>
   </div>
 
+    <div id="successHolder" style="text-align:center; display: none">
+        <img src="{% static "img/success.png" %}" />
+        <p>设置成功！</p>
+        <p>请在规定时间内进行抢票！</p>
+    </div>
 {% endblock %}
