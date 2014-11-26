@@ -444,6 +444,7 @@ def arrange_seats(seats, user):
                 if get_seat_str(seat2) in abandon_seats:
                     continue
                 chosen_seats = [seat1, seat2]
+                return chosen_seats
     else:
         for seat in seat_list:
             if get_seat_str(seat) not in abandon_seats:
