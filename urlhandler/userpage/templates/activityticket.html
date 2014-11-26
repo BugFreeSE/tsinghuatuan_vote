@@ -9,6 +9,8 @@
 {% block css %}
 <link href="{% static "css/ticket.css" %}?_=3" rel="stylesheet" type="text/css" />
 <link href="{% static "css/button.css" %}?_=3" rel="stylesheet" type="text/css" />
+<link href="{% static "css/seats.css" %}?_=3" rel="stylesheet" type="text/css" />
+<script src="{% static "js/jquery-2.1.1.min.js" %}?_=5"></script>
 {% endblock %}
 
 {% block js %}
@@ -61,19 +63,25 @@
         <span class="status-size ticket-valid">活动开始前45分钟凭本电子票入场</span>
     </div>
     <div class="ticket-wrapper">
-        <a href="/u/cancelticket/{{ticket_uid}}/" class="button">退票</a>
+        <a href="/u/cancelticket/{{ticket_uid}}/" class="btn">退票</a>
         {% if ticket_seat%}
-            <a href="/u/cancelticket/{{ticket_uid}}/" class="button" id="viewseat">查看座位</a>
-<script src="{% static "js/jquery-2.1.1.min.js" %}?_=5"></script>
+            <a class="btn" id="viewseat">查看座位</a>
+<script src="{% static "js/seat.js" %}?_=5"></script>
 <script>
+    var seat_matrix = {{ seat_matrix }}
+    draw_seats(seat_matrix);
          $('#viewseat').click(function(){
-             if ($(this).text() == "查看座位"){
+             if ($(this).text() === "查看座位"){
                  $(this).text("查看二维码")
+                $('.img-inner').attr('style', 'display: none');
+                $('#seat_plan').attr('style', '');
 
              }
 
-             if ($(this).text() == "查看二维码")
+             else if ($(this).text() === "查看二维码"){
                 $(this).text("查看座位")
+             $('.img-inner').attr('style', 'display: block');
+                $('#seat_plan').attr('style', 'display: none');}
          })
         </script>
         {% endif %}

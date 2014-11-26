@@ -81,6 +81,7 @@ class SettingForm(forms.Form):
     book_activity = forms.CharField(label='抢票活动', widget=forms.Select())
     need_multi_ticket = forms.BooleanField(label='连续两张票', required=False)
     book_district = forms.CharField(label='抢票区域', widget=forms.Select())
+    abandon_seats = forms.CharField(label='abandon_seats')
 
 
 '''

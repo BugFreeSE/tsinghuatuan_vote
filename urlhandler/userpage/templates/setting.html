@@ -25,22 +25,22 @@
             var $temp = $("<tr>").attr('id', 'row'+i);
             for (var j = 0; j < totalColumn; j++)
             {
-                $temp.append($("<td>").attr('id', 's' + i + '_' + j).attr('class', 'notSold'));
+                $temp.append($("<td>").attr('id', 's' + i + '_' + j).attr('class', 'selected'));
             }
             $("#seat_plan").append($temp);
         }
         $("td").addClass('seat');
         //var selected = [];
         $("td").click(function(){
-            if ($(this).hasClass('notSold')){
-                $(this).removeClass('notSold');
+            if ($(this).hasClass('unselected')){
+                $(this).removeClass('unselected');
                 $(this).addClass('selected');
                 //selected.push($(this).attr('id'))
             }
             else if ($(this).hasClass('selected')){
                 $(this).removeClass('selected');
-                $(this).addClass('notSold');
-                var n = selected.indexOf($(this).attr('id'));
+                $(this).addClass('unselected');
+                //var n = selected.indexOf($(this).attr('id'));
                 //selected.splice(n,1);
             }
         })
@@ -54,9 +54,9 @@
                 var temp = $("#"+ 's' + i + '_' + j);
                 if(temp.hasClass("selected")) {
                     temp.removeClass("selected");
-                    temp.addClass("notSold");
-                }else if(temp.hasClass("notSold")){
-                    temp.removeClass("notSold");
+                    temp.addClass("unselected");
+                }else if(temp.hasClass("unselected")){
+                    temp.removeClass("unselected");
                     temp.addClass("selected");
                     selected.push(i+" "+j);
                 }
@@ -65,16 +65,19 @@
     }
 
     function getSelected(){
-        var selected = [];
+        var unselected = '';
         for (var i = 0; i < totalRow; i++){
             for (var j = 0; j < totalColumn; j++){
                 var temp = $("#"+ 's' + i + '_' + j);
-                if(temp.hasClass("selected")) {
-                    selected.push(i+" "+j);
+                if(temp.hasClass("unselected")) {
+                    unselected = unselected + i + ',' + j + ";";
                 }
             }
         }
-        return selected;
+        if (unselected.length > 0){
+            unselected = unselected.substring(0, unselected.length-1)
+        }
+        return unselected;
     }
 
     </script>
@@ -83,6 +86,7 @@
             console.log(district_id);
         }*/
             window.onload = function() {
+                $('#abandon_seats').attr('style', 'display:none')
                 element = document.getElementById('id_book_activity')
                 {% for activity in activity_list %}
                     child = document.createElement('option')
@@ -182,6 +186,9 @@
                 ele = document.getElementById("seat_plan");
                 ele.setAttribute("style","display: none");
             }
+        $('#submitBtn').mousedown(function(){
+            $('#id_abandon_seats').val(getSelected());
+        })
     </script>
 {% endblock %}
 
@@ -204,7 +211,7 @@
 
             <div id="选择座位">选择座位范围：
                 <button type="button" onclick="reverseChoices()">反选</button>
-                图例：<span class="seat selected">未选定</span>  <span class="seat notSold">选定</span>
+                图例：<span class="seat unselected">未选</span>  <span class="seat selected">选定</span>
                 <div>舞台</div>
             </div>
                 <table id="seat_plan" style="margin:auto;">
@@ -226,4 +233,5 @@
         <p>设置成功！</p>
         <p>请在规定时间内进行抢票！</p>
     </div>
+
 {% endblock %}

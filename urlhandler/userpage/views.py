@@ -12,7 +12,6 @@ from django.forms import *
 from queryhandler.tickethandler import get_user
 from django.db.models import F
 import json
-from queryhandler.settings import SITE_DOMAIN
 
 def home(request):
     return render_to_response('mobile_base.html')
@@ -176,13 +175,16 @@ def ticket_view(request, uid):
     now = datetime.datetime.now()
     if act_endtime < now:#表示活动已经结束
         ticket_status = 3
-    ticket_seat = "views.py第177行"
-    #act_photo = "http://qr.ssast.org/fit/"+uid
-    act_photo = SITE_DOMAIN + "/webhost_media/uploadImages/qrcode.png"
+    ticket_seat = ticket[0].seat
+    seat_matrix = None
+    if ticket_seat:
+        seats = Seat.objects.filter(district=ticket[0].district)
+        seat_matrix = parse_seats(seats, ticket[0])['seat_matrix']
+    act_photo = "http://qr.ssast.org/fit/"+uid
     variables=RequestContext(request, {'act_id': act_id, 'act_name': act_name,'act_place': act_place, 'act_begintime': act_begintime,
                                        'act_endtime': act_endtime,'act_photo': act_photo, 'ticket_status': ticket_status,
                                        'ticket_seat': ticket_seat,
-                                       'ticket_uid': uid})
+                                       'ticket_uid': uid, 'seat_matrix': seat_matrix})
     return render_to_response('activityticket.html', variables)
 
 
@@ -235,7 +237,7 @@ def setting_view_post(request):
             user_obj.book_activity = Activity.objects.get(id=form.cleaned_data['book_activity'])
             user_obj.book_district = District.objects.get(id=form.cleaned_data['book_district'])
             user_obj.need_multi_ticket = form.cleaned_data['need_multi_ticket']
-            #user_obj.abandon_seats =
+            user_obj.abandon_seats = form.cleaned_data['abandon_seats']
             user_obj.save()
             return HttpResponse(json.dumps('success'), content_type='application/json')
         raise Http404
