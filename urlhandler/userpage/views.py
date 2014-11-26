@@ -200,7 +200,8 @@ def setting_view(request, openid):
                                              'district_list': district_list, 'seat_list':seat_list, 'openid': openid})
         return render_to_response('setting.html', variables)
     else:
-        '''form = SettingForm(request.POST)
+        '''
+        form = SettingForm(request.POST)
         if form.is_valid():
             pass
         else:
@@ -226,7 +227,8 @@ def setting_view_post(request):
             pass
         else:
             return HttpResponseRedirect(request.path)
-        user_obj = get_user(request.POST.openid)
+        openid = request.POST['openid']
+        user_obj = get_user(request.POST['openid'])
         if user_obj is None:
             pass
         else:
