@@ -83,14 +83,14 @@ def response_bookable_activities(msg):
         return get_reply_single_news_xml(msg, get_item_dict(
             title=get_text_activity_title_with_status(activity, now),
             description=get_text_activity_description(activity, 100),
-            pic_url=activity.pic,
+            pic_url=SITE_DOMAIN + activity.pic.url,
             url=s_reverse_activity_detail(activity.id)
         ))
     items = []
     for activity in activities:
         items.append(get_item_dict(
             title=get_text_activity_title_with_status(activity, now),
-            pic_url=activity.pic,
+            pic_url=SITE_DOMAIN + activity.pic.url,
             url=s_reverse_activity_detail(activity.id)
         ))
         if len(items) >= 10:
