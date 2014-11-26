@@ -17,16 +17,19 @@
     <script src="{% static "js/setting.js" %}"></script>
     <script src="{% static "js/activity_list.js" %}"></script>
     <script>
+    var selected_path = "{% static "img/selected_seat.jpg" %}";
+    var unselected_path = "{% static "img/unselected_seat.jpg" %}";
     function draw_seats(seat_matrix){
         $("#seat_plan").children().remove();
         totalRow = seat_matrix.length;
         totalColumn = seat_matrix[0].length;
+
         for (var i = 0; i < totalRow; i++)
         {
             var $temp = $("<tr>").attr('id', 'row'+i);
             for (var j = 0; j < totalColumn; j++)
             {
-                $temp.append($("<td>").attr('id', 's' + i + '_' + j).attr('class', 'selected'));
+                $temp.append($("<td>").attr('id', 's' + i + '_' + j).attr('class', 'selected').append($('<img>').attr('src', selected_path)));
             }
             $("#seat_plan").append($temp);
         }
@@ -36,30 +39,36 @@
             if ($(this).hasClass('unselected')){
                 $(this).removeClass('unselected');
                 $(this).addClass('selected');
+                $(this).children().attr('src', selected_path);
                 //selected.push($(this).attr('id'))
             }
             else if ($(this).hasClass('selected')){
                 $(this).removeClass('selected');
                 $(this).addClass('unselected');
+                $(this).children().attr('src', unselected_path);
                 //var n = selected.indexOf($(this).attr('id'));
                 //selected.splice(n,1);
             }
         })
+        var w = window.innerWidth;
+        var l = Math.min(30,(w-50) / totalColumn);
+        $('.seat').css('width', l).css('height', l);
+        $('.seat img').css('width', l).css('height', l);
     }
 
 
     function reverseChoices(){
-        selected = [];
         for (var i = 0; i < totalRow; i++){
             for (var j = 0; j < totalColumn; j++){
                 var temp = $("#"+ 's' + i + '_' + j);
                 if(temp.hasClass("selected")) {
                     temp.removeClass("selected");
                     temp.addClass("unselected");
+                    temp.children().attr('src', unselected_path);
                 }else if(temp.hasClass("unselected")){
                     temp.removeClass("unselected");
                     temp.addClass("selected");
-                    selected.push(i+" "+j);
+                    temp.children().attr('src', selected_path);
                 }
             }
         }

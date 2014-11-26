@@ -1,13 +1,16 @@
 /**
  * Created by gengzl on 14-11-26.
  */
+var selected_path = "/static1/img/selected_seat.jpg";
+var unselected_path = "/static1/img/unselected_seat.jpg";
+var myseat_path = "/static1/img/myseat.gif";
 function draw_seats(seat_matrix) {
     $(".seat_tr").children().remove();
     var table = $("#seat_plan");
     var rows = seat_matrix.length
     var cols = seat_matrix[0].length
     for (var i = 1; i <= rows; i++) {
-        var tr = $("<tr>").attr('class', 'seat_tr'+i);
+        var tr = $("<tr>").attr('class', 'seat_tr').attr('id', 'tr'+i);
 
         var td2 = $("<td>");
         td2.attr("id", "row" + i);
@@ -15,16 +18,16 @@ function draw_seats(seat_matrix) {
         for (var j = 1; j <= cols; j++) {
             var s = $("<span>");
             if (seat_matrix[i-1][j-1] == 1){
-                s.attr("class", "seat selected");
+                s.attr("class", "seat selected").append($('<img>').attr('src', selected_path));
             }
             else if (seat_matrix[i-1][j-1] == 2){
                 s.attr("class", "seat hasSold");
             }
             else if (seat_matrix[i-1][j-1] == 3){
-                s.attr("class", "seat myseat");
+                s.attr("class", "seat myseat").append($('<img>').attr('src', myseat_path));
             }
             else if (seat_matrix[i-1][j-1] == 4){
-                s.attr("class", "seat unselected");
+                s.attr("class", "seat unselected").append($('<img>').attr('src', unselected_path));
             }
             else{
                 s.attr("class", "seat");
@@ -35,6 +38,10 @@ function draw_seats(seat_matrix) {
         td2.appendTo(tr);
 
         table.append(tr);
+        var w = window.innerWidth;
+        var l = Math.min(30,(w-50) / cols);
+        $('.seat').css('width', l).css('height', l);
+        $('.seat img').css('width', l).css('height', l);
     }
 }
 
@@ -48,7 +55,7 @@ function chooseSeat(rows, cols)
     })
 
     for (var i = 1; i <= rows; i++) {
-        var tr = $("tr.seat_tr"+i);
+        var tr = $("#tr"+i);
         var td1 = $("<td>");
         var div = $("<div>");
 
@@ -107,17 +114,4 @@ function check_row(n) {
             $($("#row" + n).children()[i]).addClass("unselected");
         }
     }
-}
-
-function getSelected(){
-    var selected = [];
-    for (var i = 0; i < totalRow; i++){
-        for (var j = 0; j < totalColumn; j++){
-            var temp = $("#"+ 's' + i + '_' + j);
-            if(temp.hasClass("selected")) {
-                selected.push(i+" "+j);
-            }
-        }
-    }
-    return selected;
 }

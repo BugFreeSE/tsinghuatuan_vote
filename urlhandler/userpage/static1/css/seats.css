@@ -3,7 +3,6 @@
 }
 
 .myseat{
-    background-color: #ffff00;
 }
 
 .seat{
@@ -15,11 +14,9 @@
 }
 
 .unselected{
-    background-image: url(../img/unselected_seat.jpg);
 }
 
 .selected{
-    background-image: url(../img/selected_seat.jpg);
 }
 
 .checkbox {
