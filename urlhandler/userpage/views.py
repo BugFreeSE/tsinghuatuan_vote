@@ -160,7 +160,7 @@ def details_view(request, activityid):
                                          'act_bookstart': act_bookstart, 'act_bookend': act_bookend,
                                          'act_begintime': act_begintime,
                                          'act_endtime': act_endtime, 'act_totaltickets': act_totaltickets,
-                                         'act_key': 2333,
+                                         'act_key': act_name,
                                          'act_place': act_place, 'act_status': act_status, 'act_seconds': act_seconds,
                                          'cur_time': cur_time,
                                          'act_abstract': act_abstract, 'act_text_status': act_text_status,
