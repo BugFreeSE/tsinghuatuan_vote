@@ -231,6 +231,12 @@ def get_checked_tickets(activity):
 def wrap_activity_dict(activity):
     dt = model_to_dict(activity)
     dt['pic'] = activity.pic.url
+
+    f_obj = open(sys.path[0] + "/urlhandler/adminpage/static1/seats")
+    rows = f_obj.readline()
+    columns = f_obj.readline()
+    dt['xinqing_rows'] = int(rows)
+    dt['xinqing_columns'] = int(columns)
     if (dt['status'] >= 1) and (datetime.now() >= dt['book_start']):
         dt['tickets_ready'] = 1
         dt['ordered_tickets'] = 0 # int(activity.total_tickets) - int(activity.remain_tickets)
@@ -296,7 +302,7 @@ def create_seats(district):
             preDict = dict()
             preDict['row'] = i
             preDict['column'] = j
-            preDict['seat_number'] = str(i) + "," + str(j)
+            preDict['seat_number'] = str(i) + "排" + str(j) + "座"
             preDict['district'] = district
             Seat.objects.create(**preDict)
 
@@ -349,7 +355,7 @@ def activity_post(request):
                 preDict['activity'] = activity
                 preDict['total_tickets'] = 100 #待修改
                 preDict['remain_tickets'] = preDict['total_tickets']
-                preDict['has_seat'] = False
+                preDict['has_seat'] = True
                 #create_seats(district)
                 f_obj = open(sys.path[0] + "/urlhandler/adminpage/static1/seats")
                 rows = f_obj.readline()
