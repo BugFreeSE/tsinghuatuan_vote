@@ -1,4 +1,4 @@
-#-*- coding:utf-8 -*-
+# -*- coding:utf-8 -*-
 import random
 import string
 import datetime
@@ -34,6 +34,7 @@ def get_reply_single_ticket(msg, ticket, now, ext_desc=''):
         url=s_reverse_ticket_detail(ticket.unique_id)
     ))
 
+
 def get_reply_multi_tickets(msg, tickets, now, ext_desc=''):
     articles = []
     for ticket in tickets:
@@ -52,7 +53,7 @@ def is_authenticated(openid):
 
 #check help command
 def check_help_or_subscribe(msg):
-#    print get_custom_menu()
+    #    print get_custom_menu()
     return handler_check_text(msg, ['帮助', 'help']) or handler_check_event_click(msg, [
         WEIXIN_EVENT_KEYS['help']]) or handler_check_events(msg, ['scan', 'subscribe'])
 
@@ -119,10 +120,6 @@ def response_exam_tickets(msg):
     for ticket in tickets:
         if ticket.district.activity.end_time >= now:
             all_tickets.append(ticket)
-    # for activity in activities:
-    #     tickets = Ticket.objects.filter(stu_id=user.stu_id, activity=activity, status=1)
-    #     if tickets.exists():
-    #         all_tickets.append(tickets[0])
 
     if len(all_tickets) == 1:
         ticket = all_tickets[0]
@@ -227,7 +224,7 @@ def book_ticket(user, district, now):
             n = 1
         mytickets = []
         for i in range(0, n):
-            District.objects.filter(id=district.id).update(remain_tickets=F('remain_tickets')-1)
+            District.objects.filter(id=district.id).update(remain_tickets=F('remain_tickets') - 1)
             ticket = Ticket.objects.create(
                 stu_id=user.stu_id,
                 district=district,
@@ -238,25 +235,6 @@ def book_ticket(user, district, now):
             mytickets.append(ticket)
 
         return mytickets
-        # if not tickets.exists():
-        #     Activity.objects.filter(id=activity.id).update(remain_tickets=F('remain_tickets')-1)
-        #     ticket = Ticket.objects.create(
-        #         stu_id=user.stu_id,
-        #         activity=activity,
-        #         unique_id=random_string,
-        #         status=1,
-        #         seat=next_seat
-        #     )
-        #     return ticket
-        # elif tickets[0].status == 0:
-        #     Activity.objects.filter(id=activity.id).update(remain_tickets=F('remain_tickets')-1)
-        #     ticket = tickets[0]
-        #     ticket.status = 1
-        #     ticket.seat = next_seat
-        #     ticket.save()
-        #     return ticket
-        # else:
-        #     return None
 
 
 def check_cancel_ticket(msg):
@@ -285,31 +263,32 @@ def response_cancel_ticket(msg):
         if ticket.district.activity.book_end >= now:
             ticket.status = 0
             ticket.save()
-            District.objects.filter(id=ticket.district.id).update(remain_tickets=F('remain_tickets')+1)
+            District.objects.filter(id=ticket.district.id).update(remain_tickets=F('remain_tickets') + 1)
             return get_reply_text_xml(msg, get_text_success_cancel_ticket())
         else:
             return get_reply_text_xml(msg, get_text_timeout_cancel_ticket())
-    # if not activities.exists():
-    #     return get_reply_text_xml(msg, get_text_no_such_activity('退票'))
-    # else:
-    #     activity = activities[0]
-    #     if activity.book_end >= now:
-    #         tickets = Ticket.objects.filter(stu_id=user.stu_id, activity=activity, status=1)
-    #         if tickets.exists():   # user has already booked the activity
-    #             ticket = tickets[0]
-    #             ticket.status = 0
-    #             ticket.save()
-    #             Activity.objects.filter(id=activity.id).update(remain_tickets=F('remain_tickets')+1)
-    #             return get_reply_text_xml(msg, get_text_success_cancel_ticket())
-    #         else:
-    #             return get_reply_text_xml(msg, get_text_fail_cancel_ticket())
-    #     else:
-    #         return get_reply_text_xml(msg, get_text_timeout_cancel_ticket())
+            # if not activities.exists():
+            #     return get_reply_text_xml(msg, get_text_no_such_activity('退票'))
+            # else:
+            #     activity = activities[0]
+            #     if activity.book_end >= now:
+            #         tickets = Ticket.objects.filter(stu_id=user.stu_id, activity=activity, status=1)
+            #         if tickets.exists():   # user has already booked the activity
+            #             ticket = tickets[0]
+            #             ticket.status = 0
+            #             ticket.save()
+            #             Activity.objects.filter(id=activity.id).update(remain_tickets=F('remain_tickets')+1)
+            #             return get_reply_text_xml(msg, get_text_success_cancel_ticket())
+            #         else:
+            #             return get_reply_text_xml(msg, get_text_fail_cancel_ticket())
+            #     else:
+            #         return get_reply_text_xml(msg, get_text_timeout_cancel_ticket())
 
 
 #check book event
 def check_book_event(msg):
     return handler_check_text_header(msg, ['抢票'])
+
 
 #for test!!!
 def response_book_event(msg):
@@ -333,7 +312,6 @@ def response_book_event(msg):
     tickets = Ticket.objects.filter(stu_id=user.stu_id, district=district, status__gt=0)
     if tickets.exists():
         return get_reply_single_ticket(msg, tickets[0], now, get_text_existed_book_event())
-
 
     ticket = book_ticket(user, district, now)
     if ticket is None:
@@ -426,7 +404,10 @@ def response_setting(msg):
         return get_reply_text_xml(msg, get_text_unbinded_setting(fromuser))
     return get_reply_text_xml(msg, get_text_setting(fromuser))
 
+
 max_cols = 0
+
+
 def seat_cmp(a, b):
     global max_cols
     if a.row != b.row:
@@ -435,8 +416,10 @@ def seat_cmp(a, b):
     colb = int(abs(b.column - max_cols / 2))
     return cmp(cola, colb)
 
+
 def get_seat_str(seat):
     return str(seat.row) + ',' + str(seat.column)
+
 
 def arrange_seats(seats, user):
     seat_list = []
@@ -469,6 +452,7 @@ def arrange_seats(seats, user):
                 break
     return chosen_seats
 
+
 def book_ticket_with_seats(user, district, now):
     with transaction.atomic():
         if district.remain_tickets <= 0:
@@ -485,14 +469,14 @@ def book_ticket_with_seats(user, district, now):
 
         myseats = arrange_seats(seats, user)
         if myseats == None or myseats == []:
-            return  None
+            return None
         tickets = []
         for seat in myseats:
             random_string = ''.join([random.choice(string.ascii_letters + string.digits) for n in xrange(32)])
             while Ticket.objects.filter(unique_id=random_string).exists():
                 random_string = ''.join([random.choice(string.ascii_letters + string.digits) for n in xrange(32)])
 
-            District.objects.filter(id=district.id).update(remain_tickets=F('remain_tickets')-1)
+            District.objects.filter(id=district.id).update(remain_tickets=F('remain_tickets') - 1)
             ticket = Ticket.objects.create(
                 stu_id=user.stu_id,
                 district=district,

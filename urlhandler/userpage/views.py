@@ -1,4 +1,4 @@
-#-*- coding:utf-8 -*-
+# -*- coding:utf-8 -*-
 
 from django.http import HttpResponse, Http404, HttpResponseRedirect
 from django.template import RequestContext
@@ -12,6 +12,7 @@ from django.forms import *
 from queryhandler.tickethandler import get_user
 from django.db.models import F
 import json
+
 
 def home(request):
     return render_to_response('mobile_base.html')
@@ -42,11 +43,11 @@ def validate_view(request, openid):
 # success: check substring 'loginteacher_action.jsp'
 # validate: userid is number
 def validate_through_igeek(secret):
-    encrypted = {'secret' : secret}
+    encrypted = {'secret': secret}
     postData = urllib.urlencode(encrypted)
     request_url = 'http://auth.igeek.asia/v1'
     req = urllib2.Request(url=request_url, data=postData)
-    req.add_header('Context-Type','application/x-www-form-urlencoded')
+    req.add_header('Context-Type', 'application/x-www-form-urlencoded')
     res_data = urllib2.urlopen(req)
     try:
         res = res_data.read()
@@ -106,12 +107,14 @@ def validate_post(request):
             #     return HttpResponse('Error')
     return HttpResponse(validate_result)
 
+
 def get_timestamp(request):
     request_url = 'http://auth.igeek.asia/v1/time'
     req = urllib2.Request(url=request_url)
     r = urllib2.urlopen(req)
     timestamp = r.read()
     return HttpResponse(timestamp)
+
 
 ###################### Activity Detail ######################
 
@@ -138,25 +141,29 @@ def details_view(request, activityid):
     act_text_status = 0
     if len(act_text) > MAX_LEN:
         act_text_status = 1
-        act_abstract = act_text[0:MAX_LEN]+u'...'
+        act_abstract = act_text[0:MAX_LEN] + u'...'
     act_photo = SITE_DOMAIN + activity[0].pic.url
-    cur_time = timezone.now() # use the setting UTC
+    cur_time = timezone.now()  # use the setting UTC
     act_seconds = 0
     if act_bookstart <= cur_time <= act_bookend:
         act_delta = act_bookend - cur_time
         act_seconds = act_delta.total_seconds()
-        act_status = 0 # during book time
+        act_status = 0  # during book time
     elif cur_time < act_bookstart:
         act_delta = act_bookstart - cur_time
         act_seconds = act_delta.total_seconds()
-        act_status = 1 # before book time
+        act_status = 1  # before book time
     else:
-        act_status = 2 # after book time
-    variables=RequestContext(request,{'act_name':act_name,'act_text':act_text, 'act_photo':act_photo,
-                                      'act_bookstart':act_bookstart,'act_bookend':act_bookend,'act_begintime':act_begintime,
-                                      'act_endtime':act_endtime,'act_totaltickets':act_totaltickets,'act_key':2333,
-                                      'act_place':act_place, 'act_status':act_status, 'act_seconds':act_seconds,'cur_time':cur_time,
-                                      'act_abstract':act_abstract, 'act_text_status':act_text_status,'act_ticket_remain':act_ticket_remain})
+        act_status = 2  # after book time
+    variables = RequestContext(request, {'act_name': act_name, 'act_text': act_text, 'act_photo': act_photo,
+                                         'act_bookstart': act_bookstart, 'act_bookend': act_bookend,
+                                         'act_begintime': act_begintime,
+                                         'act_endtime': act_endtime, 'act_totaltickets': act_totaltickets,
+                                         'act_key': 2333,
+                                         'act_place': act_place, 'act_status': act_status, 'act_seconds': act_seconds,
+                                         'cur_time': cur_time,
+                                         'act_abstract': act_abstract, 'act_text_status': act_text_status,
+                                         'act_ticket_remain': act_ticket_remain})
     return render_to_response('activitydetails.html', variables)
 
 
@@ -173,23 +180,25 @@ def ticket_view(request, uid):
     act_place = activity[0].place
     ticket_status = ticket[0].status
     now = datetime.datetime.now()
-    if act_endtime < now:#表示活动已经结束
+    if act_endtime < now:  #表示活动已经结束
         ticket_status = 3
     ticket_seat = ticket[0].seat
     seat_matrix = None
     if ticket_seat:
         seats = Seat.objects.filter(district=ticket[0].district)
         seat_matrix = parse_seats(seats, ticket[0])['seat_matrix']
-    act_photo = "http://qr.ssast.org/fit/"+uid
-    variables=RequestContext(request, {'act_id': act_id, 'act_name': act_name,'act_place': act_place, 'act_begintime': act_begintime,
-                                       'act_endtime': act_endtime,'act_photo': act_photo, 'ticket_status': ticket_status,
-                                       'ticket_seat': ticket_seat,
-                                       'ticket_uid': uid, 'seat_matrix': seat_matrix})
+    act_photo = "http://qr.ssast.org/fit/" + uid
+    variables = RequestContext(request, {'act_id': act_id, 'act_name': act_name, 'act_place': act_place,
+                                         'act_begintime': act_begintime,
+                                         'act_endtime': act_endtime, 'act_photo': act_photo,
+                                         'ticket_status': ticket_status,
+                                         'ticket_seat': ticket_seat,
+                                         'ticket_uid': uid, 'seat_matrix': seat_matrix})
     return render_to_response('activityticket.html', variables)
 
 
 def help_view(request):
-    variables=RequestContext(request,{'name':u'“紫荆之声”'})
+    variables = RequestContext(request, {'name': u'“紫荆之声”'})
     return render_to_response('help.html', variables)
 
 
@@ -199,7 +208,7 @@ def setting_view(request, openid):
         district_list = get_district_list(activity_list)
         seat_list = get_bookable_seat_list(district_list)
         variables = RequestContext(request, {'activity_list': activity_list, 'form': SettingForm(),
-                                             'district_list': district_list, 'seat_list':seat_list, 'openid': openid})
+                                             'district_list': district_list, 'seat_list': seat_list, 'openid': openid})
         return render_to_response('setting.html', variables)
     else:
         '''
@@ -242,23 +251,24 @@ def setting_view_post(request):
             return HttpResponse(json.dumps('success'), content_type='application/json')
         raise Http404
 
+
 def activity_menu_view(request, actid):
     activity = Activity.objects.get(id=actid)
     return render_to_response('activitymenu.html', {'activity': activity})
 
 
 def helpact_view(request):
-    variables=RequestContext(request,{})
+    variables = RequestContext(request, {})
     return render_to_response('help_activity.html', variables)
 
 
 def helpclub_view(request):
-    variables=RequestContext(request,{})
+    variables = RequestContext(request, {})
     return render_to_response('help_club.html', variables)
 
 
 def helplecture_view(request):
-    variables=RequestContext(request,{})
+    variables = RequestContext(request, {})
     return render_to_response('help_lecture.html', variables)
 
 
@@ -274,14 +284,15 @@ def get_district_list(activity_list):
         district_list.extend(District.objects.filter(activity=activity.id))
     return district_list
 
+
 def get_bookable_seat_list(district_list):
     bookable_seat_list = [];
     for district in district_list:
         bookable_seat_list.extend(Seat.objects.filter(district=district.id))
     return bookable_seat_list
 
-def cancel_ticket(request, ticket_uid):
 
+def cancel_ticket(request, ticket_uid):
     tickets = Ticket.objects.filter(unique_id=ticket_uid)
 
     if not tickets.exists():
@@ -291,10 +302,11 @@ def cancel_ticket(request, ticket_uid):
         if ticket.district.activity.book_end >= datetime.datetime.now():
             ticket.status = 0
             ticket.save()
-            District.objects.filter(id=ticket.district.id).update(remain_tickets=F('remain_tickets')+1)
+            District.objects.filter(id=ticket.district.id).update(remain_tickets=F('remain_tickets') + 1)
             return render_to_response("cancelticket.html", {"reply": "success"})
         else:
             return render_to_response("cancelticket.html", {"reply": "out of date"})
+
 
 def parse_seats(seats, ticket):
     rows = 0
@@ -304,7 +316,7 @@ def parse_seats(seats, ticket):
             rows = seat.row
         if seat.column > cols:
             cols = seat.column
-    seatMatrix = [[0 for col in range(cols+1)] for row in range(rows+1)]
+    seatMatrix = [[0 for col in range(cols + 1)] for row in range(rows + 1)]
     myrow = ticket.seat.row
     mycol = ticket.seat.column
     # 0 表示没有座位
@@ -324,10 +336,11 @@ def parse_seats(seats, ticket):
                 seatMatrix[seat.row][seat.column] = 4
 
     preDict = dict()
-    preDict['rows'] = rows+1
-    preDict['cols'] = cols+1
+    preDict['rows'] = rows + 1
+    preDict['cols'] = cols + 1
     preDict['seat_matrix'] = seatMatrix
     return preDict
+
 
 def view_seats(request, ticket_uid):
     tickets = Ticket.objects.filter(unique_id=ticket_uid)
