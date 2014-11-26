@@ -194,6 +194,7 @@ def ticket_view(request, uid):
                                          'act_endtime': act_endtime, 'act_photo': act_photo,
                                          'ticket_status': ticket_status,
                                          'ticket_seat': ticket_seat,
+                                         'ticket': ticket[0],
                                          'ticket_uid': uid, 'seat_matrix': seat_matrix})
     return render_to_response('activityticket.html', variables)
 
