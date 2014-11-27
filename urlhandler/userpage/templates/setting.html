@@ -21,6 +21,8 @@
     var unselected_path = "{% static "img/unselected_seat.jpg" %}";
     function draw_seats(seat_matrix){
         $("#seat_plan").children().remove();
+        $('#span_unselected').children().remove();
+        $('#span_selected').children().remove();
         totalRow = seat_matrix.length;
         totalColumn = seat_matrix[0].length;
 
