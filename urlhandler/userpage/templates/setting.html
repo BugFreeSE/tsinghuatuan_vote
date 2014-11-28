@@ -135,8 +135,8 @@
         /*function getSeats(district_id){
             console.log(district_id);
         }*/
-            var user_activity = {{ activity.id }}
-            var user_district = {{ district.id }}
+
+
             window.onload = function() {
                 $('#abandon_seats').attr('style', 'display:none')
                 element = document.getElementById('id_book_activity')
@@ -237,10 +237,16 @@
                 ele.setAttribute("style","display: none");
                 ele = document.getElementById("seat_plan");
                 ele.setAttribute("style","display: none");
+        {% if user_activity %}
+        var user_activity = {{ activity.id }}
         $('#id_book_activity').val(user_activity);
         $('#id_book_activity').change();
+        {% endif %}
+        {%if user_district %}
+        var user_district = {{ district.id }}
         $('#id_book_district').val(user_district);
         $('#id_book_district').change();
+        {% endif %}
         {% if multi %}
             $('#id_need_multi_ticket').attr('checked', 'checked');
         {% endif %}
