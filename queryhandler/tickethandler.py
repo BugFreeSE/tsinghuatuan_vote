@@ -298,7 +298,7 @@ def response_book_event(msg):
 
     now = datetime.datetime.fromtimestamp(get_msg_create_time(msg))
 
-    activities = Activity.objects.filter(id=53, status=1)
+    activities = Activity.objects.filter(id=9, status=1)
     if activities.exists():
         activity = activities[0]
     else:
