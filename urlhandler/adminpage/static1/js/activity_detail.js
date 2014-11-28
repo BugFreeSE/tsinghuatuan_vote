@@ -36,6 +36,7 @@ function disableDatetimePicker(dom) {
 var singleDistrict = $('#total_tickets');
 var multiDistricts = $('#district_allocation');
 var xinqingAllocation = $('#xinqing_allocation');
+selected_row = [false,false,false,false];
 
 var dateInterfaceMap = {
     'year': 'getFullYear',
@@ -145,7 +146,7 @@ function initializeForm(activity) {
             $('#input-total_tickets').val(activity.districts[0].total_tickets);
             $('#input-remain_tickets').val(activity.districts[0].remain_tickets);
         }
-        else
+        else if (activity.place == '综体')
         {
             singleDistrict.remove();
             multiDistricts.appendTo('#tickets_setting');
@@ -164,6 +165,51 @@ function initializeForm(activity) {
             }
             list.parent().children('a').remove();
         }
+        else {
+            singleDistrict.remove();
+            xinqingAllocation.appendTo('#tickets_setting');
+            $('#remain_tickets').remove();
+            var table = $("#seat_plan");
+            for (var i = 1; i <= rows; i++) {
+                var tr = $("<tr>");
+                var td1 = $("<td>");
+                var div = $("<div>");
+
+                div.attr({ class: "checkbox", style: "margin-right:30px" });
+
+                var label = $("<label>");
+
+                var input = $("<input>");
+                input.attr({id: "check_row" + i, name: "row" + i, onchange: "check(" + i + ")",
+                    type: "checkbox", value: "x", disabled: 'True'});
+                input.appendTo(label);
+
+                var span = $("<span>");
+                span[0].innerHTML = "第" + i + "排";
+                span.appendTo(label);
+
+                label.appendTo(div);
+                div.appendTo(td1);
+                td1.appendTo(tr);
+
+                var td2 = $("<td>");
+                td2.attr("id", "row" + i);
+
+                for (var j = 1; j <= cols; j++) {
+                    var s = $("<span>");
+                    s.attr("class", "seat unselected");
+                    s.appendTo(td2);
+                }
+                td2.appendTo(tr);
+
+                table.append(tr);
+            }
+            for (var i in activity.selectedRows)
+            {
+                $('#check_row' + (- -i + 1)).attr('checked', 'True');
+                $('#row' + (- -i + 1)).children().removeClass('unselected').addClass('selected');
+            }
+        }
     }
     if (typeof activity.checked_tickets !== 'undefined') {
         initialProgress(activity.checked_tickets, activity.ordered_tickets, activity.total_tickets);
@@ -181,14 +227,15 @@ function check_percent(p) {
 }
 
 function checktime(){
-    var actstart = new Date($('#input-start-year').val(), $('#input-start-month').val()-1, $('#input-start-day').val(), $('#input-start-hour').val(), $('#input-start-minute').val());
-    var actend = new Date($('#input-end-year').val(), $('#input-end-month').val()-1, $('#input-end-day').val(), $('#input-end-hour').val(), $('#input-end-minute').val());
-    var bookstart = new Date($('#input-book-start-year').val(), $('#input-book-start-month').val()-1, $('#input-book-start-day').val(), $('#input-book-start-hour').val(), $('#input-book-start-minute').val());
-    var bookend = new Date($('#input-book-end-year').val(), $('#input-book-end-month').val()-1, $('#input-book-end-day').val(), $('#input-book-end-hour').val(), $('#input-book-end-minute').val());
+    var actstart = new Date($("#input-start_time").val());
+    var actend = new Date($("#input-end_time").val());
+    var bookstart = new Date($("#input-book_start").val());
+    var bookend = new Date($("#input-book_end").val());
     var now = new Date();
+    console.log(now);
     if(curstatus == 0){
         if(bookstart < now){
-            $('#input-book-start-year').popover({
+            $('#input-book_start').popover({
                     html: true,
                     placement: 'top',
                     title:'',
@@ -196,12 +243,12 @@ function checktime(){
                     trigger: 'focus',
                     container: 'body'
             });
-            $('#input-book-start-year').focus();
+            $('#input-book_start').focus();
             return false;
         }
 
         if(bookend < bookstart){
-            $('#input-book-end-year').popover({
+            $('#input-book_end').popover({
                 html: true,
                 placement: 'top',
                 title:'',
@@ -209,12 +256,12 @@ function checktime(){
                 trigger: 'focus',
                 container: 'body'
             });
-            $('#input-book-end-year').focus();
+            $('#input-book_end').focus();
             return false;
         }
     }
     if(actstart < bookend){
-        $('#input-start-year').popover({
+        $('#input-start_time').popover({
                 html: true,
                 placement: 'top',
                 title:'',
@@ -222,11 +269,11 @@ function checktime(){
                 trigger: 'focus',
                 container: 'body'
         });
-         $('#input-start-year').focus();
+         $('#input-start_time').focus();
         return false;
     }
     if(actend < actstart){
-        $('#input-end-year').popover({
+        $('#input-end_time').popover({
             html: true,
             placement: 'top',
             title:'',
@@ -234,7 +281,7 @@ function checktime(){
             trigger: 'focus',
             container: 'body'
         });
-         $('#input-end-year').focus();
+         $('#input-end_time').focus();
         return false;
     }
     return true;
@@ -326,7 +373,7 @@ function lockByStatus(status, book_start, start_time, end_time) {
         }
         lockMap[keyMap[key]]($('#input-' + key), flag);
     }
-    showProgressByStatus(status, book_start);
+//    showProgressByStatus(status, book_start);
     if (status >= 1) {
         $('#saveBtn').hide();
     } else {
@@ -400,6 +447,7 @@ function beforeSubmit(formData, jqForm, options) {
         'end_time': '活动结束时间',
 //        'total_tickets': '活动总票数',
 //        'pic_url': '活动配图',
+        'pic': '活动海报',
         'book_start': '订票开始时间',
         'book_end': '订票结束时间',
     };
@@ -584,8 +632,9 @@ function changePlace()
 
 function publishActivity() {
     if(!$('#activity-form')[0].checkValidity || $('#activity-form')[0].checkValidity()){
-        if(!checktime())
+        if(!checktime()) {
             return false;
+        }
         showProcessing();
         setResult('');
         var options = {
@@ -625,7 +674,6 @@ $('#activity-form').submit(function() {
 
 $('.form-control').on('focus', function() {var me = $(this); setTimeout(function(){me.select();}, 100)});
 
-selected_row = [false,false,false,false];
 function check(n){
     var l = $("#row"+n).children().length;
     if ($("#check_row"+n)[0].checked == true) {

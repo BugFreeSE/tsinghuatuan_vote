@@ -286,11 +286,20 @@ def activity_detail(request, actid):
         for district in districtmodels:
             districts += [wrap_district_dict(district)]
         unpublished = (activity.status == 0)
+        selectedRows = []
+        if districts[0]['has_seat']:
+            f_obj = open(sys.path[0] + "/urlhandler/adminpage/static1/seats")
+            rows = f_obj.readline()
+            for i in range(0, int(rows)):
+                seats = Seat.objects.filter(district=districtmodels[0], row=i)
+                if len(seats) > 0:
+                    selectedRows.append(i)
     except:
         raise Http404
     return render_to_response('activity_detail.html', {
         'activity': wrap_activity_dict(activity),
         'districts': districts,
+        'selectedRows': selectedRows,
         'unpublished': unpublished
     }, context_instance=RequestContext(request))
 
