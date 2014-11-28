@@ -21,6 +21,8 @@
     var unselected_path = "{% static "img/unselected_seat.jpg" %}";
     function draw_seats(seat_matrix){
         $("#seat_plan").children().remove();
+        $('#span_unselected').children().remove();
+        $('#span_selected').children().remove();
         totalRow = seat_matrix.length;
         totalColumn = seat_matrix[0].length;
 
@@ -29,7 +31,16 @@
             var $temp = $("<tr>").attr('id', 'row'+i);
             for (var j = 0; j < totalColumn; j++)
             {
-                $temp.append($("<td>").attr('id', 's' + i + '_' + j).attr('class', 'selected').append($('<img>').attr('src', selected_path)));
+                if (seat_matrix[i][j] == 1){
+                   $temp.append($("<td>").attr('id', 's' + i + '_' + j).attr('class', 'selected').append($('<img>').attr('src', selected_path)));
+                }
+                else if (seat_matrix[i][j] == 2){
+                    $temp.append($("<td>").attr('id', 's' + i + '_' + j).attr('class', 'hasSold'));
+                }
+                else {
+                $temp.append($("<td>").attr('id', 's' + i + '_' + j));
+                }
+
             }
             $("#seat_plan").append($temp);
         }
@@ -54,8 +65,8 @@
         var l = Math.min(30,(w-50) / totalColumn);
         $('.seat').css('width', l).css('height', l);
         $('.seat img').css('width', l).css('height', l);
-        $('#span_unselected').append($('<img>').attr('src', '/static1/img/unselected_seat_titled.png'));
-        $('#span_selected').append($('<img>').attr('src', '/static1/img/selected_seat_titled.png'));
+        $('#span_unselected').append($('<img>').attr('src', '/static1/img/unselected_seat_titled.png').css('width', l).css('height', l).css('position','relative').css('bottom', '-8px'));
+        $('#span_selected').append($('<img>').attr('src', '/static1/img/selected_seat_titled.png').css('width', l).css('height', l).css('position','relative').css('bottom', '-8px'));
     }
 
 
@@ -139,7 +150,7 @@
                                 //console.log(seat_matrix);
                                 {% for seat in seat_list%}
                                 if('{{seat.district.activity.id}}' == '{{activity.id}}') {
-                                    if('{{seat.is_sold}}'== 'False')
+                                    if('{{seat.is_sold}}' === 'False')
                                         seat_matrix[{{seat.row}}][{{seat.column}}] = 1;
                                     else
                                         seat_matrix[{{seat.row}}][{{seat.column}}] = 2;
@@ -223,7 +234,7 @@
 
             <div id="选择座位">选择座位范围：
                 <button type="button" onclick="reverseChoices()">反选</button>
-                图例：<span class="seat unselected" id="span_unselected">未选</span>  <span class="seat selected" id="span_selected">选定</span>
+                图例：<span class="seat unselected" id="span_unselected"></span>  <span class="seat selected" id="span_selected"></span>
                 <div>票价：40元</div>
                 <div>舞台</div>
 

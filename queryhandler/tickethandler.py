@@ -432,6 +432,7 @@ def arrange_seats(seats, user):
     seat_list.sort(cmp=seat_cmp)
 
     abandon_seats = set(user.abandon_seats.split(';'))
+    chosen_seats = []
     if user.need_multi_ticket:
         for seat1 in seat_list:
             if get_seat_str(seat1) in abandon_seats:
