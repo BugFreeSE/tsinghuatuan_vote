@@ -68,6 +68,12 @@
             {% endfor %}
             ],
 //            'total_tickets': {{ activity.total_tickets }},
+            'selectedRows': [
+            {% for row in selectedRows %}
+                {{ row }}
+            {% if forloop.last %}{% else %},{% endif %}
+            {% endfor %}
+            ],
             'status': {{ activity.status }}{% else %},
             'status': 0{% endif %}{% if activity.tickets_ready %},
 //            'checked_tickets': {{ activity.checked_tickets }},
@@ -293,6 +299,7 @@
                             <input type="number" name="total_tickets" class="form-control" id="input-remain_tickets" min="1" placeholder="本活动通过“紫荆之声”的发票总数">
                         </div>
                     </div>
+                    <!--
                     <div class="form-group" id="progress-tickets">
                         <label class="col-sm-2 control-label">订票与入场情况</label>
                         <div class="col-sm-9">
@@ -305,7 +312,7 @@
                                 </div>
                             </div>
                         </div>
-                    </div>
+                    </div>-->
 
                     <div class="form-group" id="district_allocation">
                         <label class="col-sm-2 control-label">分区抢票</label>
