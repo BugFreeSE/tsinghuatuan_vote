@@ -181,14 +181,15 @@ function check_percent(p) {
 }
 
 function checktime(){
-    var actstart = new Date($('#input-start-year').val(), $('#input-start-month').val()-1, $('#input-start-day').val(), $('#input-start-hour').val(), $('#input-start-minute').val());
-    var actend = new Date($('#input-end-year').val(), $('#input-end-month').val()-1, $('#input-end-day').val(), $('#input-end-hour').val(), $('#input-end-minute').val());
-    var bookstart = new Date($('#input-book-start-year').val(), $('#input-book-start-month').val()-1, $('#input-book-start-day').val(), $('#input-book-start-hour').val(), $('#input-book-start-minute').val());
-    var bookend = new Date($('#input-book-end-year').val(), $('#input-book-end-month').val()-1, $('#input-book-end-day').val(), $('#input-book-end-hour').val(), $('#input-book-end-minute').val());
+    var actstart = new Date($("#input-start_time").val());
+    var actend = new Date($("#input-end_time").val());
+    var bookstart = new Date($("#input-book_start").val());
+    var bookend = new Date($("#input-book_end").val());
     var now = new Date();
+    console.log(now);
     if(curstatus == 0){
         if(bookstart < now){
-            $('#input-book-start-year').popover({
+            $('#input-book_start').popover({
                     html: true,
                     placement: 'top',
                     title:'',
@@ -196,12 +197,12 @@ function checktime(){
                     trigger: 'focus',
                     container: 'body'
             });
-            $('#input-book-start-year').focus();
+            $('#input-book_start').focus();
             return false;
         }
 
         if(bookend < bookstart){
-            $('#input-book-end-year').popover({
+            $('#input-book_end').popover({
                 html: true,
                 placement: 'top',
                 title:'',
@@ -209,12 +210,12 @@ function checktime(){
                 trigger: 'focus',
                 container: 'body'
             });
-            $('#input-book-end-year').focus();
+            $('#input-book_end').focus();
             return false;
         }
     }
     if(actstart < bookend){
-        $('#input-start-year').popover({
+        $('#input-start_time').popover({
                 html: true,
                 placement: 'top',
                 title:'',
@@ -222,11 +223,11 @@ function checktime(){
                 trigger: 'focus',
                 container: 'body'
         });
-         $('#input-start-year').focus();
+         $('#input-start_time').focus();
         return false;
     }
     if(actend < actstart){
-        $('#input-end-year').popover({
+        $('#input-end_time').popover({
             html: true,
             placement: 'top',
             title:'',
@@ -234,7 +235,7 @@ function checktime(){
             trigger: 'focus',
             container: 'body'
         });
-         $('#input-end-year').focus();
+         $('#input-end_time').focus();
         return false;
     }
     return true;
@@ -584,8 +585,9 @@ function changePlace()
 
 function publishActivity() {
     if(!$('#activity-form')[0].checkValidity || $('#activity-form')[0].checkValidity()){
-        if(!checktime())
+        if(!checktime()) {
             return false;
+        }
         showProcessing();
         setResult('');
         var options = {
