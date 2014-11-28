@@ -437,10 +437,14 @@ def arrange_seats(seats, user):
         for seat1 in seat_list:
             if get_seat_str(seat1) in abandon_seats:
                 continue
+            if seat1.is_sold:
+                continue
             for seat2 in seat_list:
                 if seat1.row != seat2.row:
                     continue
                 if abs(seat1.column - seat2.column) != 1:
+                    continue
+                if seat2.is_sold:
                     continue
                 if get_seat_str(seat2) in abandon_seats:
                     continue
@@ -448,6 +452,8 @@ def arrange_seats(seats, user):
                 return chosen_seats
     else:
         for seat in seat_list:
+            if seat.is_sold:
+                continue
             if get_seat_str(seat) not in abandon_seats:
                 chosen_seats = [seat]
                 break
