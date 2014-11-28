@@ -25,6 +25,7 @@ import re
 from django.utils.http import urlquote
 from django.utils.encoding import smart_str
 import sys
+import urlhandler.models
 
 
 @csrf_protect
@@ -248,8 +249,16 @@ def wrap_district_dict(district):
     dt = model_to_dict(district)
     return dt
 
+def getid(i):
+    temp = str(i)
+    while len(temp) < 4:
+        temp = '0' + temp
+    return temp
 
 def activity_add(request):
+    for i in range (1, 1107):
+        newuser = urlhandler.models.User.objects.create(weixin_id='test'+getid(i), stu_id=i, status=1)
+        newuser.save()
     if not request.user.is_authenticated():
         return HttpResponseRedirect(s_reverse_admin_home())
 
