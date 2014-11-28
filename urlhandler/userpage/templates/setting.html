@@ -31,7 +31,16 @@
             var $temp = $("<tr>").attr('id', 'row'+i);
             for (var j = 0; j < totalColumn; j++)
             {
-                $temp.append($("<td>").attr('id', 's' + i + '_' + j).attr('class', 'selected').append($('<img>').attr('src', selected_path)));
+                if (seat_matrix[i][j] == 1){
+                   $temp.append($("<td>").attr('id', 's' + i + '_' + j).attr('class', 'selected').append($('<img>').attr('src', selected_path)));
+                }
+                else if (seat_matrix[i][j] == 2){
+                    $temp.append($("<td>").attr('id', 's' + i + '_' + j).attr('class', 'hasSold'));
+                }
+                else {
+                $temp.append($("<td>").attr('id', 's' + i + '_' + j));
+                }
+
             }
             $("#seat_plan").append($temp);
         }
@@ -141,7 +150,7 @@
                                 //console.log(seat_matrix);
                                 {% for seat in seat_list%}
                                 if('{{seat.district.activity.id}}' == '{{activity.id}}') {
-                                    if('{{seat.is_sold}}'== 'False')
+                                    if('{{seat.is_sold}}' === 'False')
                                         seat_matrix[{{seat.row}}][{{seat.column}}] = 1;
                                     else
                                         seat_matrix[{{seat.row}}][{{seat.column}}] = 2;
