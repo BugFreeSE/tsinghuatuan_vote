@@ -181,29 +181,35 @@ def activity_create(activity, files):
     newact = Activity.objects.create(**preDict)
     return newact
 
-def activity_modify(activity):
+def activity_modify(activity, files):
     nowact = Activity.objects.get(id=activity['id'])
     now = datetime.now()
     if nowact.status == 0:
-        keylist = ['name', 'key', 'description', 'place', 'pic_url', 'seat_status', 'total_tickets']
+        keylist = ['name', 'description', 'pic', 'total_tickets']
         timelist = ['start_time', 'end_time', 'book_start', 'book_end']
     elif nowact.status == 1:
         if now >= nowact.start_time:
-            keylist = ['description', 'pic_url']
+            keylist = ['description', 'pic']
             timelist = ['start_time', 'end_time']
         elif now >= nowact.book_start:
-            keylist = ['description', 'place', 'pic_url']
+            keylist = ['description', 'pic']
             timelist = ['start_time', 'end_time', 'book_end']
         else:
-            keylist = ['description', 'place', 'pic_url', 'seat_status', 'total_tickets']
+            keylist = ['description', 'pic', 'total_tickets']
             timelist = ['start_time', 'end_time', 'book_end']
     else:
         keylist = []
         timelist = []
     for key in keylist:
         if key == 'total_tickets':
-            setattr(nowact, 'remain_tickets', activity[key])
-        setattr(nowact, key, activity[key])
+            district = District.objects.filter(activity=nowact)
+            setattr(district, 'total_tickets', activity[key])
+            setattr(district, 'remain_tickets', activity[key])
+        elif key == 'pic':
+            if 'pic' in files:
+                setattr(nowact, 'pic', files['pic'])
+        else:
+            setattr(nowact, key, activity[key])
     for key in timelist:
         setattr(nowact, key, str_to_datetime(activity[key]))
     if (nowact.status == 0) and ('publish' in activity):
@@ -326,7 +332,7 @@ def activity_post(request):
     rtnJSON = dict()
     try:
         if 'id' in post:
-            activity = activity_modify(post)
+            activity = activity_modify(post, files)
         else:
             '''
             iskey = Activity.objects.filter(key=post['key'])

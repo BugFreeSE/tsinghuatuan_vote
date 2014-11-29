@@ -455,6 +455,10 @@ function beforeSubmit(formData, jqForm, options) {
 
     ];
     for (i = 0, len = formData.length; i < len; ++i) {
+        if (formData[i].name == 'pic' && activity.id)
+        {
+            continue;
+        }
         if (!formData[i].value) {
             lackArray.push(nameMap[formData[i].name]);
             console.log(formData[i]);
