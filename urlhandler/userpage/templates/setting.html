@@ -237,12 +237,12 @@
                 ele.setAttribute("style","display: none");
                 ele = document.getElementById("seat_plan");
                 ele.setAttribute("style","display: none");
-        {% if user_activity %}
+        {% if activity %}
         var user_activity = {{ activity.id }}
         $('#id_book_activity').val(user_activity);
         $('#id_book_activity').change();
         {% endif %}
-        {%if user_district %}
+        {%if district %}
         var user_district = {{ district.id }}
         $('#id_book_district').val(user_district);
         $('#id_book_district').change();
