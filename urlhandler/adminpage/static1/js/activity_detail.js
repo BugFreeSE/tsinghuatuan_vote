@@ -455,6 +455,10 @@ function beforeSubmit(formData, jqForm, options) {
 
     ];
     for (i = 0, len = formData.length; i < len; ++i) {
+        if (formData[i].name == 'pic' && activity.id)
+        {
+            continue;
+        }
         if (!formData[i].value) {
             lackArray.push(nameMap[formData[i].name]);
             console.log(formData[i]);
@@ -635,18 +639,20 @@ function publishActivity() {
         if(!checktime()) {
             return false;
         }
-        var x = file.type;
-        if(x.charAt(0) != 'i' || x.charAt(1) != 'm'){
-            $('#upLoadBtn').popover({
+        if(file != undefined) {//对于用户新上传的文件检查是否为图片格式
+            var x = file.type;
+            if (x.charAt(0) != 'i' || x.charAt(1) != 'm') {
+                $('#upLoadBtn').popover({
                     html: true,
                     placement: 'top',
-                    title:'',
+                    title: '',
                     content: '<span style="color:red;">文件格式必须为图片</span>',
                     trigger: 'focus',
                     container: 'body'
-            });
-            $('#upLoadBtn').focus();
-            return false;
+                });
+                $('#upLoadBtn').focus();
+                return false;
+            }
         }
         //if(file.type)
         showProcessing();

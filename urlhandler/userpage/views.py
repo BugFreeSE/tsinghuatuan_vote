@@ -311,8 +311,8 @@ def cancel_ticket(request, ticket_uid):
             District.objects.filter(id=ticket.district.id).update(remain_tickets=F('remain_tickets') + 1)
             if ticket.district.has_seat:
                 ticket.seat.is_sold = 0
+                ticket.seat.save()
             ticket.save()
-            ticket.seat.save()
             return render_to_response("cancelticket.html", {"reply": "success"})
         else:
             return render_to_response("cancelticket.html", {"reply": "out of date"})
