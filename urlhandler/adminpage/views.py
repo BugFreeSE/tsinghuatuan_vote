@@ -203,9 +203,10 @@ def activity_modify(activity, files):
         timelist = []
     for key in keylist:
         if key == 'total_tickets':
-            district = District.objects.filter(activity=nowact)
-            setattr(district, 'total_tickets', activity[key])
-            setattr(district, 'remain_tickets', activity[key])
+            district = District.objects.filter(activity=nowact).first()
+            setattr(district, 'total_tickets', int(activity[key]))
+            setattr(district, 'remain_tickets', int(activity[key]))
+            district.save()
         elif key == 'pic':
             if 'pic' in files:
                 setattr(nowact, 'pic', files['pic'])
