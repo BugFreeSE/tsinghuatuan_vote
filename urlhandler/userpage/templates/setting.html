@@ -17,8 +17,29 @@
     <script src="{% static "js/setting.js" %}"></script>
     <script src="{% static "js/activity_list.js" %}"></script>
     <script>
+    var abandon_seats = '{{ abandon_seats }}';
     var selected_path = "{% static "img/selected_seat.jpg" %}";
     var unselected_path = "{% static "img/unselected_seat.jpg" %}";
+    var hassold_path = "{% static "img/occupied_seat.jpg" %}";
+
+    function get_abandon_seats(){
+        var seat_list = abandon_seats.split(';');
+        var r = []
+        for(var i = 0; i < seat_list.length; i++){
+            var s = seat_list[i].split(',');
+            var temp = [parseInt(s[0]), parseInt(s[1])];
+            r.push(temp);
+        }
+        return r;
+    }
+
+    function in_seat_set(seat, seat_set){
+        for (var i = 0; i < seat_set.length; i++){
+            if (seat.toString() === seat_set[i].toString()) return true;
+        }
+        return false;
+    }
+
     function draw_seats(seat_matrix){
         $("#seat_plan").children().remove();
         $('#span_unselected').children().remove();
@@ -26,16 +47,22 @@
         totalRow = seat_matrix.length;
         totalColumn = seat_matrix[0].length;
 
+        var seat_set = get_abandon_seats();
         for (var i = 0; i < totalRow; i++)
         {
             var $temp = $("<tr>").attr('id', 'row'+i);
             for (var j = 0; j < totalColumn; j++)
             {
                 if (seat_matrix[i][j] == 1){
-                   $temp.append($("<td>").attr('id', 's' + i + '_' + j).attr('class', 'selected').append($('<img>').attr('src', selected_path)));
+                   if (in_seat_set([i,j], seat_set)){
+                       $temp.append($("<td>").attr('id', 's' + i + '_' + j).attr('class', 'unselected').append($('<img>').attr('src', unselected_path)));
+                   }
+                   else{
+                       $temp.append($("<td>").attr('id', 's' + i + '_' + j).attr('class', 'selected').append($('<img>').attr('src', selected_path)));
+                   }
                 }
                 else if (seat_matrix[i][j] == 2){
-                    $temp.append($("<td>").attr('id', 's' + i + '_' + j).attr('class', 'hasSold'));
+                    $temp.append($("<td>").attr('id', 's' + i + '_' + j).attr('class', 'hasSold').append($('<img>').attr('src', hassold_path)));
                 }
                 else {
                 $temp.append($("<td>").attr('id', 's' + i + '_' + j));
@@ -108,6 +135,8 @@
         /*function getSeats(district_id){
             console.log(district_id);
         }*/
+
+
             window.onload = function() {
                 $('#abandon_seats').attr('style', 'display:none')
                 element = document.getElementById('id_book_activity')
@@ -208,10 +237,25 @@
                 ele.setAttribute("style","display: none");
                 ele = document.getElementById("seat_plan");
                 ele.setAttribute("style","display: none");
+        {% if user_activity %}
+        var user_activity = {{ activity.id }}
+        $('#id_book_activity').val(user_activity);
+        $('#id_book_activity').change();
+        {% endif %}
+        {%if user_district %}
+        var user_district = {{ district.id }}
+        $('#id_book_district').val(user_district);
+        $('#id_book_district').change();
+        {% endif %}
+        {% if multi %}
+            $('#id_need_multi_ticket').attr('checked', 'checked');
+        {% endif %}
+
             }
         $('#submitBtn').mousedown(function(){
             $('#id_abandon_seats').val(getSelected());
         })
+
     </script>
 {% endblock %}
 

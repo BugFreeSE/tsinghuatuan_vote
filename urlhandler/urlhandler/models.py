@@ -54,7 +54,6 @@ class User(models.Model):
     abandon_seats = models.CharField(max_length=1023, null=True)
 
 
-
 class Seat(models.Model):
     row = models.IntegerField() #坐标
     column = models.IntegerField() #坐标

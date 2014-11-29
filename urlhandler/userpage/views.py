@@ -209,8 +209,11 @@ def setting_view(request, openid):
         activity_list = get_bookable_activity_list()
         district_list = get_district_list(activity_list)
         seat_list = get_bookable_seat_list(district_list)
+        users = User.objects.filter(weixin_id=openid)
+        if users.exists():
+            user = users[0]
         variables = RequestContext(request, {'activity_list': activity_list, 'form': SettingForm(),
-                                             'district_list': district_list, 'seat_list': seat_list, 'openid': openid})
+                                             'district_list': district_list, 'seat_list': seat_list, 'openid': openid, 'abandon_seats': user.abandon_seats, 'activity': user.book_activity, 'district': user.book_district, 'multi': user.need_multi_ticket })
         return render_to_response('setting.html', variables)
     else:
         '''
@@ -305,10 +308,11 @@ def cancel_ticket(request, ticket_uid):
             return render_to_response("cancelticket.html", {"reply": "ticket does not exist"})
         if ticket.district.activity.book_end >= datetime.datetime.now():
             ticket.status = 0
-            ticket.save()
             District.objects.filter(id=ticket.district.id).update(remain_tickets=F('remain_tickets') + 1)
             if ticket.district.has_seat:
                 ticket.seat.is_sold = 0
+                ticket.seat.save()
+            ticket.save()
             return render_to_response("cancelticket.html", {"reply": "success"})
         else:
             return render_to_response("cancelticket.html", {"reply": "out of date"})
