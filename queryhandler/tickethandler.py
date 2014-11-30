@@ -204,7 +204,8 @@ def response_book_ticket(msg):
 
 def book_ticket(user, district, now):
     with transaction.atomic():
-        district = District.objects.select_for_update(id=district.id)
+        districts = District.objects.select_for_update().filter(id=district.id)
+        district = districts[0]
         if district.remain_tickets <= 0:
             return None
         #? better return?
