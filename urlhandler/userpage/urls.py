@@ -1,6 +1,6 @@
 from django.conf.urls import patterns, url, include
 
-urlpatterns = patterns(#'',
+urlpatterns = patterns('',
                        # url(r'^$', 'userpage.views.home'),
                        # url(r'^validate/time/$', 'userpage.views.get_timestamp'),
                        # url(r'^validate/try/$', 'userpage.views.validate_post'),
