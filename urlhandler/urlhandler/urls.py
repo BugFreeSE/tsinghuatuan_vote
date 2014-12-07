@@ -3,12 +3,14 @@ from django.contrib.staticfiles.urls import staticfiles_urlpatterns
 from django.contrib import admin
 import settings
 from tastypie.api import Api
-from urlhandler.api import VoteActResource
+from urlhandler.api import VoteActResource, CandidateResource, VoteLogResource
 
 admin.autodiscover()
 
 v1_api = Api(api_name='v1')
 v1_api.register(VoteActResource())
+v1_api.register(VoteLogResource())
+v1_api.register(CandidateResource())
 
 urlpatterns = patterns('',
     # Examples:
