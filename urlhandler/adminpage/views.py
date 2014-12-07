@@ -56,6 +56,9 @@ def vote_list(request):
 def vote_detail(request):
     return render_to_response('vote_detail.html')
 
+def vote_edit(request):
+    return render_to_response('vote_edit.html')
+
 def activity_checkin(request, actid):
     if not request.user.is_authenticated():
         return HttpResponseRedirect(s_reverse_admin_home())

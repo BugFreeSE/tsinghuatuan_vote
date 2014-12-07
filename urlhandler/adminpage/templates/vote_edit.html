@@ -1,0 +1,298 @@
+{% extends "vote_list.html" %}
+
+{% block activity-title %}
+    清韵烛光
+{% endblock %}
+
+{% load staticfiles %}
+
+{% block css %}
+    <link rel="stylesheet" href="{% static "css/activity_detail.css" %}"/>
+    <style>
+        th input {
+            border: 0;
+        }
+    </style>
+{% endblock %}
+
+{% block js %}
+    <script src="{% static "lib/jq/form/jquery.form.min.js" %}"></script>
+
+    <script src="{% static "js/vote_edit.js" %}"></script>
+    <script type="text/javascript">
+        $(function () {
+            $('#datetimepicker1').datetimepicker({
+                language: 'zh-CN',
+                pick12HourFormat: false
+            });
+        });
+        $(function () {
+            $('#datetimepicker2').datetimepicker({
+                language: 'zh-CN',
+                pick12HourFormat: false
+            });
+        });
+
+        function getPoster(url) {
+            $("#poster").attr("src", url);
+        }
+
+        $(function () {
+            if (activity.pic) {
+                $("#poster").attr("src", activity.pic);
+            }
+        });
+    </script>
+
+{% endblock %}
+
+{% block activity-list-active %}{% endblock %}
+
+{% block nav-li-ext %}
+    <li class="{% block activity-detail-active %}active{% endblock %}">
+        <a href="#">葛炮的怒号</a>
+    </li>
+{% endblock %}
+
+{% block content %}
+
+    <div class="container" id="detail-noscript">
+        <noscript>请开启JavaScript后重试。</noscript>
+    </div>
+    <div class="container" id="detail-form" style="display: none;">
+        <form class="form-horizontal" role="form" method="post" enctype="multipart/form-data"
+              action="{% url "adminpage.views.activity_post" %}" id="activity-form">
+            {% csrf_token %}
+            <div class="tab-content">
+                <div role="tabpanel" class="tab-pane fade in active" id="info">
+                    <div class="panel panel-default">
+                        <div class="panel-heading">活动信息</div>
+                        <div class="panel-body">
+                            <div class="row">
+                                <div class="col-sm-6" style="left:8.5%;">
+                                    <div class="form-group">
+                                        <label for="input-name" class="col-sm-2 control-label" id="label-input-name">活动名称</label>
+
+                                        <div class="col-sm-6">
+                                            <input type="text" maxlength="26" name="name" class="form-control"
+                                                   id="input-name" placeholder="活动名称，如 清韵烛光" autofocus>
+                                        </div>
+                                    </div>
+
+
+                                    <div class="form-group">
+                                        <label for="input-key" class="col-sm-2 control-label">活动代称</label>
+
+                                        <div class="col-sm-6">
+                                            <input type="text" maxlength="26" name="key" class="form-control"
+                                                   id="input-key" placeholder="用户用于订票的活动代称，推荐使用中文(少于7个字)，如 马兰花开">
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="input-start_time" class="col-sm-2 control-label">投票开始</label>
+
+                                        <div class='col-sm-6 input-group date' id='datetimepicker1'>
+                                            <input type='text' class="form-control" name="start_time"
+                                                   id="input-start_time"/>
+                                <span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span>
+                                </span>
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label for="input-end_time" class="col-sm-2 control-label">投票结束</label>
+
+                                        <div class='col-sm-6 input-group date' id='datetimepicker2'>
+                                            <input type='text' class="form-control" name="end_time"
+                                                   id="input-end_time"/>
+                                <span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span>
+                                </span>
+                                        </div>
+                                    </div>
+                                    <!--
+                                    <div class="form-group">
+                                        <label for="input-place" class="col-sm-2 control-label">活动地点</label>
+                                        <div class="col-sm-6">
+                                            <input type="text" name="place" class="form-control" id="input-place" placeholder="活动地点，如 大礼堂">
+                                        </div>
+                                    </div>
+                                    -->
+                                    <div class="form-group">
+                                        <label for="input-pic_url" class="col-sm-2 control-label" min="0">活动配图</label>
+
+                                        <div class="col-sm-6">
+                                            <input class="btn btn-info" id="upLoadBtn" onclick="$('#input-pic').click()"
+                                                   type="button" value="上传图片"/>
+                                            <input style="display: none" type="file" name="pic" class="form-control"
+                                                   id="input-pic" accept="image/*" onchange="getImgURL(this)"/>
+                                            <input style="display: none" type="url" name="pic_url" class="form-control"
+                                                   id="input-pic_url" min="0" placeholder="请填入图片链接"
+                                                   value="http://p4.sinaimg.cn/2140529227/180/29231343381097">
+                                            <!--onchange="getPoster(this.value)"-->
+                                        </div>
+
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="input-description" class="col-sm-2 control-label">活动简介</label>
+
+                                        <div class="col-sm-9">
+                                            <textarea class="form-control" name="description" rows="7"
+                                                      id="input-description" placeholder="描述，如 好看的舞台剧" row="3"
+                                                      style="resize: none;"></textarea>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <a href="#candidate" class="btn btn-primary col-sm-offset-9" role="tab"
+                                           data-toggle="tab">下一步</a>
+                                    </div>
+
+                                </div>
+
+                                <div class="col-sm-3 form-group" style="right:-15%;">
+                                    <div class="form-group">
+                                        <img id="poster" class="img-responsive img-thumbnail" style="width:100%;" alt=""
+                                             src="../../static1/img/default.png"/>
+                                    </div>
+                                    <div class="form-group">
+                                        <label style="display: block;text-align: center;">图片预览</label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+                <div role="tabpanel" class="tab-pane fade" id="candidate">
+                    <div class="panel panel-default">
+                        <div class="panel-heading">添加候选人</div>
+                        <div class="panel-body" id="tickets_setting">
+
+
+                            <div class="form-group" id="add_candidate">
+
+                                <div>
+                                    <table class="table table-hover" id="candidate-list">
+                                        <thead>
+                                        <tr>
+                                            <th class="col-sm-1">编号</th>
+                                            <th class="col-sm-1">图片</th>
+                                            <th class="col-sm-1">姓名</th>
+                                            <th class="col-sm-7">详细信息</th>
+                                            <th class="col-sm-1">操作</th>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                        <tr>
+                                            <th>1</th>
+                                            <th></th>
+                                            <th><input type="text" class="form-control" name="candidate_name"
+                                                       id="input-description" placeholder="姓名"/></th>
+                                            </th>
+                                            <th><input type="text" class="form-control" name="candidate_description"
+                                                       id="input-description" placeholder="候选人描述"/></th>
+
+                                            <th><span class="glyphicon glyphicon-trash"></span><span
+                                                    class="glyphicon glyphicon-pencil" data-toggle="modal"
+                                                    data-target="#candidate_detail" onclick="edit_candidate()"></span>
+                                        </tr>
+                                        </tbody>
+                                    </table>
+                                    <a href="javascript:addDistrict()">添加候选人</a>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <div class="col-sm-offset-9 col-sm-10">
+                            <a href="#info" class="btn btn-primary" role="tab" data-toggle="tab">上一步</a>
+                            <button type="button" onclick="publishActivity();" class="btn btn-primary" id="publishBtn">
+                                发布
+                            </button>
+                            <button type="submit" class="btn btn-default" id="saveBtn">暂存</button>
+                            <button type="reset" class="btn btn-warning" id="resetBtn">重置</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+        </form>
+    </div>
+    <div class="container" id="detail-processing" style="display: none;">
+        <img src="{% static "img/loading.gif" %}">
+        正在执行，请稍候……
+    </div>
+
+    <div class="container" id="detail-result" style="display: none;">
+        <h1>处理结果</h1>
+        <pre id="resultHolder"></pre>
+        <div class="col-sm-offset-2">
+            <button class="btn btn-info" id="continueBtn">继续修改</button>
+            <a class="btn btn-success" href="{% url "adminpage.views.activity_list" %}">返回列表</a>
+        </div>
+    </div>
+
+    <div class="modal fade" id="candidate_detail" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+         aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal"><span
+                            aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                    <h4 class="modal-title" id="myModalLabel">编辑候选人</h4>
+                </div>
+                <div>
+
+
+                    <form class="form-horizontal" role="form" enctype="multipart/form-data">
+                        <div class="col-sm-6" style="margin-top:10%; left:-3%;">
+                        <div class="form-group">
+                            <label for="modal_no" class="col-sm-5 control-label">候选人编号</label>
+
+                            <div class="col-sm-3">
+                                <label class="control-label" id="modal_no">1</label>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="modal_name" class="col-sm-5 control-label">候选人姓名</label>
+
+                            <div class="col-sm-5">
+                                <input type="text" class="form-control col-sm-3" name="candidate_name"
+                                       id="modal_name" placeholder="姓名"/>
+                            </div>
+                        </div>
+                            </div>
+
+                        <div class="col-sm-4 form-group" style="right:-10%;">
+                                    <div class="form-group">
+                                        <img id="poster" class="img-responsive img-thumbnail" alt=""
+                                             src="../../static1/img/default.png"/>
+                                    </div>
+                                </div>
+                        <div class="form-group">
+                            <label for="modal_description" class="col-sm-3 control-label">详细信息</label>
+
+                            <div class="col-sm-8"><textarea class="form-control" name="description" rows="7"
+                                                            id="modal_description" placeholder="描述，如 好看的舞台剧" row="3"
+                                                            style="resize: none;"></textarea></div>
+
+                        </div>
+
+
+
+                    </form>
+
+
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                    <button type="button" class="btn btn-primary">确定</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+{% endblock %}
