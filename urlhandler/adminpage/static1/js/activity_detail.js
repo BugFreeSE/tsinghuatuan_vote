@@ -557,7 +557,7 @@ function deleteDistrict(link)
 {
     var $tbody = $('#district-list').children('tbody');
     $(link).parent().parent().remove();
-    if ($tbody.children().length == 0)
+    if ($tbody.children().length === 0)
     {
         addDistrict();
     }
@@ -672,7 +672,7 @@ function publishActivity() {
     return false;
 }
 
-initializeForm(activity);
+//initializeForm(activity);
 showForm();
 
 $('#activity-form').submit(function() {

@@ -1,0 +1,75 @@
+{% extends "vote_base.html" %}
+
+{% load staticfiles %}
+
+{% block activity-title %}活动列表{% endblock %}
+
+{% block nav-li %}
+    <li class="{% block activity-list-active %}active{% endblock %}"><a class="btn-link" href="{% url "adminpage.views.activity_list" %}">活动列表</a></li>
+    {% block nav-li-ext %}{% endblock %}
+{% endblock %}
+
+{% block css %}
+    <link rel="stylesheet" href="{% static "css/activity_list.css" %}"/>
+{% endblock %}
+
+{% block js %}
+    <script src="{% static "js/vote_list.js" %}"></script>
+{% endblock %}
+
+{% block username %}
+    <a href={% url "adminpage.views.logout" %} >登出</a>
+
+{% endblock %}
+
+{% block content %}
+
+<div class="container" xmlns="http://www.w3.org/1999/html">
+
+    <div class="pageheader">
+        <h1 class="lead">活动列表</h1>
+    </div>
+
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <a class="btn btn-default" href={% url "adminpage.views.vote_detail" %}>新增活动</a>
+        </div>
+
+        <table class="table table-hover">
+            <thead>
+            <tr>
+                <th>状态</th>
+                <th>名称</th>
+                <th>简介</th>
+                <th>时间</th>
+                <th>操作</th>
+                <th></th>
+            </tr>
+            </thead>
+            <tbody id="tbody-activities">
+            </tbody>
+        </table>
+    </div>
+
+</div>
+
+<!-- Modal -->
+<div id="deleteid" style="display: none;"></div>
+<div class="modal fade" id="delModal" tabindex="-1" role="dialog" aria-labelledby="delModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true" onclick="delCancel()">&times;</button>
+        <h4 class="modal-title" id="delModalLabel">确认删除</h4>
+      </div>
+      <div class="modal-body" id="modalcontent">
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal" onclick="delConfirm()">确认</button>
+        <button type="button" class="btn btn-primary" data-dismiss="modal" onclick="delCancel()">取消</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+{% endblock %}

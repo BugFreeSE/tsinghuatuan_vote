@@ -1,7 +1,7 @@
-{% extends "activity_list.html" %}
+{% extends "vote_list.html" %}
 
 {% block activity-title %}
-{{ activity.name }}
+清韵烛光
 {% endblock %}
 
 {% load staticfiles %}
@@ -17,75 +17,10 @@
 
 {% block js %}
     <script src="{% static "lib/jq/form/jquery.form.min.js" %}"></script>
-    <script>
-        var file = null;
-        var rows = {{ activity.xinqing_rows }};
-        var cols = {{ activity.xinqing_columns }};
 
-        var activity = {
-            'name': '{{ activity.name }}'{% if activity.id %},
-            'id': {{ activity.id }},
-//            'key': '{{ activity.key|escapejs }}',
-            'description': '{{ activity.description|escapejs }}',
-//            'pic_url': '{{ activity.pic_url }}',
-//            'seat_status': {{ activity.seat_status }},
-            'pic': '{{activity.pic }}',
-            'start_time': {
-                'year': {{ activity.start_time.year }},
-                'month': {{ activity.start_time.month }},
-                'day': {{ activity.start_time.day }},
-                'hour': {{ activity.start_time.hour }},
-                'minute': {{ activity.start_time.minute }}
-            },
-            'end_time': {
-                'year': {{ activity.end_time.year }},
-                'month': {{ activity.end_time.month }},
-                'day': {{ activity.end_time.day }},
-                'hour': {{ activity.end_time.hour }},
-                'minute': {{ activity.end_time.minute }}
-            },
-            'place': '{{ activity.place }}',
-            'book_start': {
-                'year': {{ activity.book_start.year }},
-                'month': {{ activity.book_start.month }},
-                'day': {{ activity.book_start.day }},
-                'hour': {{ activity.book_start.hour }},
-                'minute': {{ activity.book_start.minute }}
-            },
-            'book_end': {
-                'year': {{ activity.book_end.year }},
-                'month': {{ activity.book_end.month }},
-                'day': {{ activity.book_end.day }},
-                'hour': {{ activity.book_end.hour }},
-                'minute': {{ activity.book_end.minute }}
-            },
-            'districts': [
-            {% for district in districts %}
-            {
-                'total_tickets': {{ district.total_tickets }},
-                'remain_tickets': {{ district.remain_tickets }},
-                'name': '{{ district.name }}'
-            }{% if forloop.last %}{% else %},{% endif %}
-            {% endfor %}
-            ],
-//            'total_tickets': {{ activity.total_tickets }},
-            'selectedRows': [
-            {% for row in selectedRows %}
-                {{ row }}
-            {% if forloop.last %}{% else %},{% endif %}
-            {% endfor %}
-            ],
-            'status': {{ activity.status }}{% else %},
-            'status': 0{% endif %}{% if activity.tickets_ready %},
-//            'checked_tickets': {{ activity.checked_tickets }},
-//            'ordered_tickets': {{ activity.ordered_tickets }}{% endif %}
-        }
-
-    </script>
     <script src="{% static "js/activity_detail.js" %}"></script>
     <script type="text/javascript">
-    {% if not activity.id %}
-        $(function () {
+    $(function () {
             $('#datetimepicker1').datetimepicker({
                 language:'zh-CN',
                 pick12HourFormat: false
@@ -97,19 +32,6 @@
                 pick12HourFormat: false
             });
         });
-        $(function () {
-            $('#datetimepicker3').datetimepicker({
-                language:'zh-CN',
-                pick12HourFormat: false
-            });
-        });
-        $(function () {
-            $('#datetimepicker4').datetimepicker({
-                language:'zh-CN',
-                pick12HourFormat: false
-            });
-        });
-    {% endif %}
 
         function getPoster(url){
             $("#poster").attr("src", url);
@@ -128,11 +50,7 @@
 
 {% block nav-li-ext %}
     <li class="{% block activity-detail-active %}active{% endblock %}">
-        <a href="{% if activity.id %}
-        {% url "adminpage.views.activity_detail" actid=activity.id %}
-        {% else %}
-        {% url "adminpage.views.activity_add" %}
-        {% endif %} ">{{ activity.name }}</a>
+        <a href="#">看蓝猫学蓝猫，我有姿势我自豪！</a>
     </li>
 {% endblock %}
 
@@ -230,23 +148,7 @@
             <div class="panel panel-default">
                 <div class="panel-heading">抢票设置</div>
                 <div class="panel-body" id="tickets_setting">
-                    <div class="form-group">
-                        <label for="input-book_start" class="col-sm-2 control-label">订票开始</label>
-                            <div class='col-sm-3 input-group date' id='datetimepicker3'>
-                                <input type='text' class="form-control" name="book_start" id="input-book_start"/>
-                                <span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span>
-                                </span>
-                            </div>
-                    </div>
 
-                    <div class="form-group">
-                        <label for="input-book_end" class="col-sm-2 control-label">订票结束</label>
-                            <div class='col-sm-3 input-group date' id='datetimepicker4'>
-                                <input type='text' class="form-control" name="book_end" id="input-book_end"/>
-                                <span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span>
-                                </span>
-                            </div>
-                    </div>
 
                     <div class="form-group" id="total_tickets">
                         <label for="input-total_tickets" class="col-sm-2 control-label">总票数</label>

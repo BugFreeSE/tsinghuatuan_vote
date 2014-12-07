@@ -50,6 +50,11 @@ def activity_list(request):
         'permission': permission_num,
     })
 
+def vote_list(request):
+    return render_to_response('vote_list.html')
+
+def vote_detail(request):
+    return render_to_response('vote_detail.html')
 
 def activity_checkin(request, actid):
     if not request.user.is_authenticated():
