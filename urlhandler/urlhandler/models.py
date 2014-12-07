@@ -83,3 +83,24 @@ class SettingForm(forms.Form):
     abandon_seats = forms.CharField(label='abandon_seats', required=False)
 
 
+class VoteAct(models.Model):
+    name = models.CharField(max_length=255)
+    description = models.TextField()
+    key = models.CharField(max_length=255)
+    config = models.IntegerField()
+    begin_vote = models.DateTimeField()
+    end_vote = models.DateTimeField()
+    status = models.IntegerField()
+
+class Candidate(models.Model):
+    activity_id = models.ForeignKey(VoteAct)
+    name = models.CharField(max_length=255)
+    key = models.IntegerField()
+    description = models.TextField()
+    votes = models.IntegerField()
+    status = models.IntegerField()
+
+
+class VoteLog(models.Model):
+    stu_id = models.IntegerField()
+    activity_id = models.ForeignKey(VoteAct)
