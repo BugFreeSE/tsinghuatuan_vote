@@ -704,15 +704,19 @@ function putModalImg(node){
     $('#modal-poster').attr('src', getImgURL(node));
 }
 
-function editCandidate(node){
-    var tds = $(this).parent().parent().children();
+function launchModal(node){
+    var tds = $(node).parent().parent().children();
     var id = tds.eq(0).text();
     var img = tds.eq(1).children().attr('src');
     var name = tds.eq(2).children().val();
-    var description = tds.eq(3).children().text();
-    $('modal_no').text(id);
+    var description = tds.eq(3).children().val();
+    $('#modal_no').text(id);
     if (img === '') img = "../../static1/img/default.png";
-    $('modal-poster').attr('src', img);
-    $('modal_name').val(name);
-    $('modal_description').text(description);
+    $('#modal-poster').attr('src', img);
+    $('#modal_name').val(name);
+    $('#modal_description').text(description);
+}
+
+function returnFromModal(){
+    
 }
