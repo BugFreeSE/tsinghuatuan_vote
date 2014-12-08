@@ -7,7 +7,7 @@
 {% load staticfiles %}
 
 {% block css %}
-    <link rel="stylesheet" href="{% static "css/activity_detail.css" %}"/>
+    <link rel="stylesheet" href="{% static "css/vote_edit.css" %}"/>
     <style>
         th input {
             border: 0;
@@ -184,21 +184,22 @@
                                         </thead>
                                         <tbody>
                                         <tr>
-                                            <td>1</td>
-                                            <td><img width="100"/></td>
-                                            <td><input type="text" class="form-control" name="candidate_name"
+                                            <td style="vertical-align:middle">1</td>
+                                            <td style="vertical-align:middle"><img width="100" src="" onclick="uploadImgClick(this)" style="cursor:pointer;display:none"/><span class="glyphicon glyphicon-circle-arrow-up gbtn" onclick="uploadIconClick(this)"></span><input style="display: none" type="file" name="pic" class="form-control"
+                                                   accept="image/*" onchange="putCandidateImg(this)" /></td>
+                                            <td style="vertical-align:middle"><input type="text" class="form-control" name="candidate_name"
                                                        placeholder="姓名"/></td>
 
-                                            <td><input type="text" class="form-control" name="candidate_description"
+                                            <td style="vertical-align:middle"><input type="text" class="form-control" name="candidate_description"
                                                        placeholder="候选人描述"/></td>
 
-                                            <td><span class="glyphicon glyphicon-trash"></span><span
-                                                    class="glyphicon glyphicon-pencil" data-toggle="modal"
+                                            <td style="vertical-align:middle"><span class="glyphicon glyphicon-trash gbtn" onclick="deleteCandidate(this)"></span><span
+                                                    class="glyphicon glyphicon-pencil gbtn" data-toggle="modal"
                                                     data-target="#candidate_detail" onclick="launchModal(this)"></span></td>
                                         </tr>
                                         </tbody>
                                     </table>
-                                    <a href="javascript:addDistrict()">添加候选人</a>
+                                    <a href="javascript:addCandidate()">添加候选人</a>
                                 </div>
                             </div>
 
@@ -310,7 +311,7 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
-                    <button type="button" class="btn btn-primary" onclick="returnFromModal()">确定</button>
+                    <button type="button" class="btn btn-primary" data-dismiss="modal" onclick="returnFromModal()">确定</button>
                 </div>
             </div>
         </div>

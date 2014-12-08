@@ -704,19 +704,72 @@ function putModalImg(node){
     $('#modal-poster').attr('src', getImgURL(node));
 }
 
+var nodeSelected = null;
+var defaultPic = "../../static1/img/default.png";
 function launchModal(node){
     var tds = $(node).parent().parent().children();
+    nodeSelected = tds;
     var id = tds.eq(0).text();
-    var img = tds.eq(1).children().attr('src');
+    var img = tds.eq(1).children('img').attr('src');
     var name = tds.eq(2).children().val();
     var description = tds.eq(3).children().val();
     $('#modal_no').text(id);
-    if (img === '') img = "../../static1/img/default.png";
+    if (img === '') img = defaultPic;
     $('#modal-poster').attr('src', img);
     $('#modal_name').val(name);
-    $('#modal_description').text(description);
+    $('#modal_description').val(description);
 }
 
 function returnFromModal(){
-    
+    var img = $('#modal-poster').attr('src');
+    var name = $('#modal_name').val();
+    var description = $('#modal_description').val();
+    if (img === defaultPic) img = "";
+    nodeSelected.eq(1).children('img').attr('src', img).css('display', 'inline');
+    nodeSelected.eq(1).children('span').remove();
+    nodeSelected.eq(2).children().val(name);
+    nodeSelected.eq(3).children().val(description);
+}
+
+function addCandidate(){
+    var $tbody = $('#candidate-list').children('tbody');
+    var $tr = $('<tr />');
+    $tr.append($('<td style="vertical-align:middle"/>').html($tbody.children().length + 1))
+        .append($('<td style="vertical-align:middle"/>').append($('<img width="100" src="" onclick="uploadImgClick(this)" style="cursor:pointer;display:none"/>'))
+                                                        .append($('<span class="glyphicon glyphicon-circle-arrow-up gbtn" onclick="uploadIconClick(this)"></span>'))
+                                                        .append($('<input style="display: none" type="file" name="pic" class="form-control" accept="image/*" onchange="putCandidateImg(this)" />')))
+        .append($('<td style="vertical-align:middle"/>').append($('<input type="text" class="form-control" name="candidate_name" placeholder="姓名"/>')))
+        .append($('<td style="vertical-align:middle"/>').append($('<input type="text" class="form-control" name="candidate_description" placeholder="候选人描述"/>')))
+        .append($('<td style="vertical-align:middle"/>').append($('<span class="glyphicon glyphicon-trash gbtn" onclick="deleteCandidate(this)"></span><span class="glyphicon glyphicon-pencil gbtn" data-toggle="modal" data-target="#candidate_detail" onclick="launchModal(this)"></span>')));
+    $tbody.append($tr);
+}
+
+function deleteCandidate(link)
+{
+    var $tbody = $('#candidate-list').children('tbody');
+    $(link).parent().parent().remove();
+    if ($tbody.children().length === 0)
+    {
+        addCandidate();
+    }
+    for (var i = 0; i < $tbody.children().length; i++)
+    {
+        $($($tbody.children()[i]).children()[0]).html(i + 1);
+    }
+}
+
+function uploadImgClick(node){
+    var $input = $(node).parent().children('input');
+    $input.click();
+}
+function uploadIconClick(node){
+    uploadImgClick(node);
+    var $img = $(node).parent().children('img');
+    $(node).remove();
+    $img.css('display', 'inline');
+}
+
+function putCandidateImg(node){
+    var $img = $(node).parent().children('img');
+    $img.attr('src', getImgURL(node));
 }
