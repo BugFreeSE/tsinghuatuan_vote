@@ -37,11 +37,11 @@
             $("#poster").attr("src", url);
         }
 
-        $(function () {
-            if (activity.pic) {
-                $("#poster").attr("src", activity.pic);
-            }
-        });
+{#        $(function () {#}
+{#            if (activity.pic) {#}
+{#                $("#poster").attr("src", activity.pic);#}
+{#            }#}
+{#        });#}
     </script>
 
 {% endblock %}
@@ -124,7 +124,7 @@
                                             <input class="btn btn-info" id="upLoadBtn" onclick="$('#input-pic').click()"
                                                    type="button" value="上传图片"/>
                                             <input style="display: none" type="file" name="pic" class="form-control"
-                                                   id="input-pic" accept="image/*" onchange="getImgURL(this)"/>
+                                                   id="input-pic" accept="image/*" onchange="createImg('#poster', getImgURL(this))"/>
                                             <input style="display: none" type="url" name="pic_url" class="form-control"
                                                    id="input-pic_url" min="0" placeholder="请填入图片链接"
                                                    value="http://p4.sinaimg.cn/2140529227/180/29231343381097">
@@ -184,17 +184,17 @@
                                         </thead>
                                         <tbody>
                                         <tr>
-                                            <th>1</th>
-                                            <th></th>
-                                            <th><input type="text" class="form-control" name="candidate_name"
-                                                       id="input-description" placeholder="姓名"/></th>
-                                            </th>
-                                            <th><input type="text" class="form-control" name="candidate_description"
-                                                       id="input-description" placeholder="候选人描述"/></th>
+                                            <td>1</td>
+                                            <td><img width="100"/></td>
+                                            <td><input type="text" class="form-control" name="candidate_name"
+                                                       id="input-description" placeholder="姓名"/></td>
 
-                                            <th><span class="glyphicon glyphicon-trash"></span><span
+                                            <td><input type="text" class="form-control" name="candidate_description"
+                                                       id="input-description" placeholder="候选人描述"/></td>
+
+                                            <td><span class="glyphicon glyphicon-trash"></span><span
                                                     class="glyphicon glyphicon-pencil" data-toggle="modal"
-                                                    data-target="#candidate_detail" onclick="edit_candidate()"></span>
+                                                    data-target="#candidate_detail" onclick="editCandidate(this)"></span></td>
                                         </tr>
                                         </tbody>
                                     </table>
@@ -246,9 +246,21 @@
                 </div>
                 <div>
 
-
                     <form class="form-horizontal" role="form" enctype="multipart/form-data">
-                        <div class="col-sm-6" style="margin-top:10%; left:-3%;">
+
+                        <div style="margin-top: 3%;">
+                            <div style="float:right;">
+                                <div class="col-sm-8" style="right:-5%;">
+                                    <div class="form-group">
+                                        <img id="modal-poster" class="img-responsive img-thumbnail" alt=""
+                                             src="../../static1/img/default.png" width="250"/>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+
+                        <div class="col-sm-6">
                         <div class="form-group">
                             <label for="modal_no" class="col-sm-5 control-label">候选人编号</label>
 
@@ -260,26 +272,35 @@
                             <label for="modal_name" class="col-sm-5 control-label">候选人姓名</label>
 
                             <div class="col-sm-5">
-                                <input type="text" class="form-control col-sm-3" name="candidate_name"
-                                       id="modal_name" placeholder="姓名"/>
+                                <input type="text" maxlength="26" name="key" class="form-control" id="candidate_name" placeholder="姓名">
                             </div>
                         </div>
-                            </div>
-
-                        <div class="col-sm-4 form-group" style="right:-10%;">
-                                    <div class="form-group">
-                                        <img id="poster" class="img-responsive img-thumbnail" alt=""
-                                             src="../../static1/img/default.png"/>
-                                    </div>
-                                </div>
                         <div class="form-group">
+                                        <label for="input-pic_url" class="col-sm-5 control-label" min="0">活动配图</label>
+
+                                        <div class="col-sm-5">
+                                            <input class="btn btn-info" id="upLoadBtn2" onclick="$('#modal-pic').click()"
+                                                   type="button" value="上传图片"/>
+                                            <input style="display: none" type="file" name="pic" class="form-control"
+                                                   id="modal-pic" accept="image/*" onchange="putModalImg(this)" />
+                                        </div>
+
+                                    </div>
+
+                            </div>
+                        <div class="clearfix"></div>
+
+                        <div>
+                            <div class="form-group" style="position:relative;left:-3%;">
                             <label for="modal_description" class="col-sm-3 control-label">详细信息</label>
 
                             <div class="col-sm-8"><textarea class="form-control" name="description" rows="7"
-                                                            id="modal_description" placeholder="描述，如 好看的舞台剧" row="3"
+                                                            id="modal_description" placeholder="描述, 如清韵烛光我最喜爱的老师" row="3"
                                                             style="resize: none;"></textarea></div>
 
                         </div>
+                        </div>
+
 
 
 

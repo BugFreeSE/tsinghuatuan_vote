@@ -692,10 +692,27 @@ function getImgURL(node) {
         }
      }
     //imgurl = imgURL;
-    creatImg(imgRUL);
-    return imgURL;
+    //creatImg(imgRUL);
+    return imgRUL;
 }
 
-function creatImg(imgRUL){   //根据指定URL创建一个Img对象
-    $("#poster").attr("src",imgRUL);
+function createImg(id, imgRUL){   //根据指定URL创建一个Img对象
+    $(id).attr("src",imgRUL);
+}
+
+function putModalImg(node){
+    $('#modal-poster').attr('src', getImgURL(node));
+}
+
+function editCandidate(node){
+    var tds = $(this).parent().parent().children();
+    var id = tds.eq(0).text();
+    var img = tds.eq(1).children().attr('src');
+    var name = tds.eq(2).children().val();
+    var description = tds.eq(3).children().text();
+    $('modal_no').text(id);
+    if (img === '') img = "../../static1/img/default.png";
+    $('modal-poster').attr('src', img);
+    $('modal_name').val(name);
+    $('modal_description').text(description);
 }
