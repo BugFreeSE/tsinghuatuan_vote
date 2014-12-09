@@ -9,35 +9,35 @@ function clearActs() {
     $('#tbody-activities').html('');
 }
 
-var vote_acts=[
-    {
-        'status': 0,
-        'name': '游泳教练',
-        'description':'不知所措',
-        'start_time': new Date(2014, 11, 7, 10, 4),
-        'end_time': new Date(2014, 11, 17, 10, 4),
-        'operations':{'detail':''},
-        'delete':0
-    },
-    {
-        'status': 1,
-        'name': '游泳教练',
-        'description':'不知所措',
-        'start_time': new Date(2014, 11, 7, 10, 4),
-        'end_time': new Date(2014, 11, 17, 10, 4),
-        'operations':{'detail':''},
-        'delete':0
-    },
-    {
-        'status': 2,
-        'name': '游泳教练',
-        'description':'不知所措',
-        'start_time': new Date(2014, 11, 7, 10, 4),
-        'end_time': new Date(2014, 11, 17, 10, 4),
-        'operations':{'detail':''},
-        'delete':0
-    }
-];
+//var vote_acts=[
+//    {
+//        'status': 0,
+//        'name': '游泳教练',
+//        'description':'不知所措',
+//        'start_time': new Date(2014, 11, 7, 10, 4),
+//        'end_time': new Date(2014, 11, 17, 10, 4),
+//        'operations':{'detail':''},
+//        'delete':0
+//    },
+//    {
+//        'status': 1,
+//        'name': '游泳教练',
+//        'description':'不知所措',
+//        'start_time': new Date(2014, 11, 7, 10, 4),
+//        'end_time': new Date(2014, 11, 17, 10, 4),
+//        'operations':{'detail':''},
+//        'delete':0
+//    },
+//    {
+//        'status': 2,
+//        'name': '游泳教练',
+//        'description':'不知所措',
+//        'start_time': new Date(2014, 11, 7, 10, 4),
+//        'end_time': new Date(2014, 11, 17, 10, 4),
+//        'operations':{'detail':''},
+//        'delete':0
+//    }
+//];
 var operations_target = {'detail':''};
 var operations_icon = {'detail':'pencil'};
 var operations_name = {'detail':'详情'};
@@ -273,5 +273,39 @@ function initialActs() {
     createtips();
 }
 
-clearActs();
-initialActs();
+
+var vote_acts;
+
+
+function fromAPIFormat(data) {
+    var result = [];
+    var act;
+    for (_act in data) {
+        act = data[_act];
+        var vote_act = {};
+        vote_act.status = act.status;
+        vote_act.name = act.name;
+        vote_act.description = act.description;
+        act.begin_vote = act.begin_vote.substring(0,10) + " " + act.begin_vote.substring(11);
+        act.end_vote = act.end_vote.substring(0,10) + " " + act.end_vote.substring(11);
+        vote_act.start_time = new Date(act.begin_vote.replace(/-/g,"/"));
+        vote_act.end_time = new Date(act.end_vote.replace(/-/g,"/"));
+        vote_act.id = act.id;
+        result.push(vote_act);
+    }
+    return result;
+}
+
+
+function getActs() {
+     $.get("/api/v1/VoteAct/?format=json",function (data, status) {
+        console.log(status);
+        vote_acts = fromAPIFormat(data.objects);
+        clearActs();
+        initialActs();
+        //console.log(data);
+    })
+
+}
+
+getActs();
